@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: server
+    env_file:
+      - .env
+    environment:
+      - MODE={{ app_mode }}
+      - HOST={{ app_host }}
+      - PROTOCOL={{ app_protocol }}
+      - DB_HOST={{ db_host }}
+      - DB_USER={{ db_user }}
+      - REDIS_HOST={{ redis_host }}
+      - BOT_HOOK={{ bot_hook }}
+      - FILES_HOST={{ files_host }}
+      - WEB_HOST={{ web_host }}
+      - BOT_URL={{ bot_url }}
+    volumes:
+      - ./application:/usr/server/application
+    depends_on:
+      - pg
+      - redis
+    ports:
+      - "8000:8000"
+      - "8001:8001"
+      - "8002:8002"
+      - "8443:8443"
+    restart: always
+
+  pg:
+    image: postgres:16.1-alpine3.19
+    container_name: pg
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER={{ db_user }}
+      - POSTGRES_DB={{ db_name }}
+      - POSTGRES_HOST_AUTH_METHOD=trust
+    volumes:
+      - ./data/postgres/:/var/lib/postgresql/data
+      - ./application/schemas/database.sql:/docker-entrypoint-initdb.d/1.sql
+    ports:
+      - "5432:5432"
+    restart: always
+
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    ports:
+      - "6379:6379"
+    restart: always
+
+networks:
+  default:
+    name: api-network

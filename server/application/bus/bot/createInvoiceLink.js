@@ -1,0 +1,26 @@
+({
+  method: {
+    post: `createInvoiceLink`,
+    body: [
+      'title',
+      'description',
+      'payload',
+      'provider_token',
+      'provider_data',
+      'currency',
+      'prices',
+      'subscription_period',
+      'photo_url',
+      'photo_width',
+      'photo_height',
+      'photo_size',
+      'need_name',
+      'need_phone_number',
+      'need_email',
+      'send_phone_number_to_provider',
+      'send_email_to_provider',
+      'need_shipping_address',
+      'is_flexible',
+    ],
+  },
+});

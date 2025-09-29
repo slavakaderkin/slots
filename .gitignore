@@ -1,0 +1,11 @@
+/server/node_modules/
+docker-compose.yml
+combine.js
+/server/data/
+/ansible/group_vars/
+.env
+/server/application/static/twa
+/server/application/static/files
+/server/application/cert/default
+/server/log
+/server/database

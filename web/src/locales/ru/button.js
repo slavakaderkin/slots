@@ -1,0 +1,17 @@
+export default {
+  save: 'Сохранить',
+  close: 'Закрыть',
+  next: 'Дальше',
+  submit: 'Отправить',
+  ok: 'Ok',
+  add: 'Добавить',
+  show: 'Раскрыть',
+  hide: 'Скрыть',
+  select: 'Выбрать',
+  select_service: 'Записаться',
+  select_slot: 'Дата и время',
+  select_checked: '{{date}} {{time}}',
+  booking: 'Записаться',
+  feedback: 'Оставить отзыв',
+  allowsWrite: 'Разрешить',
+};

@@ -1,0 +1,118 @@
+---
+- name: Deploy application
+  hosts: all
+  vars_files:
+    - group_vars/all/vars.yml
+    - group_vars/all/secrets.yml
+
+  tasks:
+    - name: Install Docker from Ubuntu repositories
+      become: yes
+      apt:
+        name:
+          - docker.io
+          - docker-compose
+          - python3-pip
+        state: present
+        update_cache: yes
+
+    - name: Ensure Docker group exists
+      become: yes
+      group:
+        name: docker
+        state: present
+
+    - name: Add user to Docker group
+      become: yes
+      user:
+        name: "{{ remote_user }}"
+        groups: docker
+        append: yes
+
+    - name: Start and enable Docker service
+      become: yes
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create project directory
+      become: yes
+      file:
+        path: "{{ remote_path }}"
+        state: directory
+        mode: '0755'
+        owner: "{{ remote_user }}"
+        group: "{{ remote_user }}"
+
+    - name: Copy project files (excluding sensitive data)
+      become: yes
+      synchronize:
+        src: "{{ local_path }}/"
+        dest: "{{ remote_path }}"
+        archive: yes
+        recursive: yes
+        owner: yes
+        group: yes
+        mode: push
+        delete: yes
+        rsync_opts:
+          - "--chmod=755"
+          - "--exclude=data/"
+          - "--exclude=docker-compose.yml"
+          - "--exclude=Makefile"
+          - "--exclude=node_modules"
+
+    - name: Copy docker-compose template
+      become: yes
+      template:
+        src: templates/docker-compose.yml.j2
+        dest: "{{ remote_path }}/docker-compose.yml"
+        mode: '0644'
+
+    - name: Create .env file with secrets
+      become: yes
+      template:
+        src: templates/.env.j2
+        dest: "{{ remote_path }}/.env"
+        mode: '0600'
+        owner: "{{ remote_user }}"
+        group: "{{ remote_user }}"
+
+    - name: Copy Dockerfile
+      become: yes
+      copy:
+        src: "{{ local_path }}/Dockerfile"
+        dest: "{{ remote_path }}/Dockerfile"
+        mode: '0644'
+
+    - name: Copy database schema
+      become: yes
+      copy:
+        src: "{{ local_path }}/database/database.sql"
+        dest: "{{ remote_path }}/database/database.sql"
+        mode: '0644'
+
+    - name: Create data directories
+      become: yes
+      file:
+        path: "{{ remote_path }}/data/postgres"
+        state: directory
+        mode: '0755'
+
+    - name: Build and start containers
+      become: yes
+      community.docker.docker_compose:
+        project_src: "{{ remote_path }}"
+        state: present
+        build: yes
+        restarted: yes
+
+    - name: Show deployment info
+      debug:
+        msg: |
+          Application deployed successfully to {{ inventory_hostname }}
+          Services running on:
+          - App: {{ inventory_hostname }}:8000-8002
+          - PostgreSQL: {{ inventory_hostname }}:5432
+          - Redis: {{ inventory_hostname }}:6379

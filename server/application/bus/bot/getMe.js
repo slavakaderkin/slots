@@ -1,0 +1,5 @@
+({
+  method: {
+    post: `getMe`,
+  },
+});

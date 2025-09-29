@@ -1,0 +1,23 @@
+---
+- name: Update static files only
+  hosts: all
+  vars_files:
+    - group_vars/all/vars.yml
+
+  tasks:
+    - name: Sync only static/twa files
+      synchronize:
+        src: "{{ local_path }}/application/static/twa/"
+        dest: "{{ remote_path }}/application/static/twa/"
+        archive: yes
+        recursive: yes
+        owner: yes
+        group: yes
+        mode: push
+        delete: yes
+      become: yes
+
+
+    - name: Show update info
+      debug:
+        msg: "Static files updated on {{ inventory_hostname }}"

@@ -1,0 +1,56 @@
+---
+- name: Setup environment for application
+  hosts: all
+  become: yes
+  vars_files:
+    - group_vars/all/vars.yml
+
+  tasks:
+    - name: Install required packages
+      package:
+        name:
+          - docker
+          - docker-compose-plugin
+          - python3-pip
+        state: present
+
+    - name: Ensure Docker group exists
+      group:
+        name: docker
+        state: present
+
+    - name: Add user to Docker group
+      user:
+        name: "{{ remote_user }}"
+        groups: docker
+        append: yes
+
+    - name: Start and enable Docker service
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+
+    - name: Create project directory
+      file:
+        path: "{{ remote_path }}"
+        state: directory
+        mode: '0755'
+        owner: "{{ remote_user }}"
+        group: "{{ remote_user }}"
+
+    - name: Create data directory
+      file:
+        path: "{{ remote_path }}/data/postgres"
+        state: directory
+        mode: '0755'
+        owner: "{{ remote_user }}"
+        group: "{{ remote_user }}"
+
+    - name: Create database directory
+      file:
+        path: "{{ remote_path }}/database"
+        state: directory
+        mode: '0755'
+        owner: "{{ remote_user }}"
+        group: "{{ remote_user }}"

@@ -1,0 +1,33 @@
+export default {
+  you: 'Это вы',
+  allowsWrite: 'Чтобы получать уведомления о записях, разрешите нам их отправлять',
+  currency: '₽',
+  price: '{{price, currency(currency: RUB)}}',
+  date: '{{date, datetime}}',
+  more: 'еще',
+  today: 'сегодня',
+  tomorrow: 'завтра',
+  allDay: 'весь день',
+  minutes: 'минут',
+  minutes_one: '{{count}} минута',
+  minutes_few: '{{count}} минуты',
+  minutes_many: '{{count}} минут',
+  info: {
+    title_loading: '...Загрузка',
+    title_error: 'У нас неполадка',
+    title_empty: 'Здесь ничего нет',
+    description: '',
+    description_error: 'Ничего страшного, делать ничего не нужно, наш человек уже убежал исправлять.',
+    description_empty: 'Такое бывает, приходите позже, возможно появится.'
+  },
+  menu: {
+    account: 'Аккаунт',
+    bookings: 'Брони',
+    profile: 'Профиль',
+    workspace: 'Кабинет',
+    profiles: '',
+    stats: 'Статистика',
+    clients: 'Клиенты',
+    settings: 'Настройки',
+  }
+}
