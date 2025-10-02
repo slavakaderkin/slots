@@ -8,5 +8,7 @@ export default {
   upcomingSlot: 'Ближайший слот',
   feedbacks: 'Отзывы',
   booking: 'Запись',
-  services: 'Услуги'
+  services: 'Услуги',
+  address: 'Адрес',
+  noSlots: 'Нет свободных слотов',
 }

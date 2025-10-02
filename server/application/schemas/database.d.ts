@@ -5,6 +5,7 @@ interface Account {
   registered: string;
   lastSeen: string;
   isBanned: boolean;
+  timezone?: string;
   accountId?: string;
 }
 
@@ -17,7 +18,7 @@ interface Profile {
   termLink?: string;
   isActive: boolean;
   category: string;
-  autoConfirm: boolean;
+  specialization?: string;
   balance: string;
   slotDuration: number;
   profileId?: string;
@@ -26,6 +27,7 @@ interface Profile {
 interface Client {
   accountId: string;
   profileId: string;
+  isBanned: boolean;
   clientId?: string;
 }
 
@@ -40,10 +42,12 @@ interface Slot {
 interface Service {
   profileId: string;
   name: string;
-  description: string;
+  description?: string;
   price: string;
   isOnline: boolean;
   allDay: boolean;
+  isVisits: boolean;
+  autoConfirm: boolean;
   state: string;
   duration?: number;
   serviceId?: string;
@@ -86,6 +90,7 @@ interface Feedback {
   isAnonymous: boolean;
   rating: number;
   text?: string;
+  date: string;
   feedbackId?: string;
 }
 
@@ -125,7 +130,6 @@ interface SubPayment {
 
 interface Trial {
   accountId: string;
-  profileId: string;
   start: string;
   end: string;
   isExpired: boolean;

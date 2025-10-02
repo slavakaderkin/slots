@@ -19,12 +19,16 @@
 
     const clients = await db.pg.select('Client', { profileId });
     const mapper = async (client) => {
-      const { accountId } = client;
-      const { info } = await db.pg.row('Account', { accountId })
+      const { accountId, clientId } = client;
+      const { info } = await db.pg.row('Account', { accountId });
+      const bookingCount = await lib.pg.builder.query(lib.pg.queries.booking.byClientId({ clientId, count: true }));
+      const [lastBooking] = await lib.pg.builder.query(lib.pg.queries.booking.lastClientBooking({ clientId })) || [];
+      client['lastBooking'] = lastBooking;
+      client['bookingCount'] = bookingCount;
       client['info'] = info;
       return client;
     };
-    
+
     return full ? await Promise.all(clients.map(mapper)) : clients;
   },
 })

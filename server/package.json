@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@metarhia/sql": "^0.2.11",
-    "impress": "^3.0.18",
+    "impress": "https://github.com/slavakaderkin/impress.git",
     "metasql": "^3.0.0-alpha.3",
     "pg": "^8.16.0",
     "redis": "^5.5.6"

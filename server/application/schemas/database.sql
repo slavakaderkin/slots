@@ -5,7 +5,8 @@ CREATE TABLE "Account" (
   "info" jsonb NULL,
   "registered" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "lastSeen" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "isBanned" boolean NOT NULL DEFAULT false
+  "isBanned" boolean NOT NULL DEFAULT false,
+  "timezone" varchar NULL
 );
 
 ALTER TABLE "Account" ADD CONSTRAINT "pkAccount" PRIMARY KEY ("accountId");
@@ -20,7 +21,7 @@ CREATE TABLE "Profile" (
   "termLink" varchar NULL,
   "isActive" boolean NOT NULL,
   "category" varchar NOT NULL,
-  "autoConfirm" boolean NOT NULL DEFAULT true,
+  "specialization" varchar NULL,
   "balance" bigint NOT NULL DEFAULT '0',
   "slotDuration" integer NOT NULL DEFAULT 60
 );
@@ -31,7 +32,8 @@ ALTER TABLE "Profile" ADD CONSTRAINT "fkProfileAccount" FOREIGN KEY ("accountId"
 CREATE TABLE "Client" (
   "clientId" bigint generated always as identity,
   "accountId" bigint NOT NULL,
-  "profileId" bigint NOT NULL
+  "profileId" bigint NOT NULL,
+  "isBanned" boolean NOT NULL DEFAULT false
 );
 
 ALTER TABLE "Client" ADD CONSTRAINT "pkClient" PRIMARY KEY ("clientId");
@@ -53,10 +55,12 @@ CREATE TABLE "Service" (
   "serviceId" bigint generated always as identity,
   "profileId" bigint NOT NULL,
   "name" varchar NOT NULL,
-  "description" text NOT NULL,
+  "description" text NULL,
   "price" bigint NOT NULL,
   "isOnline" boolean NOT NULL DEFAULT false,
   "allDay" boolean NOT NULL DEFAULT false,
+  "isVisits" boolean NOT NULL DEFAULT false,
+  "autoConfirm" boolean NOT NULL DEFAULT true,
   "state" varchar NOT NULL DEFAULT 'active',
   "duration" integer NULL DEFAULT 60
 );
@@ -114,7 +118,8 @@ CREATE TABLE "Feedback" (
   "bookingId" bigint NOT NULL,
   "isAnonymous" boolean NOT NULL DEFAULT false,
   "rating" integer NOT NULL DEFAULT 5,
-  "text" text NULL
+  "text" text NULL,
+  "date" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 ALTER TABLE "Feedback" ADD CONSTRAINT "pkFeedback" PRIMARY KEY ("feedbackId");
@@ -175,7 +180,6 @@ ALTER TABLE "SubPayment" ADD CONSTRAINT "fkSubPaymentSubscription" FOREIGN KEY (
 CREATE TABLE "Trial" (
   "trialId" bigint generated always as identity,
   "accountId" bigint NOT NULL,
-  "profileId" bigint NOT NULL,
   "start" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "end" timestamp with time zone NOT NULL,
   "isExpired" boolean NOT NULL DEFAULT false
@@ -183,4 +187,3 @@ CREATE TABLE "Trial" (
 
 ALTER TABLE "Trial" ADD CONSTRAINT "pkTrial" PRIMARY KEY ("trialId");
 ALTER TABLE "Trial" ADD CONSTRAINT "fkTrialAccount" FOREIGN KEY ("accountId") REFERENCES "Account" ("accountId");
-ALTER TABLE "Trial" ADD CONSTRAINT "fkTrialProfile" FOREIGN KEY ("profileId") REFERENCES "Profile" ("profileId");

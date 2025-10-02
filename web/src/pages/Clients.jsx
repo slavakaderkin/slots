@@ -27,25 +27,26 @@ export default () => {
     useApiCall('client.byProfile', { 
       autoFetch: false
     });
-  console.log("🚀 ~ clients:", clients)
 
   useEffect(() => {
     if (profile) getClients({ profileId: profile.profileId });
-  }, [profile])
+  }, [profile]);
+
+  if (profileLoading || clientsLoading) return <InfoPage type='loading'/>;
 
   return (
     <>
-      {isIos && <Space />}
 
-      {!clients?.length && <InfoPage 
+      {!clients?.length && !clientsLoading && <InfoPage 
         type='empty'
         header={ t('clients.empty')} 
         text={t('clients.empty', { context: 'description' })}
       />}
 
       {!!clients?.length && <>
+        {isIos && <Space />}
         {clients.map((client) => {
-          return <ClientCard key={client.clientId} client={client} />
+          return <ClientCard key={client.clientId} client={client}/>
         })}
         <Space gap='170px'/>
       </>}

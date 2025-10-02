@@ -46,6 +46,7 @@ const PROFILE_MENU = [
 
 export default ({ children }) => {
   const { account } = useAuth();
+  const { unactiveProfile } = account;
   const { themeParams: theme, platform } = useTelegram().WebApp;
   const { t } = useTranslation();
   const { go, currentPath, isHome } = useNavigation();
@@ -71,12 +72,14 @@ export default ({ children }) => {
           const selected = id === currentPath || (isHome && id === 'account');
           const text = t(`common.menu.${id}`);
           const path = id === 'account' ? '/' : `/${id}`;
+          const disabled = ['clients', 'stats'].includes(id) && unactiveProfile;
           return (
             <Tabbar.Item
               key={id} 
               selected={selected}
               text={text}
               onClick={go(path)}
+              disabled={disabled}
             >
               <Icon />
             </Tabbar.Item>

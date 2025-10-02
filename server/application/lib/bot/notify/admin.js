@@ -9,11 +9,12 @@ async ({ msg }) => {
   const method = bus.bot[methodName];
   const link_preview_options = { is_disabled: true };
   const item = { chat_id, ...rest, link_preview_options };
+  console.log("🚀 ~ item:", item)
   const key = String(config.bot.adminId) + String(new Date().getTime());
  
   await method(item).catch(({ message }) => {
     const code = message.split(' ')[3];
-    console.error(`lib/notify/admin tg/error/${method} code: ${code}`);
+    console.error(`lib/notify/admin tg/error/${methodName} code: ${code}`);
     return { result: null };
   });
 

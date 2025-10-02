@@ -16,12 +16,14 @@ import Form from '@components/forms/Profile';
 import schema from '@schemas/profile';
 import useApiCall from '@hooks/useApiCall';
 import useBackButton from '@hooks/useBackButton';
+import InfoPage from '@pages/Info';
 
 const IMAGE_SIZE = 512;
 
 export default () => {
   const { account } = useAuth();
   const navigate = useNavigate();
+ 
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
   const metacom = useMetacom();
@@ -42,9 +44,10 @@ export default () => {
     description: '',
     specialization: '',
     slotDuration: 60,
-    autoConfirm: true,
+    country: '',
     city: '',
     address: '',
+    mapLink: '',
     termLink: '',
   };
 

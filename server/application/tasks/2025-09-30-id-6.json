@@ -1,0 +1,1 @@
+{"name":"bookingsComplete","every":"1h","run":"lib.jobs.bookingsComplete","app":"/usr/server/application","id":"2025-09-30-id-6"}

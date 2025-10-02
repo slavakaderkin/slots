@@ -12,6 +12,10 @@ export default {
   select_slot: 'Дата и время',
   select_checked: '{{date}} {{time}}',
   booking: 'Записаться',
+  booking_client: 'Записать клиента',
   feedback: 'Оставить отзыв',
   allowsWrite: 'Разрешить',
+  trial: 'Попробовать 14 дней бесплатно',
+  subscription_month: 'Купить на 30 дней за {{count}} ⭐️',
+  subscription_year: 'Купить на год за {{count}} ⭐️',
 };

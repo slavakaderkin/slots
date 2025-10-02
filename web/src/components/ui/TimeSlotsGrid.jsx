@@ -27,9 +27,9 @@ const TimeSlotsGrid = ({
   );
 
   const slotColors = useMemo(() => ({
-    booked: '#eb8218', //'#01bc7d',
+    booked: theme.button_color, //'#eb8218', //'#01bc7d',
     available: theme.button_color,
-    blocked: '#eb8218'
+    blocked: theme.button_color, //'#eb8218'
   }), [theme.button_color]);
 
   // Функция для проверки пересечения временных интервалов

@@ -20,21 +20,19 @@ export default ({ children }) => {
     setRef('');
   };
 
-  useEffect(() => {
-    const init = async () => {
-      const result = await metacom.api.auth.twa({ initData, timezone });
-      setAuthData(result);
-      setLoading(false);
-      setRef(start_param);
-    };
+  const init = async () => {
+    const result = await metacom.api.auth.twa({ initData, timezone });
+    setAuthData(result);
+    setLoading(false);
+    setRef(start_param);
+  };
 
-    init();
-  }, [initData]);
+  useEffect(() => void init(), [initData]);
 
   if (loading || !authData.account) return <Info type="loading" />
 
   return (
-    <context.Provider value={{ ...authData, user, ref, resetRef }}>
+    <context.Provider value={{ ...authData, user, ref, resetRef, init }}>
       {children}
     </context.Provider>
   );

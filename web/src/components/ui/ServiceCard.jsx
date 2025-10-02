@@ -45,10 +45,9 @@ export default ({ service, isOwner, onClick, selected, onHandleSelect, selectedS
         if (ok) api.service.save({ ...service, state });;
       })
     } else {
-      api.service.save({ ...service, state });
+      api.service.save({ ...service, state }).then(refetchServices);
     }
    
-    refetchServices();
   }, [service]);
 
   const renderButton = () => {
@@ -106,12 +105,12 @@ export default ({ service, isOwner, onClick, selected, onHandleSelect, selectedS
       >
         {service.name}
       </Cell>
-      <Cell 
+      {service.description && <Cell 
         style={{ background: theme.secondary_bg_color }}
         multiline
       >
         {renderDescription(service.description)}
-      </Cell>
+      </Cell>}
       {isOwner && 
         <Cell
           style={{ background: theme.secondary_bg_color }}
@@ -145,7 +144,9 @@ export default ({ service, isOwner, onClick, selected, onHandleSelect, selectedS
           </div>
         }
       >
-        <Text weight='1' style={{ color: theme.text_color }}>{t('common.price', { price: service.price })}</Text>
+        <Text weight='1' style={{ color: theme.text_color }}>
+          {t('common.price', { price: service.price, context: !!Number(service.price) ? '' : 'free' })}
+        </Text>
       </Cell>
     </Section>
   )

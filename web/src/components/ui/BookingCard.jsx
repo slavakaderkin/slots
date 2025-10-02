@@ -34,6 +34,11 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
       //border: selected ? `1.5px solid ${theme.link_color}` : 'none',
       borderRadius: '12px'
     },
+    button: {
+      maxHeight: '32px',
+      margin: '8px 0',
+      background: stateColors[state] || theme.hint_color,
+    },
     status: { 
       color: stateColors[state] || theme.hint_color,
       //border: `1.5px solid ${stateColors[state] || theme.hint_color}`,
@@ -89,7 +94,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
       <Button
         size="s"
         before={<Calendar size={16} />}
-        style={{ maxHeight: '32px', margin: '8px 0' }}
+        style={themeStyles.button}
       >
         <Caption weight="1">
           {t('button.select', { context: 'checked', time, date: day })}
@@ -99,7 +104,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
   }, [slot, selected, t]);
 
   const renderUserInfo = useCallback(() => {
-    if (selected) return null;
+    if (selected || (isOwner && !client)) return null;
 
     const photo = isOwner ? client?.info?.photo_url : profile?.photo;
     const name = isOwner 
@@ -192,7 +197,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
       {renderUserInfo()}
 
       {/* Описание (только для выбранного) */}
-      {selected && (
+      {selected && service.description && (
         <Cell style={themeStyles.cell} multiline>
           {renderDescription(service.description)}
         </Cell>
@@ -201,7 +206,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
       {/* Цена и длительность */}
       <Cell style={themeStyles.cell} after={renderDuration()}>
         <Text weight="1" style={themeStyles.text}>
-          {t('common.price', { price: service.price })}
+          {t('common.price', { price: service.price, context: !Number(service.price) ? 'free' : '' })}
         </Text>
       </Cell>
     </Section>

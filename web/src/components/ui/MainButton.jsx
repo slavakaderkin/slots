@@ -4,7 +4,7 @@ import { Button, FixedLayout } from '@telegram-apps/telegram-ui';
 
 // скорее всего эта ебала лишняя
 // ну или хотябы эффект переделать, ща не нравится
-export default ({ handler, text, loading, disabled, wrapped = false }) => {
+export default ({ handler, text, loading, disabled, wrapped = false, children , second }) => {
   const { WebApp, isSupport } = useTelegram();
   const { MainButton, themeParams: theme } = WebApp;
   /*
@@ -53,6 +53,7 @@ export default ({ handler, text, loading, disabled, wrapped = false }) => {
             zIndex: 9999
           }}
         >
+          {children}
           {renderButton()}
         </FixedLayout>
       }

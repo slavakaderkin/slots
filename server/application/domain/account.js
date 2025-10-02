@@ -21,9 +21,13 @@
       [account] = await db.pg.update('Account', { info, timezone }, { tg });
     }
 
-    const where = { accountId: account.accountId }
-    account['trial'] = await db.pg.row('Trial', where)
-    account['subscription'] = await db.pg.row('Subscription', where);
+    const where = { accountId: account.accountId };
+    const trial = await db.pg.row('Trial', where);
+    const subscription = await db.pg.row('Subscription', where);
+    const unactiveProfile = !(subscription?.isActive || !trial?.isExpired);
+    account['trial'] = trial;
+    account['subscription'] = subscription;
+    account['unactiveProfile'] = unactiveProfile;
 
     return account;
   }

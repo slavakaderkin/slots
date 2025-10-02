@@ -49,16 +49,17 @@ export default () => {
     profileId: profileData?.profileId || '',
     name: '',
     description: '',
-    price: '',
+    price: 0,
     duration: profileData?.slotDuration || 60,
     isVisits: false,
     isOnline: false,
+    autoConfirm: true,
     allDay: false,
   };
 
   const formMethods = useForm({ 
     defaultValues,
-    mode: 'all',
+    mode: 'onChange',
     resolver: yupResolver(schema)
   });
 

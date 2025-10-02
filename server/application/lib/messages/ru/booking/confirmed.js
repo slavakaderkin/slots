@@ -4,7 +4,7 @@ async ({ booking, timezone }) => {
   const service = await db.pg.row('Service', { serviceId });
 
   const lines = [
-    '<b>Запись подтверждена</b>\n',
+    '<b>Запись подтверждена</b> ✅\n',
     `<b>Специалист:</b> ${profile.name}`,
     `<b>Услуга:</b> ${service.name}`,
     `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>`

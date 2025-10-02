@@ -22,8 +22,8 @@ const RatingBadge = ({ rating, onClick }) => {
       }}
       onClick={onClick}
     >
-      <Star style={{ color: rating ? '#000000' : theme.text_color }} size={12}/>
-      <Caption style={{ color: rating ? '#000000' : theme.text_color }}>
+      <Star style={{ color: rating ? '#ffffff' : theme.text_color }} size={12}/>
+      <Caption style={{ color: rating ? '#ffffff' : theme.text_color }}>
         {t('profile.rating', { context: rating ? 'count' : 'none', rating })}
       </Caption>
     </div>

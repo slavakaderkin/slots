@@ -12,6 +12,10 @@ export default {
       status_failed: ':( Не удается провести оплату.',
       status_cancelled: ':( Платеж отменен.'
     },
+    trial: {
+      status_success: 'У вас 14 дней, развлекайтесь на полную.',
+      status_failed: ':( Не получилось, напишите в поддержку.',
+    },
     profile: {
       save: {
         success_toservices: 'Супер! Теперь у вас есть профиль. Осталось добавить услуги.',
@@ -34,6 +38,7 @@ export default {
     }
   },
   confirm: {
+    profile_map: 'Открыть ссылку с картой?',
     booking_confirm: 'Подтвердить запись?',
     booking_cancel: 'Отменить запись?',
     service_remove: 'Точно удалить?',

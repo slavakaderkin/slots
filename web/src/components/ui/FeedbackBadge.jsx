@@ -22,7 +22,7 @@ export default ({ count, onClick }) => {
       }}
       onClick={onClick}
     >
-      <Caption style={{ color: count ? '#000000' : theme.text_color }}>
+      <Caption style={{ color: count ? '#ffffff' : theme.text_color }}>
         {t('profile.feedbacks', { count: count || 0 })}
       </Caption>
     </div>

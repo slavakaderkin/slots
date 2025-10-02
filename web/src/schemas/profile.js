@@ -15,4 +15,9 @@ export default Yup.object().shape({
   category: Yup.string()
     .required(i18n.t('form.profile.error.category')),
 
+  country: Yup.string()
+    .required(i18n.t('form.profile.error.country')),
+
+  mapLink: Yup.string()
+    .matches(/^https:\/\/(\+?[a-zA-Z0-9_.=?\/\-]+)$/, i18n.t('form.profile.error.mapLink')),
 });

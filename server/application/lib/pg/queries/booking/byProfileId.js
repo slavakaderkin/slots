@@ -1,4 +1,4 @@
-({ profileId, kind, limit, offset }) => {
+({ profileId, kind, limit, offset, count = false }) => {
   const [today] = new Date().toISOString().split('T');
   const start = new Date(today + 'T00:00:00.000Z').toISOString();
   const op = kind === 'past' ? '<=' : '>=';
@@ -10,6 +10,7 @@
     .limit(limit)
     .offset(offset);
   
+  if (count) builder.count();
   if (kind === 'future') builder.where('state', '!=', 'cancelled');
 
   return builder;

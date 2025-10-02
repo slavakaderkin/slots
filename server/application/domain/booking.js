@@ -3,7 +3,7 @@
     console.info('domain/booking/create');
     console.debug({ params });
 
-    const { accountId, profileId, slotId, serviceId, ...rest } = params;
+    const { accountId, clientId, profileId, slotId, serviceId, ...rest } = params;
     const service = await db.pg.row('Service', { serviceId });
     const { duration, allDay } = service;
     
@@ -12,9 +12,12 @@
     const profile = await db.pg.row('Profile', { profileId });
     const slot = await db.pg.row('Slot', { slotId });
 
-    let client = await db.pg.row('Client', { accountId, profileId })
-    if (!client) [client] = await db.pg.insert('Client', { accountId, profileId });
-
+    let client = null;
+    if (!clientId) {
+      client = await db.pg.row('Client', { accountId, profileId });
+      if (!client) [client] = await db.pg.insert('Client', { accountId, profileId });
+    };
+    
     const record = { 
       ...rest,
       profileId,
@@ -23,11 +26,12 @@
       duration,
       allDay,
       datetime: slot.datetime,
-      clientId: client.clientId,
+      clientId: clientId || client.clientId,
     };
+    
     let [booking] = await db.pg.insert('Booking', record);
 
-    if (profile.autoConfirm) booking = await domain.booking.confirm({ bookingId: booking.bookingId });
+    if (service.autoConfirm) booking = await domain.booking.confirm({ bookingId: booking.bookingId });
     else domain.booking.scheduleAutoCancel({ bookingId: booking.bookingId });
 
     const profileAccount = await domain.profile.getAccount({ profileId: booking.profileId });
@@ -173,14 +177,14 @@
     console.info('domain/booking/complete');
     console.debug({ booking });
 
-    const { bookingId } = booking;
+    const { bookingId, clientId } = booking;
     const updates = { state: 'completed' };
     const [updated] = await db.pg.update('Booking', updates, { bookingId });
 
-    const { accountId } = await db.pg.row('Client', { clientId: booking.clientId });
+    const { accountId } = await db.pg.row('Client', { clientId });
     const { timezone } = await db.pg.row('Account', { accountId });
     const messagePath = 'booking.completed';
-    const args = { booking, timezone };
+    const args = { booking: updated, timezone };
     lib.bot.notify.one({ accountId, path: messagePath, args });
     return true;
   },
@@ -220,12 +224,12 @@
     return await Promise.all(records.map(mapper));
   },
 
-  async getClientBookings({ clientId, profileId }) {
+  async getClientBookings({ clientId, profileId, offset, limit }) {
     console.info('domain/booking/getClientBookings');
-    console.debug({ accountId, profileId });
+    console.debug({ clientId, profileId, offset, limit });
 
     const { accountId } = await db.pg.row('Client', { clientId });
-    const query = lib.pg.queries.booking.byAccountId({ accountId, profileId });
+    const query = lib.pg.queries.booking.byAccountId({ accountId, profileId, offset, limit });
     const records = await lib.pg.builder.query(query);
 
     const mapper = async (booking) => {

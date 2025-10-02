@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Section, Cell, Avatar, Caption, Text, SegmentedControl, Navigation } from '@telegram-apps/telegram-ui';
+import { Section, Cell, Avatar, Caption, Text, SegmentedControl, Navigation, Subheadline } from '@telegram-apps/telegram-ui';
 import { GroupedVirtuoso } from 'react-virtuoso';
+import { Player } from '@lottiefiles/react-lottie-player';
 
 import useTelegram from '@hooks/useTelegram';
 import useAuth from '@hooks/useAuth';
@@ -22,14 +23,17 @@ import InfoPage from '@pages/Info';
 import { createUTCDateFromLocal } from '@helpers/time';
 import { Calendar, Star, X } from 'react-feather';
 
-// Константы для пагинации
-const BOOKINGS_PER_PAGE = 30;
+import animation from '../assets/animation/expired.json';
+
+const BOOKINGS_PER_PAGE = 10;
 
 export default () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { api } = useMetacom();
   const { account, token } = useAuth();
+  const { unactiveProfile, subscription, trial } = account;
+  const subscribtionEndDate = subscription?.end || trial?.end;
   const { WebApp, isIos } = useTelegram();
   const { HapticFeedback, themeParams: theme } = WebApp;
   const bookingList = useRef(null);
@@ -136,12 +140,6 @@ export default () => {
       loadInitialBookings(bookingsKind);
     }
   }, [profile, bookingsKind]);
-
-  useEffect(() => {
-    if (allBookings.length > 0 && !bookingsLoading) {
-      scrollToToday();
-    }
-  }, [allBookings.length, bookingsLoading, scrollToToday]);
 
   const loadInitialBookings = useCallback(async (kind) => {
     setOffset(0);
@@ -265,14 +263,23 @@ export default () => {
 
   const openSlots = useCallback(() => {
     HapticFeedback.impactOccurred('soft');
-    setIsSlotsOpen(true);
-    setSelectedDate(new Date());
+    if (!unactiveProfile) {
+      setIsSlotsOpen(true);
+      setSelectedDate(new Date());
+    } else {
+      //setBannerIsOpen(true);
+    }
+    
   }, [HapticFeedback, setSelectedDate]);
 
   const closeSlots = useCallback(() => {
     HapticFeedback.impactOccurred('soft');
-    setSlotBooking(null);
-    setIsSlotsOpen(false);
+    if (!unactiveProfile) {
+      setSlotBooking(null);
+      setIsSlotsOpen(false);
+    } else {
+      //setBannerIsOpen(false);
+    }
   }, [HapticFeedback]);
 
   const handleDateSelect = useCallback((date) => {
@@ -340,6 +347,12 @@ export default () => {
     </SegmentedControl>
   );
 
+  const renderSubscriptionDate = () => {
+    const formatParams = { date: { day: 'numeric', month: 'long', year: 'numeric' } };
+    const text = t('common.date', { date: new Date(subscribtionEndDate), formatParams, context: 'subscription' });
+    return <Caption>{text}</Caption>
+  };
+
   if (profileLoading) return <InfoPage type='loading'/>;
   if (!profile) return <InfoPage type='empty' />;
 
@@ -352,6 +365,7 @@ export default () => {
           style={{ background: theme.secondary_bg_color, padding: '8px 12px' }}
           onClick={go(`/preview/${profile.profileId}`)}
           subhead={<RatingBadge rating={profile?.rating}/>}
+          subtitle={renderSubscriptionDate()}
           before={<Avatar src={profile.photo} size={52}></Avatar>}
           after={<Navigation></Navigation>}
         >
@@ -359,16 +373,43 @@ export default () => {
         </Cell>
       </Section>
 
-      <Section style={{ width: '100%' }} footer={!isSlotsOpen && renderCalendarHint()}>
-        <Cell
-          style={{ background: theme.secondary_bg_color }}
-          onClick={isSlotsOpen ? closeSlots : openSlots}
-          before={!isSlotsOpen && <Calendar />}
-          after={isSlotsOpen && <X />}
-        >
-          {isSlotsOpen ? t('button.close') : t('workspace.calendar')}
-        </Cell>
-      </Section>
+      {unactiveProfile 
+        ? <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              borderRadius: '10px',
+              //padding: '0 8px',
+              background: '#eb8218',
+              margin: '0 12px',
+              border: `1px solid ${theme.link_color}`
+            }}
+          > 
+              <Player
+                src={animation}
+                loop
+                autoplay
+                style={{ padding: '0 0 0 12px', width: 54, height: 54 }}
+              />
+            <div onClick={go('/promo')} style={{ padding: '8px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <Subheadline>{t('workspace.sub.expired')}</Subheadline>
+              <Caption >{t('workspace.sub.expired', { context: 'description' })}</Caption>
+            </div>
+          </div>
+
+        : <Section style={{ width: '100%' }} footer={!isSlotsOpen && renderCalendarHint()}>
+            <Cell
+              style={{ background: theme.secondary_bg_color }}
+              onClick={isSlotsOpen ? closeSlots : openSlots}
+              before={!isSlotsOpen && <Calendar />}
+              after={isSlotsOpen && <X />}
+            >
+              {isSlotsOpen ? t('button.close') : t('workspace.calendar')}
+            </Cell>
+          </Section>
+      }
 
       {!isSlotsOpen && renderTabs()}
      
@@ -416,7 +457,7 @@ export default () => {
           <>
             <InfoPage
               type='empty' 
-              header={t('workspace.empty')} 
+              header={t('workspace.empty', { context: bookingsKind })} 
               text={t('workspace.empty', { context: 'description' })}
             />
             <Space gap='120px'/>

@@ -88,9 +88,9 @@
       timeZone: userTimeZone 
     });
     
-    const user9AM = new Date(`${userDateStr}T05:00:00`);
-    const userOffsetMs = lib.utils.getTimezoneOffsetMs(userTimeZone, user9AM);
-    const serverTimeForUser9AM = new Date(user9AM.getTime() - userOffsetMs);
+    const server9AM = new Date(`${userDateStr}T09:00:00`);
+    const userOffsetMs = lib.utils.getTimezoneOffsetMs(userTimeZone);
+    const serverTimeForUser9AM = new Date(server9AM.getTime() + userOffsetMs);
     
     return serverTimeForUser9AM;
   },

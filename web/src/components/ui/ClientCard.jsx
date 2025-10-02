@@ -29,12 +29,12 @@ const ClientCard = ({ client }) => {
   return (
     <Section style={{ width: '100%' }}>
       <Cell
-        style={{ background: theme.secondary_bg_color }}
+        style={{ background: theme.secondary_bg_color, padding: '4px 12px' }}
         multiline
-        subtitle={`@${username}`}
-        after={toTelegram && <Navigation></Navigation>}
-        before={<Avatar src={photo}/>}
-        onClick={toTelegram && toTelegram}
+        subtitle={username && `@${username}`}
+        after={<Navigation></Navigation>}
+        before={<Avatar size={40} src={photo}/>}
+        onClick={go(`/clients/${clientId}`)} //toTelegram && toTelegram}
       >
         {name}
       </Cell>

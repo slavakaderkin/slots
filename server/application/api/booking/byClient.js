@@ -8,12 +8,12 @@
     if (isOwner) return new Error('Permission denied', 403);
   },
   
-  method: async ({ profileId, clientId }) => {
+  method: async ({ profileId, clientId, offset, limit }) => {
     console.info('api/booking/byClient');
-    console.debug({ profileId, clientId });
+    console.debug({ profileId, clientId, offset, limit });
 
     try {
-      return await domain.booking.getClientBookings({ profileId, clientId });
+      return await domain.booking.getClientBookings({ profileId, clientId, offset, limit });
     } catch (e) {
       console.error(e);
       return null;

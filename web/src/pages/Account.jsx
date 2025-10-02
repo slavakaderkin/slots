@@ -1,8 +1,9 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Section, Cell, Avatar, Navigation, Text, TabsList, SegmentedControl, Banner, Button, IconButton, Caption, Subheadline, Snackbar } from '@telegram-apps/telegram-ui';
+import { Section, Cell, Avatar, Text, SegmentedControl, Caption, Subheadline, Button } from '@telegram-apps/telegram-ui';
 import { GroupedVirtuoso } from 'react-virtuoso';
+import { Player } from '@lottiefiles/react-lottie-player';
 
 import useTelegram from '@hooks/useTelegram';
 import useAuth from '@hooks/useAuth';
@@ -15,10 +16,13 @@ import ProfileCard from '@components/ui/ProfileCard';
 import InfoPage from '@pages/Info';
 import { Calendar, X } from 'react-feather';
 
-const BOOKINGS_PER_PAGE = 30;
+import animation from '../assets/animation/promo_2.json';
+
+const BOOKINGS_PER_PAGE = 10;
 
 export default () => {
   const { account , token } = useAuth();
+  const { unactiveProfile } = account;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
@@ -96,7 +100,7 @@ export default () => {
 
   const scrollToToday = useCallback(() => {
     if (bookingList?.current) {
-      bookingList.current.scrollToIndex(findIndex());
+      bookingList.current.scrollToIndex({ index: findIndex(), behavior: 'smooth' });
     }
   }, [findIndex]);
 
@@ -213,17 +217,37 @@ export default () => {
     setIsBannerOpen(false);
   }
 
-  if (profileLoading) return <InfoPage type='loading'/>
+  const bannerHandler = () => {
+    if (unactiveProfile) go('/promo')();
+    else go('/settings')();
+  }
 
-  const snackBarStyle = {
-    borderRadius: '10px',
-    border: `1px solid ${theme.link_color}`
-  };
+  if (profileLoading) return <InfoPage type='loading'/>
 
   return (
     <>
       {isIos && <Space />}
-
+     
+      <Section style={{ width: '100%' }}>
+        <Cell
+          style={{ background: theme.secondary_bg_color }}
+          subhead={t('common.you')}
+          before={<Avatar src={info.photo_url}/>}
+          after={allBookings.length > 0 &&  !!findIndex() &&
+            <Button
+              before={<Calendar size={16}/>}
+              size='s' 
+              style={{ maxHeight: 28 }} 
+              onClick={scrollToToday}
+            >
+              {t('common.today', { context: 'what' })}
+            </Button>
+          }
+        >
+          {`${info.first_name} ${info.last_name}`}
+        </Cell>
+      </Section>
+      
       {!profile && isBannerOpen && 
         <div
           style={{
@@ -233,28 +257,24 @@ export default () => {
             justifyContent: 'space-between',
             borderRadius: '10px',
             //padding: '0 8px',
+            background: '#eb8218',
             margin: '0 12px',
             border: `1px solid ${theme.link_color}`
           }}
         > 
-          <div onClick={go('/settings')} style={{ padding: '8px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <Subheadline>{t('account.cta.header')}</Subheadline>
-            <Caption >{t('account.cta.description')}</Caption>
+           <Player
+              src={animation}
+              loop
+              autoplay
+              style={{ padding: '0 0 0 12px', width: 54, height: 54 }}
+            />
+          <div onClick={bannerHandler} style={{ padding: '8px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <Subheadline>{t('account.cta.header', { context: !unactiveProfile ? 'noprofile' : '' })}</Subheadline>
+            <Caption >{t('account.cta.description', { context: !unactiveProfile ? 'noprofile' : '' })}</Caption>
           </div>
           <div  style={{ padding: '0 12px' }} onClick={closeBanner}><X size={12}/></div>
         </div>
       }
-      
-      <Section style={{ width: '100%' }}>
-        <Cell
-          style={{ background: theme.secondary_bg_color }}
-          subhead={t('common.you')}
-          before={<Avatar src={info.photo_url}/>}
-          //after={}
-        >
-          {`${info.first_name} ${info.last_name}`}
-        </Cell>
-      </Section>
 
       {renderTabs()}
     

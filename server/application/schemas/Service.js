@@ -8,6 +8,7 @@
   isOnline: { type: 'boolean', default: false },
   allDay: { type: 'boolean', default: false },
   isVisits: { type: 'boolean', default: false },
+  autoConfirm: { type: 'boolean', default: true },
   state: { 
     type: 'string', 
     enum: ['active', 'suspended', 'arhived'], 

@@ -16,7 +16,8 @@ import Form from '@components/forms/Feedback';
 import schema from '@schemas/feedback';
 import useApiCall from '@hooks/useApiCall';
 import useBackButton from  '@hooks/useBackButton';
-import BookingCard from '../components/ui/BookingCard';
+import BookingCard from '@components/ui/BookingCard';
+import FeedbackCard from '@components/ui/FeedbackCard';
 
 export default () => {
   const { account } = useAuth();
@@ -88,6 +89,7 @@ export default () => {
      
       {!feedback && <Form {...formProps}/>}
       {booking && <BookingCard booking={booking} clickable={false}/>}
+      {feedback && <FeedbackCard feedback={feedback} single my />}
 
       <Space gap={isFocus ? '50px' : '200px'}/>
       

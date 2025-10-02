@@ -3,7 +3,7 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
-import { Switch, Title, Modal, Cell, Section, Text, IconButton, Button, Divider, Textarea, Subheadline } from '@telegram-apps/telegram-ui';
+import { Switch, Title, Modal, Cell, Section, Caption, Text, IconButton, Button, Divider, Textarea, Subheadline } from '@telegram-apps/telegram-ui';
 
 import useTelegram from '@hooks/useTelegram';
 import useAuth from '@hooks/useAuth';
@@ -20,7 +20,7 @@ import Scrollable from '@components/layout/Scrollable';
 import InfoPage from '@pages/Info';
 import schema from '@schemas/booking';
 import ServiceCard from '@components/ui/ServiceCard';
-import { Download, Send, Star } from 'react-feather';
+import { Download, MapPin, Send, Star } from 'react-feather';
 import RatingBadge from '@components/ui/RatingBadge';
 import FeedbackBadge from '@components/ui/FeedbackBadge';
 import FeedbackCard from '../components/ui/FeedbackCard';
@@ -36,7 +36,7 @@ export default () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
-  const { HapticFeedback, themeParams: theme, showAlert } = WebApp;
+  const { HapticFeedback, themeParams: theme, showAlert, showConfirm, openLink } = WebApp;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -50,7 +50,6 @@ export default () => {
   };
 
   if (profileId || isPreview) useBackButton(isPreview && '/workspace');
-
 
   const [selectedSlot, setSlot] = useState(null);
   const [selectedService, setService] = useState(null);
@@ -76,6 +75,7 @@ export default () => {
   }, [ref]);
 
   const isOwner = profile?.accountId === account.accountId;
+  const noSlots = profile?.availableSlots?.length === 0;
 
   const { call: getServices, data: services, loading: servicesLoading } =
     useApiCall('service.byProfile', { autoFetch: false });
@@ -162,13 +162,13 @@ export default () => {
     setLoading(true);
     const created = await api.booking.create(booking);
     if (created) {
-      showAlert(t('popup.alert.booking.success', { context: profile?.autoConfirm ? 'auto' : 'pending' }));
+      showAlert(t('popup.alert.booking.success', { context: selectedService?.autoConfirm ? 'auto' : 'pending' }));
       navigate(`/bookings/${created?.bookingId}`);
     } else {
       showAlert(t('popup.alert.booking.failed'));
     }
     setLoading(false);
-  }, [profile]);
+  }, [selectedService]);
 
   const [isProfileSended, setIsProfileSended] = useState(false);
   const handleSendProfile = useCallback(async () => {
@@ -206,6 +206,25 @@ export default () => {
 
   if (profileLoading) return <InfoPage type='loading'/>;
 
+  const openMapLink = () => {
+    showConfirm(t('popup.confirm.profile', { context: 'map' }), (ok) => {
+      if (ok)  openLink(profile?.mapLink, { try_instant_view: true })
+    });
+  };
+
+  const renderButtons = () => (
+    <div style={{ display: 'flex', gap: '8px' }}>
+      {profile?.mapLink && 
+        <IconButton onClick={openMapLink}>
+          <MapPin />
+        </IconButton>
+      }
+      <IconButton disabled={isProfileSended} onClick={handleSendProfile}>
+        <Send />
+      </IconButton>
+    </div>
+  )
+
   return (
     <>
       {isIos && <Space />}
@@ -223,16 +242,21 @@ export default () => {
               </div>
             }
             subhead={profile?.specialization}
-            after={
-              <IconButton disabled={isProfileSended} onClick={handleSendProfile}>
-                <Send />
-              </IconButton>
-            }
+            after={renderButtons()}
+            description={noSlots && <Caption style={{ color: theme.destructive_text_color }}>{t('profile.noSlots')}</Caption>}
           >
             <Title level='2' weight='2'>{profile?.name}</Title>
           </Cell>
         </div>
-       
+       {profile?.address &&
+          <Cell
+            style={{ background: theme.secondary_bg_color }}
+            subhead={t('profile.address')}
+            multiline
+          >
+            {profile.address}
+          </Cell>
+       }
         <Cell
           style={{ background: theme.secondary_bg_color }}
           multiline
@@ -242,7 +266,7 @@ export default () => {
       </Section>
 
       {!!services?.length && 
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <div style={{ display: 'flex', width: '100%', flexDirection: 'column', gap: '12px' }}>
           <div style={{ width: '100%', padding: '12px 12px 0 12px' }}>
               <Subheadline caps weight='2'>{t('profile.services')}</Subheadline>
           </div>

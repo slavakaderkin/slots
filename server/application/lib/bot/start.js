@@ -6,13 +6,13 @@ async () => {
   const params = { url, allowed_updates, drop_pending_updates };
   const response = await bus.bot.setWebhook(params);
   console.debug(response);
-  //const task = { name: 'deliver', every: '1s', run: 'lib.bot.deliver.queue.loop' };
+  const task = { name: 'deliver', every: '1s', run: 'lib.bot.deliver.queue.loop' };
   
   const runDeliver = async () => {
-    lib.bot.deliver.queue.loop();
+    await lib.bot.deliver.queue.loop();
     //await application.scheduler.add(task);
-   // console.info('Deliver was started');
+    //console.debug('Deliver was started');
   };
 
-  setInterval(runDeliver, 2000);
+  setInterval(runDeliver, 1500);
 };

@@ -53,7 +53,7 @@ const ProfileCard = ({ profile }) => {
         {name}
       </Cell>
       <Cell style={{ background: theme.secondary_bg_color }} after={renderSlot(upcomingSlot)}>
-        {t('profile.upcomingSlot')}
+        {upcomingSlot ? t('profile.upcomingSlot') : t('profile.noSlots')}
       </Cell>
     </Section>
   );

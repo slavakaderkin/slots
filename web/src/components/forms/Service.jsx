@@ -6,11 +6,9 @@ import { Input, Textarea, Section, Text, Cell, Switch } from '@telegram-apps/tel
 import useTelegram from '@hooks/useTelegram';
 import InputWraper from '@components/forms/helpers/InputWraper';
 
-export default ({ control, register, errors, handleFocus, handleBlur, watch, setValue }) => {
+export default ({ control, register, errors, handleFocus, handleBlur, watch, setValue, trigger }) => {
   const { t } = useTranslation();
-  const { themeParams: theme } = useTelegram().WebApp;
-
-  console.log(watch());
+  const { themeParams: theme, HapticFeedback } = useTelegram().WebApp;
   
   const genInputProps = (name) => {
     return {
@@ -18,6 +16,19 @@ export default ({ control, register, errors, handleFocus, handleBlur, watch, set
       placeholder: t(`form.service.placeholder.${name}`),
       onFocus: () => handleFocus(name),
       onBlur: () => handleBlur(name),
+    };
+  };
+
+  const genSwitchProps = (name) => {
+    const onChange = ({ target }) => {
+      HapticFeedback.selectionChanged();
+      setValue(name, target.checked, { shouldDirty: true, shouldValidate: true });
+      trigger();
+    };
+
+    return {
+      onChange,
+      checked: watch(name), 
     };
   };
 
@@ -56,12 +67,7 @@ export default ({ control, register, errors, handleFocus, handleBlur, watch, set
         <Cell 
           style={{ background: theme.secondary_bg_color }}
           description={t(`form.service.hint.allDay`, { context: watch('allDay') ? 'y' : 'n' })}
-          after={
-            <Switch 
-              checked={watch('allDay')} 
-              onChange={({ target }) => setValue('allDay', target.checked)}
-            />
-          }
+          after={<Switch {...genSwitchProps('allDay')} />}
           multiline
         >
           <Text>{t('form.service.field.allDay')}</Text>
@@ -70,25 +76,24 @@ export default ({ control, register, errors, handleFocus, handleBlur, watch, set
         <Cell 
           style={{ background: theme.secondary_bg_color }}
           description={t(`form.service.hint.isOnline`, { context: watch('isOnline') ? 'y' : 'n' })}
-          after={
-            <Switch 
-              checked={watch('isOnline')} 
-              onChange={({ target }) => setValue('isOnline', target.checked)}
-            />
-          }
+          after={<Switch {...genSwitchProps('isOnline')} />}
           multiline
         >
           <Text>{t('form.service.field.isOnline')}</Text>
         </Cell>
+
+        <Cell 
+          style={{ background: theme.secondary_bg_color }}
+          description={t(`form.service.hint.autoConfirm`, { context: watch('autoConfirm') ? 'y' : 'n' })}
+          after={<Switch {...genSwitchProps('autoConfirm')} />}
+          multiline
+        >
+          <Text>{t('form.service.field.autoConfirm')}</Text>
+        </Cell>
         <Cell 
           style={{ background: theme.secondary_bg_color }}
           description={t(`form.service.hint.isVisits`, { context: watch('isVisits') ? 'y' : 'n' })}
-          after={
-            <Switch 
-              checked={watch('isVisits')} 
-              onChange={({ target }) => setValue('isVisits', target.checked)}
-            />
-          }
+          after={<Switch {...genSwitchProps('isVisits')} />}
           multiline
         >
           <Text>{t('form.service.field.isVisits')}</Text>

@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Caption } from "@telegram-apps/telegram-ui";
 import useTelegram from '@hooks/useTelegram';
 
-const InputWraper = ({ children, ent, name , error }) => {
+const InputWraper = ({ children, ent, name , error, hint }) => {
   const { t } = useTranslation();
   const { WebApp } = useTelegram();
   const { themeParams: theme } = WebApp;
@@ -20,7 +20,7 @@ const InputWraper = ({ children, ent, name , error }) => {
       }
       {t(`form.${ent}.hint.${name}`) && 
         <div style={{ padding: '4px 8px 4px 8px' }}> 
-          <Caption style={{ color: theme.hint_color }}>{t(`form.${ent}.hint.${name}`)}</Caption>
+          <Caption style={{ color: theme.hint_color }}>{hint || t(`form.${ent}.hint.${name}`)}</Caption>
         </div>
       }
     </div>

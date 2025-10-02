@@ -14,7 +14,7 @@ import Space from '@components/layout/Space';
 
 import InfoPage from '@pages/Info';
 import BookingCard from '@components/ui/BookingCard';
-import { Download, Send, Star, CheckCircle, Slash } from 'react-feather';
+import { Download, Send, Star, CheckCircle, Slash, MapPin } from 'react-feather';
 import FeedbackCard from '../components/ui/FeedbackCard';
 
 export default () => {
@@ -25,7 +25,7 @@ export default () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
-  const { HapticFeedback, themeParams: theme, showConfirm, openTelegramLink, requestWriteAccess } = WebApp;
+  const { HapticFeedback, themeParams: theme, showConfirm, openTelegramLink, openLink, requestWriteAccess } = WebApp;
 
   if (location.key !== 'default') useBackButton();
 
@@ -85,13 +85,34 @@ export default () => {
   const name = isOwner 
     ? `${client?.info?.first_name} ${client?.info?.last_name}` 
     : profile?.name;
-  const role = t('booking.role', { context: isOwner ? 'client' : 'profile' });
+  const role = !isOwner ? profile?.specialization : t('booking.role', { context: 'client' });
   const username = client?.info?.username;
   const telegramLink = username ? `https://t.me/${username}` : null;
 
   const handler = isOwner 
     ? telegramLink ? () => openTelegramLink(telegramLink) : null
     : go (`/profile/${profile.profileId}`);
+
+  const openMapLink = () => {
+    showConfirm(t('popup.confirm.profile', { context: 'map' }), (ok) => {
+      if (ok)  openLink(profile?.mapLink, { try_instant_view: true })
+    });
+  };
+
+  const renderAddress = () => (
+    <Cell
+      after={profile?.mapLink && 
+        <IconButton onClick={openMapLink}>
+          <MapPin />
+        </IconButton>
+      }
+      style={{ background: theme.secondary_bg_color }}
+      subhead={t('profile.address')}
+      multiline
+    >
+      {profile?.address}
+    </Cell>
+  );
 
   return (
     <>
@@ -114,15 +135,11 @@ export default () => {
             onClick={handler}
             after={handler && <Navigation></Navigation>}
             subhead={role}
-            subtitle={isOwner 
-              ? <Subheadline style={{ color: theme.link_color }}>{`@${username}`}</Subheadline> 
-              : profile?.specialization
-            }
           >
             <Title level='2' weight='2'>{name}</Title>
           </Cell>
         </div>
-
+        {!isOwner && profile?.address && renderAddress()}
         {booking?.comment && 
           <Cell
             multiline
@@ -172,11 +189,11 @@ export default () => {
       />
 
       {/** MeettLink */}
-      {(feedback && !isOwner) || (feedback && isOwner && !feedback.isAnonymous) && <FeedbackCard feedback={feedback} single my={!isOwner}/>}
+      {((feedback && !isOwner) || (feedback && isOwner && !feedback.isAnonymous)) && <FeedbackCard feedback={feedback} single my={!isOwner}/>}
 
       <Space gap='120px'/>
       
-      {!feedback && booking?.state === 'completed' && 
+      {!feedback && booking?.state === 'completed' && !isOwner &&
         <MainButton
           text={t('button.feedback')}
           handler={go(`/feedback/${bookingId}`)}

@@ -1,6 +1,6 @@
 async ({ booking, timezone }) => {
   const { serviceId, datetime, clientId, state, bookingId, profileId } = booking;
-  const { autoConfirm } = await db.pg.row('Profile', { profileId });
+  const { autoConfirm } = await db.pg.row('Service', { serviceId });
   const service = await db.pg.row('Service', { serviceId });
   const client = await domain.client.byId({ clientId, full: true });
 
@@ -18,8 +18,8 @@ async ({ booking, timezone }) => {
   ];
   
   const actionButtons = [
-    { text: 'Подтвердить', callback_data: `booking|confirm|bookingId=${bookingId}` },
-    { text: 'Отменить', callback_data: `booking|cancel|bookingId=${bookingId}` }
+    { text: 'Подтвердить ✅', callback_data: `booking|confirm|bookingId=${bookingId}` },
+    { text: 'Отменить ❌', callback_data: `booking|cancel|bookingId=${bookingId}` }
   ];
 
   if (!autoConfirm) {

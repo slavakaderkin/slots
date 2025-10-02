@@ -27,6 +27,8 @@ const units = [
   'slot',
   'feedback',
   'client',
+  'geo',
+  'subscription'
 ];
 
 export const createMetacom = async () => {

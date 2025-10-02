@@ -6,7 +6,7 @@ async (worker = 'W1') => {
   );
 
   for (const name of jobs) {
-   // application.scheduler.stop(name);
+    //application.scheduler.stop(name);
     console.debug(`Job ${name} was stopped`);
   }
 };
