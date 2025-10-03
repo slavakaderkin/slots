@@ -1,7 +1,8 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { SegmentedControl, Button } from '@telegram-apps/telegram-ui';
+import { SegmentedControl, Button, Placeholder } from '@telegram-apps/telegram-ui';
+import { Player } from '@lottiefiles/react-lottie-player';
 
 import useTelegram from '@hooks/useTelegram';
 import useBackButton from '@hooks/useBackButton';
@@ -11,17 +12,16 @@ import useAuth from '@hooks/useAuth';
 import MainButton from '@components/ui/MainButton';
 import Space from '@components/layout/Space';
 
+import mainAnimation from '../assets/animation/promo_main.json'
+
 export default () => {
   const { account, init } = useAuth();
   const { api } = useMetacom();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const location = useLocation();
   const { WebApp, isIos } = useTelegram();
   const { HapticFeedback, themeParams: theme, openInvoice, showAlert } = WebApp;
   const { trial, subscription, accountId } = account;
-  console.log("🚀 ~ subscription:", subscription)
-  console.log("🚀 ~ trial:", trial)
   const [type, setType] = useState('month');
   const [level, setLevel] = useState('min');
   const [loading, setLoading] = useState(false);
@@ -90,6 +90,17 @@ export default () => {
   return (
     <>
       {isIos && <Space />}
+      <Placeholder 
+        header={t('promo.header')}
+        description={t('promo.description')}
+      >
+         <Player
+          src={mainAnimation}
+          loop
+          autoplay
+          style={{ width: 150, height: 150 }}
+        />
+      </Placeholder>
 
       <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between', flexGrow: 1 }}>
         
@@ -102,7 +113,7 @@ export default () => {
         text={mainButtonText}
         handler={mainButtonHandler}
       >
-        {!trial?.isExpired && !subscription && renderSecondButton()}
+        {!trial && !subscription && renderSecondButton()}
       </MainButton>
     </>
 

@@ -10,5 +10,6 @@ export default {
   feedback: 'Oтзыв',
   feedback_my: 'Ваш отзыв',
   service: 'Услуга',
+  meetLink: 'Ссылка на встречу'
 
 }

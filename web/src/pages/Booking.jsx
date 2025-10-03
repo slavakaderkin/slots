@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Title, Subheadline, Cell, Section, Caption, Text, IconButton, Button, Navigation } from '@telegram-apps/telegram-ui';
+import { Title, Text, Cell, Section, Caption, Textarea, IconButton, Button, Navigation } from '@telegram-apps/telegram-ui';
 
 import useTelegram from '@hooks/useTelegram';
 import useAuth from '@hooks/useAuth';
@@ -14,7 +14,7 @@ import Space from '@components/layout/Space';
 
 import InfoPage from '@pages/Info';
 import BookingCard from '@components/ui/BookingCard';
-import { Download, Send, Star, CheckCircle, Slash, MapPin } from 'react-feather';
+import { Download, Send, Star, CheckCircle, Slash, MapPin, Copy } from 'react-feather';
 import FeedbackCard from '../components/ui/FeedbackCard';
 
 export default () => {
@@ -25,9 +25,9 @@ export default () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
-  const { HapticFeedback, themeParams: theme, showConfirm, openTelegramLink, openLink, requestWriteAccess } = WebApp;
+  const { HapticFeedback, themeParams: theme, showConfirm, showAlert, openTelegramLink, openLink, requestWriteAccess } = WebApp;
 
-  if (location.key !== 'default') useBackButton();
+  useBackButton();
 
   const [allowsWrite, setAllowsWrite] = useState(account?.info?.allows_write_to_pm);
 
@@ -47,10 +47,29 @@ export default () => {
   const { call, data: feedback } = 
     useApiCall('feedback.byBooking', { autoFetch: true, params: { bookingId } });
 
-  if (loading || !booking) return <InfoPage type='loading'/>;
-
-  const { profile, client, state } = booking  || {};
+  const { profile, client, state, service } = booking  || {};
   const isOwner = booking?.profile?.accountId === account.accountId;
+  const isShowFeedback = (feedback && !isOwner) || (feedback && isOwner && !feedback.isAnonymous);
+  const isShowFeedbackButton = !feedback && booking?.state === 'completed' && !isOwner;
+  const isShowMeetLinkForm = (booking?.isOnline || service?.isOnline) && isOwner && booking?.state === 'confirmed';
+  const isMeetLinkShow = !isOwner && booking?.meetLink && booking?.state === 'confirmed' ;
+
+  const [updatingLink, setUpdatingLink] = useState(false);
+  const [meetLink, setMeetLink] = useState('');
+
+  useEffect(() => {
+    if (booking) setMeetLink(booking?.meetLink);
+  }, [booking]);
+
+  const updateMeetLink = () => {
+    if (!meetLink?.startsWith('http')) return;
+    setUpdatingLink(true);
+    api.booking.update({ bookingId, updates: { meetLink } })
+      .then(() => {
+        setUpdatingLink(false);
+        showAlert(t('popup.alert.meetLink', { context: 'saved' }))
+      })
+  }
 
   const confirm = () => {
     HapticFeedback.impactOccurred('soft');
@@ -65,8 +84,6 @@ export default () => {
       if (ok) api.booking.cancel({ bookingId }).then(getBooking);
     })
   };
-
-
 
   const renderButtons = () => {
     if (['completed', 'cancelled'].includes(state)) return;
@@ -91,7 +108,7 @@ export default () => {
 
   const handler = isOwner 
     ? telegramLink ? () => openTelegramLink(telegramLink) : null
-    : go (`/profile/${profile.profileId}`);
+    : go (`/profile/${profile?.profileId}`);
 
   const openMapLink = () => {
     showConfirm(t('popup.confirm.profile', { context: 'map' }), (ok) => {
@@ -113,6 +130,23 @@ export default () => {
       {profile?.address}
     </Cell>
   );
+
+  const copyLink = () => {
+    if (!booking?.meetLink) return;
+    
+    // Копируем в буфер обмена
+    navigator.clipboard.writeText(booking.meetLink)
+      .then(() => {
+        HapticFeedback.impactOccurred('soft');
+        showAlert(t('popup.alert.meetLink', { context: 'copied' }));
+      })
+      .catch(err => {
+        console.error('Failed to copy: ', err);
+        showAlert(t('popup.alert.error'));
+      });
+  };
+
+  if (loading || !booking) return <InfoPage type='loading'/>;
 
   return (
     <>
@@ -147,6 +181,17 @@ export default () => {
             subhead={t('booking.comment')}
           >
             {booking?.comment}
+          </Cell>
+        }
+        {isMeetLinkShow &&
+          <Cell 
+            multiline 
+            subhead={t('booking.meetLink')} 
+            style={{ background: theme.secondary_bg_color }}
+            onClick={copyLink}
+            after={<IconButton><Copy /></IconButton>}
+          >
+            <Text style={{ whiteSpace: 'pre-wrap' }}>{booking?.meetLink}</Text>
           </Cell>
         }
         <Cell
@@ -188,15 +233,27 @@ export default () => {
         selected={true}
       />
 
-      {/** MeettLink */}
-      {((feedback && !isOwner) || (feedback && isOwner && !feedback.isAnonymous)) && <FeedbackCard feedback={feedback} single my={!isOwner}/>}
+      {isShowMeetLinkForm && 
+        <Section style={{ width: '100%' }} header={t('booking.meetLink')}>
+          <Textarea placeholder={t('common.writeHere')} value={meetLink} onChange={({ target }) => void setMeetLink(target.value)}/>
+        </Section>
+      }
+      {isShowFeedback && <FeedbackCard feedback={feedback} single my={!isOwner}/>}
 
       <Space gap='120px'/>
       
-      {!feedback && booking?.state === 'completed' && !isOwner &&
+      {isShowFeedbackButton &&
         <MainButton
           text={t('button.feedback')}
           handler={go(`/feedback/${bookingId}`)}
+        />
+      }
+      {isShowMeetLinkForm &&
+        <MainButton
+          loading={updatingLink}
+          disabled={updatingLink || !meetLink?.startsWith('http')}
+          text={t('button.meetLink')}
+          handler={updateMeetLink}
         />
       }
     </>

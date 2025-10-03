@@ -13,8 +13,10 @@ interface Profile {
   accountId: string;
   name: string;
   description: string;
+  country?: string;
   city?: string;
   address?: string;
+  mapLink?: string;
   termLink?: string;
   isActive: boolean;
   category: string;
@@ -62,6 +64,8 @@ interface Booking {
   duration?: number;
   allDay: boolean;
   isPaid: boolean;
+  isOnline: boolean;
+  meetLink?: string;
   state: string;
   createdAt: string;
   comment?: string;
@@ -111,10 +115,8 @@ interface Session {
 
 interface Subscription {
   accountId: string;
-  profileId: string;
   start: string;
   end: string;
-  type: string;
   level: string;
   isActive: boolean;
   subscriptionId?: string;
@@ -124,7 +126,9 @@ interface SubPayment {
   subscriptionId: string;
   date: string;
   amount: string;
+  type: string;
   state: string;
+  paymentData?: string;
   subPaymentId?: string;
 }
 
@@ -132,6 +136,6 @@ interface Trial {
   accountId: string;
   start: string;
   end: string;
-  isExpired: boolean;
+  isActive: boolean;
   trialId?: string;
 }

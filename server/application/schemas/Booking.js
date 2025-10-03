@@ -9,6 +9,8 @@
   duration: '?number',
   allDay: { type: 'boolean', default: false },
   isPaid: { type: 'boolean', default: false },
+  isOnline: { type: 'boolean', default: false },
+  meetLink: '?string',
   state: { type: 'string', default: 'pending',
     enum: [
       'pending', 

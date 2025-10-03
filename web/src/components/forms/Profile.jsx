@@ -1,12 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { Input, Textarea, Section, Selectable, Cell, Modal, Switch, Text, Caption } from '@telegram-apps/telegram-ui';
+import { Input, Textarea, Section, Selectable, Cell, Modal, Caption } from '@telegram-apps/telegram-ui';
 
 import useTelegram from '@hooks/useTelegram';
 import useApiCall from '@hooks/useApiCall';
 import useAuth from '@hooks/useAuth';
 import InputWraper from '@components/forms/helpers/InputWraper';
+import { Search } from 'react-feather';
 
 export default ({ control, register, errors, handleFocus, handleBlur, setValue, watch, trigger }) => {
   const { t, i18n } = useTranslation();
@@ -15,12 +15,21 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
   const categories = i18n.getResource(i18n.language,  'translation', 'categories');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalType, setModalType] = useState('');
-
+  const [countrySearch, setCountrySearch] = useState('');
   const { data: countries } = useApiCall('geo.countries', { autoFetch: true });
   const { call: getCities, data: cities } = useApiCall('geo.citiesByCode', { autoFetch: false });
-  console.log("🚀 ~ cities:", cities)
   
   const [country] = watch('country') ? countries.filter(({ code }) => code === watch('country')) : [];
+  const filteredCountries = countrySearch 
+    ? countries.filter(({ name, native }) => (
+        name?.toLowerCase().startsWith(countrySearch.toLowerCase()) ||
+        native?.toLowerCase().startsWith(countrySearch.toLowerCase())
+    ))
+    : countries;
+
+  const searchCountry = ({ target }) => {
+    setCountrySearch(target.value);
+  } 
 
   useEffect(() => {
     if (country) getCities({ code: country.code });
@@ -176,19 +185,21 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
 
       {modalType === 'countries' && <Modal
         open={isModalOpen}
-        onOpenChange={(state) => setIsModalOpen(state)}
+        onOpenChange={(state) => !state && setCountrySearch('')}
         header={<Modal.Header>{t('form.profile.field.country')}</Modal.Header>}
         style={{
           maxHeight: '80vh',
           background: theme.secondary_bg_color,
           padding: '12px 12px 40px 12px'
         }}
-      >
+      > 
+      <div style={{ dispaly: 'flex', flexDirection: 'column', width: '100%', gap: '18px' }}>
+        <Input style={{ width: '100%' }} onChange={searchCountry}  before={<Search size={20} />}/>
         <Section>
-          {countries.map((country) => (
+          {filteredCountries.map((country) => (
             <Cell
               key={country.code}
-              style={{  background: theme.secondary_bg_color }}
+              style={{ background: theme.secondary_bg_color }}
               onClick={genHandleSelect('country', country.code)}
               before={country.emoji}
               after={<Selectable defaultChecked={country.code === watch('country')}/>}
@@ -197,6 +208,8 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
             </Cell>
           ))}
         </Section>
+      </div>
+        
       </Modal>}
 
     </>

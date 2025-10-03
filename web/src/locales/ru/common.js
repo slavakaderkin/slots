@@ -2,6 +2,7 @@ export default {
   you: 'Это вы',
   allowsWrite: 'Чтобы получать уведомления о записях, разрешите нам их отправлять',
   currency: '₽',
+  writeHere: 'Пишите тут...',
   price: '{{price, currency(currency: RUB)}}',
   price_free: 'Бесплатно',
   date: '{{date, datetime}}',

@@ -18,4 +18,5 @@ export default {
   trial: 'Попробовать 14 дней бесплатно',
   subscription_month: 'Купить на 30 дней за {{count}} ⭐️',
   subscription_year: 'Купить на год за {{count}} ⭐️',
+  meetLink: 'Сохранить ссылку',
 };

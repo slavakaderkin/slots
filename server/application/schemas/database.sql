@@ -16,8 +16,10 @@ CREATE TABLE "Profile" (
   "accountId" bigint NOT NULL,
   "name" varchar NOT NULL,
   "description" text NOT NULL,
+  "country" varchar NULL,
   "city" varchar NULL,
   "address" varchar NULL,
+  "mapLink" varchar NULL,
   "termLink" varchar NULL,
   "isActive" boolean NOT NULL,
   "category" varchar NOT NULL,
@@ -78,6 +80,8 @@ CREATE TABLE "Booking" (
   "duration" integer NULL,
   "allDay" boolean NOT NULL DEFAULT false,
   "isPaid" boolean NOT NULL DEFAULT false,
+  "isOnline" boolean NOT NULL DEFAULT false,
+  "meetLink" varchar NULL,
   "state" varchar NOT NULL DEFAULT 'pending',
   "createdAt" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "comment" text NULL
@@ -154,24 +158,23 @@ ALTER TABLE "Session" ADD CONSTRAINT "fkSessionAccount" FOREIGN KEY ("accountId"
 CREATE TABLE "Subscription" (
   "subscriptionId" bigint generated always as identity,
   "accountId" bigint NOT NULL,
-  "profileId" bigint NOT NULL,
   "start" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "end" timestamp with time zone NOT NULL,
-  "type" varchar NOT NULL,
   "level" varchar NOT NULL,
-  "isActive" boolean NOT NULL
+  "isActive" boolean NOT NULL DEFAULT true
 );
 
 ALTER TABLE "Subscription" ADD CONSTRAINT "pkSubscription" PRIMARY KEY ("subscriptionId");
 ALTER TABLE "Subscription" ADD CONSTRAINT "fkSubscriptionAccount" FOREIGN KEY ("accountId") REFERENCES "Account" ("accountId");
-ALTER TABLE "Subscription" ADD CONSTRAINT "fkSubscriptionProfile" FOREIGN KEY ("profileId") REFERENCES "Profile" ("profileId");
 
 CREATE TABLE "SubPayment" (
   "subPaymentId" bigint generated always as identity,
   "subscriptionId" bigint NOT NULL,
   "date" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "amount" bigint NOT NULL,
-  "state" varchar NOT NULL
+  "type" varchar NOT NULL,
+  "state" varchar NOT NULL,
+  "paymentData" jsonb NULL
 );
 
 ALTER TABLE "SubPayment" ADD CONSTRAINT "pkSubPayment" PRIMARY KEY ("subPaymentId");
@@ -182,7 +185,7 @@ CREATE TABLE "Trial" (
   "accountId" bigint NOT NULL,
   "start" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "end" timestamp with time zone NOT NULL,
-  "isExpired" boolean NOT NULL DEFAULT false
+  "isActive" boolean NOT NULL DEFAULT true
 );
 
 ALTER TABLE "Trial" ADD CONSTRAINT "pkTrial" PRIMARY KEY ("trialId");

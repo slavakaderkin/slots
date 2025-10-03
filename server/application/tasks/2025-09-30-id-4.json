@@ -1,1 +1,0 @@
-{"name":"daylyNotification_34","every":"2025 Oct 2nd 09:00","run":"domain.booking.notify","args":{"bookingId":"34","accountId":"2","isDayly":true},"app":"/usr/server/application","id":"2025-09-30-id-4"}

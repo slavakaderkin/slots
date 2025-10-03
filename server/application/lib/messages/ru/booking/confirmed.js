@@ -5,9 +5,9 @@ async ({ booking, timezone }) => {
 
   const lines = [
     '<b>Запись подтверждена</b> ✅\n',
-    `<b>Специалист:</b> ${profile.name}`,
     `<b>Услуга:</b> ${service.name}`,
-    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>`
+    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>`,
+    `<b>Специалист:</b> ${profile.name}`,
   ];
 
   const inline_keyboard = [

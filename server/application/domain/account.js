@@ -12,7 +12,7 @@
     console.debug({ data });
 
     const { id: tg, ...obj } = data;
-    const info = JSON.stringify(obj);
+    const info = JSON.stringify(data);
     let account = await db.pg.row('Account', { tg });
     if (!account) {
       [account] = await db.pg.insert('Account', { tg,  info, timezone });
@@ -24,7 +24,8 @@
     const where = { accountId: account.accountId };
     const trial = await db.pg.row('Trial', where);
     const subscription = await db.pg.row('Subscription', where);
-    const unactiveProfile = !(subscription?.isActive || !trial?.isExpired);
+    const unactiveProfile = !(subscription?.isActive || trial?.isActive);
+    console.log("🚀 ~ init ~ unactiveProfile:", unactiveProfile)
     account['trial'] = trial;
     account['subscription'] = subscription;
     account['unactiveProfile'] = unactiveProfile;

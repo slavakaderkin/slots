@@ -20,13 +20,13 @@ import Scrollable from '@components/layout/Scrollable';
 import InfoPage from '@pages/Info';
 import schema from '@schemas/booking';
 import ServiceCard from '@components/ui/ServiceCard';
-import { Download, MapPin, Send, Star } from 'react-feather';
+import { MapPin, Send } from 'react-feather';
 import RatingBadge from '@components/ui/RatingBadge';
 import FeedbackBadge from '@components/ui/FeedbackBadge';
 import FeedbackCard from '../components/ui/FeedbackCard';
 
 export default () => {
-  const { account } = useAuth();
+  const { account, subscription, trial } = useAuth();
   const { api } = useMetacom();
   const { profileId } = useParams();
   const location = useLocation();
@@ -49,7 +49,7 @@ export default () => {
     });
   };
 
-  if (profileId || isPreview) useBackButton(isPreview && '/workspace');
+  useBackButton(isPreview && '/workspace');
 
   const [selectedSlot, setSlot] = useState(null);
   const [selectedService, setService] = useState(null);
@@ -204,8 +204,6 @@ export default () => {
     )
   };
 
-  if (profileLoading) return <InfoPage type='loading'/>;
-
   const openMapLink = () => {
     showConfirm(t('popup.confirm.profile', { context: 'map' }), (ok) => {
       if (ok)  openLink(profile?.mapLink, { try_instant_view: true })
@@ -223,7 +221,9 @@ export default () => {
         <Send />
       </IconButton>
     </div>
-  )
+  );
+
+  if (profileLoading) return <InfoPage type='loading'/>;
 
   return (
     <>

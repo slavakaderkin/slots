@@ -354,7 +354,8 @@ export default () => {
   };
 
   if (profileLoading) return <InfoPage type='loading'/>;
-  if (!profile) return <InfoPage type='empty' />;
+  if (!profile && (subscription?.isActive || trial?.isActive)) navigate('/settings');
+  if (!profile && !(subscription?.isActive || trial?.isActive)) navigate('/promo');
 
   return (
     <>

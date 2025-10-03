@@ -18,7 +18,7 @@ const router = createBrowserRouter(routes);
 const App = () => {
   return (
     <Suspense fallback={<Info type="loading" />}>
-      <AppRoot platform={'ios'} appearance={'dark'}>
+      <AppRoot platform={platform} appearance={appearance}>
         <MetacomProvider>
             <TelegramProvider>
               <AuthProvider>

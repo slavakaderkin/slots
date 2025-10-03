@@ -5,7 +5,7 @@
 
     const { accountId, clientId, profileId, slotId, serviceId, ...rest } = params;
     const service = await db.pg.row('Service', { serviceId });
-    const { duration, allDay } = service;
+    const { duration, allDay, isOnline } = service;
     
     const isAvailable = await domain.slot.isAvailable(slotId, duration, allDay);
     if (!isAvailable) return false;
@@ -25,6 +25,7 @@
       serviceId,
       duration,
       allDay,
+      isOnline,
       datetime: slot.datetime,
       clientId: clientId || client.clientId,
     };
@@ -102,6 +103,7 @@
     console.debug({ bookingId });
 
     const booking = await db.pg.row('Booking', { bookingId });
+    if (booking.state === 'confirmed') return true;
     if (booking.state !== 'pending') return false;
 
     const { slotId, duration, allDay } = booking;
@@ -126,6 +128,14 @@
     const taskName = `booking_autoCancel_${bookingId}`;
     application.scheduler.stop(taskName);
 
+    const { profileId } = booking
+    const slots = await domain.slot.getAvailableSlots({ profileId });
+    if (slots?.length === 0) {
+      const { accountId } = await db.pg.row('Profile', { profileId });
+      const messagePath = 'slot.ended';
+      lib.bot.notify.one({ accountId, path: messagePath });
+    }
+
     return updated;
   },
 
@@ -136,11 +146,18 @@
     const booking = await db.pg.row('Booking', { bookingId });
     if (booking.state !== 'confirmed') return;
 
+    const { profileId } = booking;
+    const profileAccount = await domain.profile.getAccount({ profileId });
     const { timezone } = await db.pg.row('Account', { accountId });
 
     const messagePath = 'booking.notification';
-    const args = { timezone, isDayly, booking };
+    const args = { timezone, isDayly, booking, accountId };
     lib.bot.notify.one({ accountId, path: messagePath, args });
+
+    if (!isDayly) {
+      const profileArgs = { ...args, timezone: profileAccount.timezone , accountId: profileAccount.accountId };
+      lib.bot.notify.one({ accountId: profileAccount.accountId, path: messagePath, args: profileArgs });
+    }
   },
 
   async scheduleNotifications({ booking, accountId }) {
@@ -152,25 +169,33 @@
 
     // дневное уведомление
     const server9AM = lib.utils.getTime9AM(datetime, timezone);
-    const daylyEvery = lib.utils.dateForPlanner(server9AM);
-    const daylyTask = {
-      name: `daylyNotification_${bookingId}`,
-      every: daylyEvery,
-      run: 'domain.booking.notify',
-      args: { bookingId, accountId, isDayly: true },
+
+    if (new Date(server9AM) > new Date()) {
+      const daylyEvery = lib.utils.dateForPlanner(server9AM);
+      const daylyTask = {
+        name: `daylyNotification_${bookingId}`,
+        every: daylyEvery,
+        run: 'domain.booking.notify',
+        args: { bookingId, accountId, isDayly: true },
+      }
+      await application.scheduler.add(daylyTask);
     }
-    await application.scheduler.add(daylyTask);
+  
   
     // уведомление за 1 часа
     const beforeTime = new Date(lib.utils.modTime(datetime, -1, 'h')).toISOString();
-    const beforeEvery = lib.utils.dateForPlanner(beforeTime);
-    const beforeTask = {
-      name: `beforeNotification_${bookingId}`,
-      every: beforeEvery,
-      run: 'domain.booking.notify',
-      args: { bookingId, accountId, isDayly: false },
+
+    if (new Date(beforeTime) > new Date()) {
+      const beforeEvery = lib.utils.dateForPlanner(beforeTime);
+      const beforeTask = {
+        name: `beforeNotification_${bookingId}`,
+        every: beforeEvery,
+        run: 'domain.booking.notify',
+        args: { bookingId, accountId, isDayly: false },
+      }
+      await application.scheduler.add(beforeTask);
     }
-    await application.scheduler.add(beforeTask);
+
   }, 
 
   async complete({ booking }) {

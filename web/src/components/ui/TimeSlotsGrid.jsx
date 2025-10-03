@@ -36,7 +36,7 @@ const TimeSlotsGrid = ({
   const hasTimeConflict = useMemo(() => {
     const busySlots = slots
       .filter(slot => slot?.booking || slot?.isBlocked)
-      .map(slot => {
+      .map((slot) => {
         const slotTime = getLocalTimeFromUTC(slot.datetime);
         const slotDateTime = new Date(`${dateString}T${slotTime}:00`);
         return {
@@ -55,7 +55,9 @@ const TimeSlotsGrid = ({
 
   const isSlotInPast = (time) => {
     const slotDateTime = new Date(`${dateString}T${time}:00`);
-    return slotDateTime < new Date();
+    const now = new Date();
+    const oneHourBefore = new Date(now.getTime() + 60 * 60 * 1000); // +1 час от текущего времени
+    return slotDateTime < oneHourBefore;
   };
 
   const findSlotByTime = (time) => {

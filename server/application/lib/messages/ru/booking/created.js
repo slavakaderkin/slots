@@ -1,5 +1,5 @@
 async ({ booking, timezone }) => {
-  const { serviceId, datetime, clientId, state, bookingId, profileId } = booking;
+  const { serviceId, datetime, clientId, state, bookingId, profileId, comment } = booking;
   const { autoConfirm } = await db.pg.row('Service', { serviceId });
   const service = await db.pg.row('Service', { serviceId });
   const client = await domain.client.byId({ clientId, full: true });
@@ -9,6 +9,8 @@ async ({ booking, timezone }) => {
     `<b>Услуга:</b> ${service.name}`,
    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>`
   ];
+
+  if (comment) lines.push(`<b>Комментарий: </b> <i>${comment}</i>`);
 
   const username = client?.info?.username;
   if (username) lines.push(`<b>Клиент:</b> @${username}`);

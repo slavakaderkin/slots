@@ -20,7 +20,6 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
   const [isFullDescription, setIsFullDescription] = useState(false);
 
   const { service, slot, client, profile, bookingId, state } = booking;
-  console.log("🚀 ~ BookingCard ~ client:", client)
 
   const stateColors = {
     confirmed: theme.link_color,

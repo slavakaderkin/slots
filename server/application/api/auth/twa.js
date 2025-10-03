@@ -33,7 +33,6 @@
     await api.auth.provider.createSession(token, account, { ip, accountId });
     context.client.startSession(token, account);
 
-    console.log("🚀 ~ account:", account)
     return { account, token };
   },
 });
