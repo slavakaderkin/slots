@@ -72,14 +72,14 @@ export default ({ children }) => {
           const selected = id === currentPath || (isHome && id === 'account');
           const text = t(`common.menu.${id}`);
           const path = id === 'account' ? '/' : `/${id}`;
-          const disabled = ['clients', 'stats'].includes(id) && unactiveProfile;
+          //const disabled = ['clients', 'stats'].includes(id) && unactiveProfile;
           return (
             <Tabbar.Item
               key={id} 
               selected={selected}
               text={text}
               onClick={go(path)}
-              disabled={disabled}
+              //disabled={disabled}
             >
               <Icon />
             </Tabbar.Item>

@@ -8,7 +8,7 @@ async ({ chat, message, id, args }) => {
 
     const answer = {
       callback_query_id: id,
-      text: 'Бронь подтверждена',
+      text: 'Запись подтверждена',
       show_alert: ok,
     };
 

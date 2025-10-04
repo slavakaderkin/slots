@@ -50,12 +50,15 @@
     const booking = await db.pg.row('Booking', { bookingId });
     if (booking.state === 'cancelled') return true;
 
+    const feedback = await db.pg.row('Feedback', { bookingId: booking.bookingId });
+    if (feedback) return false;
+
     const updates = { state: 'cancelled' };
     await db.pg.update('Booking', updates, { bookingId });
     
     if (dontNotify) return true;
 
-    if (booking.state === 'confirmed')  await domain.slot.activate(booking.slotId, booking.duration, booking.allDay);
+    if (booking.state === 'confirmed') await domain.slot.activate(booking.slotId, booking.duration, booking.allDay);
   
     const client = await db.pg.row('Client', { clientId: booking.clientId });
     const account = await db.pg.row('Account', { accountId: client.accountId });

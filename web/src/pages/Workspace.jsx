@@ -349,7 +349,10 @@ export default () => {
 
   const renderSubscriptionDate = () => {
     const formatParams = { date: { day: 'numeric', month: 'long', year: 'numeric' } };
-    const text = t('common.date', { date: new Date(subscribtionEndDate), formatParams, context: 'subscription' });
+    const date = new Date(subscribtionEndDate);
+    const text = unactiveProfile ? 
+      t('workspace.sub.expired') :
+      t('common.date', { date, formatParams, context: 'subscription' });
     return <Caption>{text}</Caption>
   };
 

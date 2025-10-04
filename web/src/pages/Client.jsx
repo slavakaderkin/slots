@@ -32,6 +32,8 @@ const BOOKINGS_PER_PAGE = 10;
 
 export default () => {
   const { clientId } = useParams();
+  const { account } = useAuth();
+  const { unactiveProfile } = account;
   const { api } = useMetacom();
   const location = useLocation();
   const navigate = useNavigate();
@@ -356,7 +358,12 @@ export default () => {
         overscan={400}
       />}
 
-      <MainButton handler={openModal} text={t('button.booking', { context: 'client' })}/>
+      {!unactiveProfile &&
+        <MainButton 
+          handler={openModal} 
+          text={t('button.booking', { context: 'client' })}
+        />
+      }
 
       <Modal
         open={isModalOpen}
