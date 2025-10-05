@@ -109,7 +109,7 @@
     if (booking.state === 'confirmed') return true;
     if (booking.state !== 'pending') return false;
 
-    const { slotId, duration, allDay } = booking;
+    const { slotId, duration, allDay, profileId } = booking;
     const isAvailable = await domain.slot.isAvailable(slotId, duration, allDay);
     if (!isAvailable) {
       // сообщение, что слоты заняты 
@@ -121,22 +121,23 @@
     await domain.slot.deactivate(booking.slotId, booking.duration, booking.allDay);
 
     const { accountId } = await db.pg.row('Client', { clientId: booking.clientId });
+    const profile = await db.pg.row('Profile', { profileId });
+    const profileAccount = await db.pg.row('Account', { accountId: profile.accountId });
     const { timezone } = await db.pg.row('Account', { accountId });
     const messagePath = 'booking.confirmed';
-    const args = { booking: updated, timezone };
+    const args = { booking: updated, timezone, accountId };
+    const profileArgs = { ...args, accountId: profileAccount.accountId, timezone: profileAccount.timezone }
     lib.bot.notify.one({ accountId, path: messagePath, args });
-
+    lib.bot.notify.one({ accountId: profileAccount.accountId, path: messagePath, args: profileArgs });
     domain.booking.scheduleNotifications({ booking: updated, accountId });
 
     const taskName = `booking_autoCancel_${bookingId}`;
     application.scheduler.stop(taskName);
 
-    const { profileId } = booking
     const slots = await domain.slot.getAvailableSlots({ profileId });
     if (slots?.length === 0) {
-      const { accountId } = await db.pg.row('Profile', { profileId });
       const messagePath = 'slot.ended';
-      lib.bot.notify.one({ accountId, path: messagePath });
+      lib.bot.notify.one({ accountId: profileAccount.accountId, path: messagePath });
     }
 
     return updated;

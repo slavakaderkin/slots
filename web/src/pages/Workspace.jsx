@@ -21,7 +21,7 @@ import RatingBadge from '@components/ui/RatingBadge';
 import InfoPage from '@pages/Info';
 
 import { createUTCDateFromLocal } from '@helpers/time';
-import { Calendar, Star, X } from 'react-feather';
+import { Calendar, Star, X, ChevronRight } from 'react-feather';
 
 import animation from '../assets/animation/expired.json';
 
@@ -401,6 +401,7 @@ export default () => {
               <Subheadline>{t('workspace.sub.expired')}</Subheadline>
               <Caption >{t('workspace.sub.expired', { context: 'description' })}</Caption>
             </div>
+             <div  style={{ padding: '0 12px' }}><ChevronRight size={20}/></div>
           </div>
 
         : <Section style={{ width: '100%' }} footer={!isSlotsOpen && renderCalendarHint()}>

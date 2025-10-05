@@ -23,7 +23,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
 
   const stateColors = {
     confirmed: theme.link_color,
-    pending: theme.text_color,
+    pending: theme.hint_color,
     completed: '#eb8218',
   };
 
@@ -95,7 +95,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
         before={<Calendar size={16} />}
         style={themeStyles.button}
       >
-        <Caption weight="1">
+        <Caption weight="1" style={themeStyles.text}>
           {t('button.select', { context: 'checked', time, date: day })}
         </Caption>
       </Button>

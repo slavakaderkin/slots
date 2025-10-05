@@ -128,6 +128,12 @@ const TimeSlotsGrid = ({
     minHeight: '32px',
   });
 
+  const filterTimeSlot = (time) => {
+    if (!forBooking) return true;
+    const { isDisabled } = getSlotData(time);
+    return !isDisabled;
+  };
+
   const renderTimeSlot = (time, index) => {
     const { slot, isDisabled, clientAvatarUrl, backgroundColor, hasConflict } = getSlotData(time);
     
@@ -146,6 +152,7 @@ const TimeSlotsGrid = ({
       </Chip>
     );
   };
+  const filteredSlots = timeSlots.filter(filterTimeSlot);
 
   return (
     <Section
@@ -156,9 +163,15 @@ const TimeSlotsGrid = ({
         </Cell>
       }
     >
-      <div style={gridStyle}>
-        {timeSlots.map(renderTimeSlot)}
-      </div>
+   
+        {filteredSlots.length === 0 
+          ? <div style={{ background: theme.secondary_bg_color, padding: '12px', width: '100%' }}>
+              <Text style={{ textAlign: 'center' }}>{t('profile.noSlots')}</Text> 
+            </div>
+          :  <div style={gridStyle}>
+              {filteredSlots.map(renderTimeSlot)}
+            </div>
+        }
     </Section>
   );
 };

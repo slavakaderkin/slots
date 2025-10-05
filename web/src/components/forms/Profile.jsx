@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Input, Textarea, Section, Selectable, Cell, Modal, Caption } from '@telegram-apps/telegram-ui';
+import { Input, Textarea, Section, Selectable, Cell, Modal, Caption, Slider, Text } from '@telegram-apps/telegram-ui';
 
 import useTelegram from '@hooks/useTelegram';
 import useApiCall from '@hooks/useApiCall';
@@ -50,6 +50,12 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
     trigger();
     setIsModalOpen(false);
   }, [setValue]);
+
+  const handleSlotDuration = (value) => {
+    if (value < 30) return;
+    setValue('slotDuration', value, { shouldDirty: true, shouldValidate: true });
+    trigger();
+  };
 
   const openModal = useCallback((type) => () => {
     HapticFeedback.impactOccurred('soft');
@@ -119,6 +125,10 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
               {...genInputProps('specialization')}
               status={errors.specialization ? 'error' : 'default'} 
             />
+          </InputWraper>
+
+          <InputWraper ent='profile' name='slotDuration' error={errors.slotDuration?.message}>
+            <Slider before={<Text style={{ minWidth: '120px' }}>{t('common.minutes', { count: watch('slotDuration') })}</Text>} min={0} step={30} max={60} value={watch('slotDuration')} onChange={handleSlotDuration}/>
           </InputWraper>
 
           <InputWraper ent='profile' name='country' error={errors.country?.message}>

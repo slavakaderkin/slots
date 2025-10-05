@@ -25,7 +25,7 @@ export default (profile, options = { withBooking: false }) => {
   const generateTimeSlots = useCallback(() => {
     const startHour = showFullDay ? 0 : 8;
     const endHour = showFullDay ? 23 : 20;
-    const slotDuration = profile?.slotDuration || 60;
+    const slotDuration = profile?.slotDuration || 30;
     const slots = [];
   
     for (let hour = startHour; hour <= endHour; hour++) {

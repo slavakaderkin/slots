@@ -1,8 +1,8 @@
 async ({ booking, timezone }) => {
-  const { serviceId, datetime, clientId, state, bookingId, profileId, comment } = booking;
-  const { autoConfirm } = await db.pg.row('Service', { serviceId });
+  const { serviceId, datetime, clientId, bookingId, comment } = booking;
+  const { accountId } = await db.pg.row('Client', { clientId })
+  const { tg, info } = await db.pg.row('Account', { accountId });
   const service = await db.pg.row('Service', { serviceId });
-  const client = await domain.client.byId({ clientId, full: true });
 
   const lines = [
     '<b>Новая запись</b>\n',
@@ -10,13 +10,12 @@ async ({ booking, timezone }) => {
    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>`
   ];
 
+  if (info?.username) lines.push(`<b>TG аккаунт:</b> @${info.username}`);
   if (comment) lines.push(`<b>Комментарий: </b> <i>${comment}</i>`);
 
-  const username = client?.info?.username;
-  if (username) lines.push(`<b>Клиент:</b> @${username}`);
-
   const inline_keyboard = [
-    [{ text: 'Страница записи', web_app: { url: `${config.bot.web}/bookings/${bookingId}` } }]
+    [{ text: 'Страница записи', web_app: { url: `${config.bot.web}/bookings/${bookingId}` } }],
+    [{ text: 'Клиент', url: `tg://user?id=${tg}` }]
   ];
   
   const actionButtons = [
@@ -24,7 +23,7 @@ async ({ booking, timezone }) => {
     { text: 'Отменить ❌', callback_data: `booking|cancel|bookingId=${bookingId}` }
   ];
 
-  if (!autoConfirm) {
+  if (!service.autoConfirm) {
     inline_keyboard.push(actionButtons);
     lines.push('\nНе забудте подтвердить или отменить запись. Иначе она отменится автоматически через 30 минут.');
   }

@@ -25,7 +25,7 @@
     const trial = await db.pg.row('Trial', where);
     const subscription = await db.pg.row('Subscription', where);
     const unactiveProfile = !(subscription?.isActive || trial?.isActive);
-    console.log("🚀 ~ init ~ unactiveProfile:", unactiveProfile)
+
     account['trial'] = trial;
     account['subscription'] = subscription;
     account['unactiveProfile'] = unactiveProfile;

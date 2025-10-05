@@ -5,7 +5,7 @@ const telegram = window.Telegram.WebApp;
 const { language_code } = telegram.initDataUnsafe?.user || {};
 
 
-const DEFAULT_LANGUAGE = 'ru';
+const DEFAULT_LANGUAGE = 'ru'; // 'en'
 const i18nInstance = i18n.createInstance();
 const languages = Object.keys(resources);
 const lng = language_code && languages.includes(language_code)
