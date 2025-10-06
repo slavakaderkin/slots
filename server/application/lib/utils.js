@@ -39,7 +39,7 @@
     return date.toISOString();
   },
 
-  toHumanDate: (datetime, timezone, lng = 'ru') => {
+  toHumanDate: (datetime, timezone, lng = 'en') => {
     const date = new Date(datetime);
     
     return date.toLocaleString(lng, {

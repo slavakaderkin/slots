@@ -4,12 +4,17 @@ import resources from './locales';
 const telegram = window.Telegram.WebApp;
 const { language_code } = telegram.initDataUnsafe?.user || {};
 
+const mapper = {
+  'pt-br': 'br',
+};
 
-const DEFAULT_LANGUAGE = 'ru'; // 'en'
+const DEFAULT_LANGUAGE = 'en'; // 'en'
 const i18nInstance = i18n.createInstance();
 const languages = Object.keys(resources);
-const lng = language_code && languages.includes(language_code)
-  ? language_code
+console.log("🚀 ~ languages:", languages);
+const mapped = mapper[language_code] || language_code
+const lng = mapped && languages.includes(mapped)
+  ? mapped
   : DEFAULT_LANGUAGE;
 
 i18nInstance

@@ -10,7 +10,7 @@ async ({ booking, timezone, isDayly, accountId }) => {
   const lines = [
     `${isDayly ? '<b>Напоминаем, что у вас сегодня есть запись.</b>' : '<b>Напоминаем, что у вас запись через час.</b>'}\n`,
     `<b>Услуга:</b> ${service.name}`,
-    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>`
+    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'pt-br')}</u>`
   ];
 
   if (!isOwner) lines.push(`<b>Специалист:</b> ${profile.name}`);

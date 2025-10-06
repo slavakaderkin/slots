@@ -7,7 +7,7 @@ async ({ booking, timezone }) => {
     `<b>Нужно ваше мнение по поводу записи на услугу.</b>\n`,
     `<b>Специалист:</b> ${profile.name}`,
     `<b>Услуга:</b> ${service.name}`,
-    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>\n`,
+    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'pt-br')}</u>\n`,
     'Что скажете?'
   ];
 

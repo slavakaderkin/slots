@@ -1,0 +1,14 @@
+export default {
+  role_client: 'Client',
+  role_profile: 'Professional',
+  state: 'Status',
+  state_pending: 'Pending confirmation',
+  state_confirmed: 'Booking confirmed',
+  state_cancelled: 'Booking cancelled',
+  state_completed: 'Service completed',
+  comment: 'Comment',
+  feedback: 'Review',
+  feedback_my: 'Your review',
+  service: 'Service',
+  meetLink: 'Meeting link'
+}

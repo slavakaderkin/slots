@@ -1,0 +1,36 @@
+export default {
+  you: 'Sei tu',
+  allowsWrite: 'Per ricevere notifiche sugli appuntamenti, permetici di inviarle',
+  currency: '€',
+  writeHere: 'Scrivi qui...',
+  price: '{{price, currency(currency: EUR)}}',
+  price_free: 'Gratuito',
+  date: '{{date, datetime}}',
+  date_subscription: 'Abbonamento fino al {{date, datetime}}',
+  more: 'altro',
+  today: 'oggi',
+  today_what: 'Cosa oggi',
+  tomorrow: 'domani',
+  allDay: 'tutto il giorno',
+  minutes: 'minuti',
+  minutes_one: '{{count}} minuto',
+  minutes_other: '{{count}} minuti',
+  info: {
+    title_loading: 'Caricamento...',
+    title_error: 'Abbiamo un problema',
+    title_empty: 'Non c\'è niente qui',
+    description: '',
+    description_error: 'Niente panico, non devi fare nulla, il nostro team sta già risolvendo.',
+    description_empty: 'Succede a volte, ritorna più tardi, potrebbe apparire qualcosa.'
+  },
+  menu: {
+    account: 'Account',
+    bookings: 'Prenotazioni',
+    profile: 'Profilo',
+    workspace: 'Area di lavoro',
+    profiles: '',
+    stats: 'Statistiche',
+    clients: 'Clienti',
+    settings: 'Impostazioni',
+  }
+}

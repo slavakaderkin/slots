@@ -1,0 +1,37 @@
+export default {
+  you: 'É você',
+  allowsWrite: 'Para receber notificações de agendamentos, permita que as enviemos',
+  currency: 'R$',
+  writeHere: 'Escreva aqui...',
+  price: '{{price, currency(currency: BRL)}}',
+  price_free: 'Grátis',
+  date: '{{date, datetime}}',
+  date_subscription: 'Assinatura até {{date, datetime}}',
+  more: 'mais',
+  today: 'Hoje',
+  today_what: 'O que hoje',
+  tomorrow: 'Amanhã',
+  allDay: 'dia todo',
+  minutes: 'minutos',
+  minutes_one: '{{count}} minuto',
+  minutes_other: '{{count}} minutos',
+  minutes_many: '{{count}} minutos',
+  info: {
+    title_loading: 'Carregando...',
+    title_error: 'Temos um problema',
+    title_empty: 'Nada aqui',
+    description: '',
+    description_error: 'Sem problemas, não precisa fazer nada, nossa equipe já está corrigindo.',
+    description_empty: 'Isso acontece às vezes, volte mais tarde, talvez apareça algo.'
+  },
+  menu: {
+    account: 'Conta',
+    bookings: 'Reservas',
+    profile: 'Perfil',
+    workspace: 'Área de Trabalho',
+    profiles: '',
+    stats: 'Estatísticas',
+    clients: 'Clientes',
+    settings: 'Configurações',
+  }
+}

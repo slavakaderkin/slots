@@ -1,0 +1,37 @@
+export default {
+  you: 'Bu sizsiniz',
+  allowsWrite: 'Randevu bildirimleri almak için, göndermemize izin verin',
+  currency: '₺',
+  writeHere: 'Buraya yazın...',
+  price: '{{price, currency(currency: TRY)}}',
+  price_free: 'Ücretsiz',
+  date: '{{date, datetime}}',
+  date_subscription: 'Abonelik {{date, datetime}} tarihine kadar',
+  more: 'daha',
+  today: 'Bugün',
+  today_what: 'Bugün ne var',
+  tomorrow: 'Yarın',
+  allDay: 'tüm gün',
+  minutes: 'dakika',
+  minutes_one: '{{count}} dakika',
+  minutes_other: '{{count}} dakika',
+  minutes_many: '{{count}} dakika',
+  info: {
+    title_loading: 'Yükleniyor...',
+    title_error: 'Bir sorun oluştu',
+    title_empty: 'Burada hiçbir şey yok',
+    description: '',
+    description_error: 'Endişelenmeyin, hiçbir şey yapmanıza gerek yok, ekibimiz zaten sorunu çözüyor.',
+    description_empty: 'Bu bazen olur, daha sonra tekrar kontrol edin, bir şeyler çıkabilir.'
+  },
+  menu: {
+    account: 'Hesap',
+    bookings: 'Rezervasyonlar',
+    profile: 'Profil',
+    workspace: 'Çalışma Alanı',
+    profiles: '',
+    stats: 'İstatistikler',
+    clients: 'Müşteriler',
+    settings: 'Ayarlar',
+  }
+}

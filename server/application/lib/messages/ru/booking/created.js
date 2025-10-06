@@ -7,7 +7,7 @@ async ({ booking, timezone }) => {
   const lines = [
     '<b>Новая запись</b>\n',
     `<b>Услуга:</b> ${service.name}`,
-   `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>`
+   `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'pt-br')}</u>`
   ];
 
   if (info?.username) lines.push(`<b>TG аккаунт:</b> @${info.username}`);

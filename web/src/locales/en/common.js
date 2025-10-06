@@ -1,0 +1,36 @@
+export default {
+  you: 'This is you',
+  allowsWrite: 'To receive booking notifications, allow us to send them',
+  currency: '€',
+  writeHere: 'Write here...',
+  price: '{{price, currency(currency: EUR)}}',
+  price_free: 'Free',
+  date: '{{date, datetime}}',
+  date_subscription: 'Subscription until {{date, datetime}}',
+  more: 'more',
+  today: 'Today',
+  today_what: 'What\'s today',
+  tomorrow: 'Tomorrow',
+  allDay: 'all day',
+  minutes: 'minutes',
+  minutes_one: '{{count}} minute',
+  minutes_other: '{{count}} minutes',
+  info: {
+    title_loading: 'Loading...',
+    title_error: 'We have an issue',
+    title_empty: 'Nothing here',
+    description: '',
+    description_error: 'No worries, no action needed, our team is already fixing it.',
+    description_empty: 'This happens sometimes, check back later, something might appear.'
+  },
+  menu: {
+    account: 'Account',
+    bookings: 'Bookings',
+    profile: 'Profile',
+    workspace: 'Workspace',
+    profiles: '',
+    stats: 'Statistics',
+    clients: 'Clients',
+    settings: 'Settings',
+  }
+}

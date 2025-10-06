@@ -1,7 +1,7 @@
 async (path, args, lng = 'ru') => { // en
   try {
     let current = lib.messages[lng];
-    if (!lib.messages[lng]) current = lib.messages['ru'] // en
+    if (!lib.messages[lng]) current = lib.messages['en'] // en
     const pathParts = path.split('.');
    
     

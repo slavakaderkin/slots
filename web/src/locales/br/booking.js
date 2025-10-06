@@ -1,0 +1,14 @@
+export default {
+  role_client: 'Cliente',
+  role_profile: 'Profissional',
+  state: 'Status',
+  state_pending: 'Aguardando confirmação',
+  state_confirmed: 'Agendamento confirmado',
+  state_cancelled: 'Agendamento cancelado',
+  state_completed: 'Serviço concluído',
+  comment: 'Comentário',
+  feedback: 'Avaliação',
+  feedback_my: 'Sua avaliação',
+  service: 'Serviço',
+  meetLink: 'Link da reunião'
+}

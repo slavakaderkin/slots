@@ -1,0 +1,14 @@
+export default {
+  role_client: 'Müşteri',
+  role_profile: 'Profesyonel',
+  state: 'Durum',
+  state_pending: 'Onay bekliyor',
+  state_confirmed: 'Randevu onaylandı',
+  state_cancelled: 'Randevu iptal edildi',
+  state_completed: 'Hizmet tamamlandı',
+  comment: 'Yorum',
+  feedback: 'Yorum',
+  feedback_my: 'Yorumunuz',
+  service: 'Hizmet',
+  meetLink: 'Toplantı bağlantısı'
+}
