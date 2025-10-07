@@ -15,7 +15,7 @@ async ({ booking, timezone }) => {
     [{ text: 'Booking page', web_app: { url: `${config.bot.web}/bookings/${bookingId}` } }],
     [
       { text: 'Leave review', web_app: { url: `${config.bot.web}/feedback/${bookingId}` } },
-      { text: 'I wasn\'t there', callback_data: `booking|cancel|bookingId=${bookingId}|dontNotify=true` }
+      { text: 'I wasn\'t there', callback_data: `booking|cancel|id=${bookingId}|not=1` }
     ]
   ];
  

@@ -10,7 +10,7 @@ async ({ booking, timezone, isDayly, accountId }) => {
   const lines = [
     `${isDayly ? '<b>Напоминаем, что у вас сегодня есть запись.</b>' : '<b>Напоминаем, что у вас запись через час.</b>'}\n`,
     `<b>Услуга:</b> ${service.name}`,
-    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'pt-br')}</u>`
+    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'ru')}</u>`
   ];
 
   if (!isOwner) lines.push(`<b>Специалист:</b> ${profile.name}`);
@@ -22,7 +22,8 @@ async ({ booking, timezone, isDayly, accountId }) => {
     [{ text: 'Страница записи', web_app: { url: `${config.bot.web}/bookings/${bookingId}` } }]
   ];
 
-  if (isOwner) inline_keyboard.push( [{ text: 'Клиент', url: `tg://user?id=${tg}` }])
+  if (isOwner) inline_keyboard.push( [{ text: 'Клиент', url: `tg://user?id=${tg}` }]);
+  if (!isOwner && isDayly) inline_keyboard.push([{ text: 'Не смогу :(', callback_data: `booking|cancel|id=${bookingId}` }])
  
   const reply_markup = JSON.stringify({ inline_keyboard });
 

@@ -14,6 +14,7 @@ export default {
   allDay: 'tüm gün',
   minutes: 'dakika',
   minutes_one: '{{count}} dakika',
+  minutes_few: '{{count}} dakika',
   minutes_other: '{{count}} dakika',
   minutes_many: '{{count}} dakika',
   info: {

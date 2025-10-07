@@ -20,7 +20,7 @@ async ({ booking, timezone }) => {
   
   const actionButtons = [
     { text: 'Conferma ✅', callback_data: `booking|confirm|bookingId=${bookingId}` },
-    { text: 'Cancella ❌', callback_data: `booking|cancel|bookingId=${bookingId}` }
+    { text: 'Cancella ❌', callback_data: `booking|cancel|id=${bookingId}` }
   ];
 
   if (!service.autoConfirm) {

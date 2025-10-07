@@ -10,7 +10,7 @@ import useTelegram from '@hooks/useTelegram';
 import { formatDate, getLocalTimeFromUTC } from '@helpers/time';
 import { Clock } from 'react-feather';
 
-const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
+const BookingCard = ({ isOwner, selected, booking, clickable = true, profile }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { account } = useAuth();
@@ -19,7 +19,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
 
   const [isFullDescription, setIsFullDescription] = useState(false);
 
-  const { service, slot, client, profile, bookingId, state } = booking;
+  const { service, slot, client, bookingId, state } = booking;
 
   const stateColors = {
     confirmed: theme.link_color,
@@ -205,7 +205,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
       {/* Цена и длительность */}
       <Cell style={themeStyles.cell} after={renderDuration()}>
         <Text weight="1" style={themeStyles.text}>
-          {t('common.price', { price: service.price, context: !Number(service.price) ? 'free' : '' })}
+          {t('common.price', { price: service.price, context: !!Number(service.price) ? '' : 'free', formatParams: { price: { currency: profile?.currency } } })}
         </Text>
       </Cell>
     </Section>

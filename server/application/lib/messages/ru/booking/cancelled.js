@@ -5,7 +5,7 @@ async ({ booking, timezone }) => {
   const lines = [
     '<b>Запись отменена</b> ❌\n',
     `<b>Услуга:</b> ${service.name}`,
-    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'pt-br')}</u>`
+    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'ru')}</u>`
   ];
 
   const inline_keyboard = [

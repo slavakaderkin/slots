@@ -4,6 +4,7 @@ export default {
     slots_none: 'İnsanların sizden randevu alabilmesi için takvime zaman aralığı ekleyin.',
     slots_one: 'Sadece {{count}} boş zaman aralığınız kaldı, müşteri kaybetmemek için ekleyin.',
     slots_few: 'Sadece {{count}} boş zaman aralığınız kaldı, müşteri kaybetmemek için ekleyin.',
+    slots_other: 'Sadece {{count}} boş zaman aralığınız kaldı, müşteri kaybetmemek için ekleyin.',
     slots_many: 'Sadece {{count}} boş zaman aralığınız kaldı, müşteri kaybetmemek için ekleyin.',
   },
   empty_future: 'Gelecekteki randevularınızı buraya ekleyeceğiz',

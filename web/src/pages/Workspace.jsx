@@ -226,7 +226,7 @@ export default () => {
     
     return (
       <div style={{ paddingTop: '12px', zIndex: 1 }}>
-        <BookingCard key={`booking_${index}_${booking.bookingId}`} isOwner={true} booking={booking}/>
+        <BookingCard profile={profile} key={`booking_${index}_${booking.bookingId}`} isOwner={true} booking={booking}/>
       </div>
     );
   }, [getBookingByGlobalIndex]);

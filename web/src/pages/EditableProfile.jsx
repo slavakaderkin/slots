@@ -45,6 +45,7 @@ export default () => {
     specialization: '',
     slotDuration: 60,
     country: '',
+    currency: '',
     city: '',
     address: '',
     mapLink: '',
@@ -57,7 +58,8 @@ export default () => {
     resolver: yupResolver(schema)
   });
 
-  const { formState: { errors, isDirty }, trigger, handleSubmit, reset } = formMethods;
+  const { formState: { errors, isDirty }, trigger, handleSubmit, reset, watch } = formMethods;
+  //console.log("🚀 ~ watch:", watch())
   const { isFocus, handleFocus, handleBlur } = useFocusManager();
 
   useEffect(() => void trigger(), [trigger]);

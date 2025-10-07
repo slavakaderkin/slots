@@ -1,6 +1,6 @@
 () => {
   const now = new Date().toISOString();
-  const past = lib.utils.modTime(now, -3, 'h');
+  const past = lib.utils.modTime(now, -2, 'h');
   
   const builder = lib.pg.builder.build.select()
     .from('Booking')

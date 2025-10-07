@@ -4,7 +4,8 @@ async ({ chat, message, id, args }) => {
   console.debug({ chat, message, id, args });
 
   try {
-    const ok = await domain.booking.cancel(args);
+    const { id: bookingId, not, ...rest } = args;
+    const ok = await domain.booking.cancel({ ...rest, bookingId, dontNotify: !!not });
 
     const answer = {
       callback_query_id: id,

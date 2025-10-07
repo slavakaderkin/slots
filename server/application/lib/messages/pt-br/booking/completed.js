@@ -7,7 +7,7 @@ async ({ booking, timezone }) => {
     `<b>Precisamos da sua opinião sobre o agendamento.</b>\n`,
     `<b>Profissional:</b> ${profile.name}`,
     `<b>Serviço:</b> ${service.name}`,
-    `<b>Horário:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>\n`,
+    `<b>Horário:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'pt-br')}</u>\n`,
     'O que você achou?'
   ];
 
@@ -15,7 +15,7 @@ async ({ booking, timezone }) => {
     [{ text: 'Página do agendamento', web_app: { url: `${config.bot.web}/bookings/${bookingId}` } }],
     [
       { text: 'Deixar avaliação', web_app: { url: `${config.bot.web}/feedback/${bookingId}` } },
-      { text: 'Não estive presente', callback_data: `booking|cancel|bookingId=${bookingId}|dontNotify=true` }
+      { text: 'Não estive presente', callback_data: `booking|cancel|id=${bookingId}|not=1` }
     ]
   ];
  

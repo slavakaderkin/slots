@@ -14,7 +14,9 @@ export default {
   allDay: 'tutto il giorno',
   minutes: 'minuti',
   minutes_one: '{{count}} minuto',
+  minutes_few: '{{count}} minuti',
   minutes_other: '{{count}} minuti',
+  minutes_many: '{{count}} minuti',
   info: {
     title_loading: 'Caricamento...',
     title_error: 'Abbiamo un problema',

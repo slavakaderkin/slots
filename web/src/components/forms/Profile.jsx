@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Input, Textarea, Section, Selectable, Cell, Modal, Caption, Slider, Text } from '@telegram-apps/telegram-ui';
+import { Input, Textarea, Section, Selectable, Cell, Modal, Caption, Slider, Text, Select, Info } from '@telegram-apps/telegram-ui';
 
 import useTelegram from '@hooks/useTelegram';
 import useApiCall from '@hooks/useApiCall';
@@ -20,6 +20,7 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
   const { call: getCities, data: cities } = useApiCall('geo.citiesByCode', { autoFetch: false });
   
   const [country] = watch('country') ? countries.filter(({ code }) => code === watch('country')) : [];
+  const currencies = countries ? [...new Set(countries.map(({ currency }) => currency))] : [];
   const filteredCountries = countrySearch 
     ? countries.filter(({ name, native }) => (
         name?.toLowerCase().startsWith(countrySearch.toLowerCase()) ||
@@ -32,7 +33,7 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
   } 
 
   useEffect(() => {
-    if (country) getCities({ code: country.code });
+    //if (country) getCities({ code: country.code });
   }, [country]);
 
   const genInputProps = (name) => {
@@ -49,13 +50,24 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
     setValue(field, value, { shouldDirty: true, shouldValidate: true });
     trigger();
     setIsModalOpen(false);
-  }, [setValue]);
+  }, [setValue, country]);
 
   const handleSlotDuration = (value) => {
     if (value < 30) return;
     setValue('slotDuration', value, { shouldDirty: true, shouldValidate: true });
     trigger();
   };
+
+  const selectCurrency = ({ target }) => {
+    setValue('currency', target.value, { shouldDirty: true, shouldValidate: true });
+    trigger();
+  };
+
+  useEffect(() => {
+    if (country) {
+      setValue('currency', country.currency, { shouldDirty: true, shouldValidate: true });
+    }
+  }, [country])
 
   const openModal = useCallback((type) => () => {
     HapticFeedback.impactOccurred('soft');
@@ -132,18 +144,24 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
           </InputWraper>
 
           <InputWraper ent='profile' name='country' error={errors.country?.message}>
-            <Cell
-              onClick={openModal('countries')}
-              style={{
-                background: theme.bg_color,
-                borderRadius: '10px',
-                border: errors.country ? `1.5px solid ${theme.destructive_text_color}` : 'none' 
-              }}
-              before={country?.emoji}
-            >
-              {country ? country?.native :  t('form.profile.placeholder.country')}
-            </Cell>
-           
+            <div style={{ display:' flex', alignItems: 'center', width: '100%', gap: '8px' }}>
+              <Cell
+                onClick={openModal('countries')}
+                style={{
+                  background: theme.bg_color,
+                  borderRadius: '10px',
+                  width: '60%',
+                  border: errors.country ? `1.5px solid ${theme.destructive_text_color}` : 'none' 
+                }}
+                before={country?.emoji}
+              >
+                {country ? country?.native :  t('form.profile.placeholder.country')}
+              </Cell>
+              <Select value={watch('currency')} onChange={selectCurrency}>
+                {currencies.map((val) => <option key={val} value={val}>{val}</option>)}
+              </Select>
+            </div>
+
           </InputWraper>
 
           <InputWraper ent='profile' name='address' error={errors.address?.message}>

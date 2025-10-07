@@ -272,6 +272,7 @@ export default () => {
           </div>
           {services.map((s) => (
             <ServiceCard
+              profile={profile}
               key={s.serviceId}
               service={s}
               isOwner={false}

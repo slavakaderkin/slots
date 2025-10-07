@@ -5,6 +5,7 @@
   name: 'string',
   description: 'text',
   country: '?string',
+  currency: '?string',
   city: '?string',
   address: '?string',
   mapLink: '?string',

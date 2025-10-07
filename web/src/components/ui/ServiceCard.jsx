@@ -9,7 +9,7 @@ import useTelegram from '@hooks/useTelegram';
 import { Check, Clock, Edit, Trash, Calendar } from 'react-feather';
 import { formatDate, getLocalTimeFromUTC } from '@helpers/time';
 
-export default ({ service, isOwner, onClick, selected, onHandleSelect, selectedSlot, refetchServices }) => {
+export default ({ service, profile, isOwner, onClick, selected, onHandleSelect, selectedSlot, refetchServices }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { api } = useMetacom();
@@ -145,7 +145,7 @@ export default ({ service, isOwner, onClick, selected, onHandleSelect, selectedS
         }
       >
         <Text weight='1' style={{ color: theme.text_color }}>
-          {t('common.price', { price: service.price, context: !!Number(service.price) ? '' : 'free' })}
+          {t('common.price', { price: service.price, context: !!Number(service.price) ? '' : 'free', formatParams: { price: { currency: profile?.currency } } })}
         </Text>
       </Cell>
     </Section>

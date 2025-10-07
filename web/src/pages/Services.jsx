@@ -75,7 +75,7 @@ export default () => {
         <Space gap={isIos ? '130px' : '50px'}/>
         {services.map((service) => {
           const isOwner = service.profileId === profile.profileId;
-          return <ServiceCard refetchServices={() => getServices({ profileId: profile.profileId, isOwner: true })} key={service.serviceId} service={service} isOwner={isOwner}/>
+          return <ServiceCard profile={profile} refetchServices={() => getServices({ profileId: profile.profileId, isOwner: true })} key={service.serviceId} service={service} isOwner={isOwner}/>
         })}
         <Space gap='170px'/>
       </>}

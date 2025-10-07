@@ -9,7 +9,7 @@ async ({ booking, timezone, accountId }) => {
   const lines = [
     '<b>Agendamento confirmado</b> ✅\n',
     `<b>Serviço:</b> ${service.name}`,
-    `<b>Horário:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>`,
+    `<b>Horário:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'pt-br')}</u>`,
   ];
 
   if (isOwner && info?.username) lines.push(`<b>Conta TG:</b> @${info.username}`);

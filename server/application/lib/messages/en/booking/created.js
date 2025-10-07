@@ -7,7 +7,7 @@ async ({ booking, timezone }) => {
   const lines = [
     '<b>New booking</b>\n',
     `<b>Service:</b> ${service.name}`,
-   `<b>Time:</b> <u>${lib.utils.toHumanDate(datetime, timezone)}</u>`
+   `<b>Time:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'en')}</u>`
   ];
 
   if (info?.username) lines.push(`<b>TG account:</b> @${info.username}`);
@@ -20,7 +20,7 @@ async ({ booking, timezone }) => {
   
   const actionButtons = [
     { text: 'Confirm ✅', callback_data: `booking|confirm|bookingId=${bookingId}` },
-    { text: 'Cancel ❌', callback_data: `booking|cancel|bookingId=${bookingId}` }
+    { text: 'Cancel ❌', callback_data: `booking|cancel|id=${bookingId}` }
   ];
 
   if (!service.autoConfirm) {

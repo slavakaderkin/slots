@@ -10,7 +10,7 @@
       const json = buffer.data.toString();
       const parsed = JSON.parse(json);
       const countries = parsed.map(
-        ({ name, native, emoji, iso2: code }) => ({ name, native, emoji, code })
+        ({ name, native, emoji, iso2: code, currency }) => ({ name, native, emoji, code, currency })
       );
 
       return countries;

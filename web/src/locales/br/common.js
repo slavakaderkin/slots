@@ -3,7 +3,7 @@ export default {
   allowsWrite: 'Para receber notificações de agendamentos, permita que as enviemos',
   currency: 'R$',
   writeHere: 'Escreva aqui...',
-  price: '{{price, currency(currency: BRL)}}',
+  price: '{{price, currency}}',
   price_free: 'Grátis',
   date: '{{date, datetime}}',
   date_subscription: 'Assinatura até {{date, datetime}}',
@@ -14,6 +14,7 @@ export default {
   allDay: 'dia todo',
   minutes: 'minutos',
   minutes_one: '{{count}} minuto',
+  minutes_few: '{{count}} minutos',
   minutes_other: '{{count}} minutos',
   minutes_many: '{{count}} minutos',
   info: {

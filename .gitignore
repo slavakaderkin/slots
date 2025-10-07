@@ -1,6 +1,7 @@
 /server/node_modules/
 docker-compose.yml
 combine.js
+code.txt
 /server/data/
 /ansible/group_vars/
 .env
