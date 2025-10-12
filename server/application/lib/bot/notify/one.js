@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 async ({ accountId, path, args, store = false }) => {
   console.info('lib/bot/notify/one');
-  console.debug({ accountId, path, store });
+  console.debug({ accountId, path, store, args });
 
   /*const { methods } = lib.bot.notify;
   const methodName = methods[format];
@@ -16,7 +16,7 @@ async ({ accountId, path, args, store = false }) => {
   });*/
 
   const { tg: chat_id, info } = await db.pg.row('Account', { accountId });
-  if (!info?.allows_write_to_pm) return;
+  if (info?.allows_write_to_pm && !info?.allows_write_to_pm) return;
   const lng = info.language_code;
   const key = String(chat_id) + String(new Date().getTime());
   const msg = await lib.bot.notify.getMessage(path, args, lng);

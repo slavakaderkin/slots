@@ -1,5 +1,6 @@
 export default {
   you: 'É você',
+  how: 'Como?',
   allowsWrite: 'Para receber notificações de agendamentos, permita que as enviemos',
   currency: 'R$',
   writeHere: 'Escreva aqui...',

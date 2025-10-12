@@ -8,7 +8,7 @@ import useAuth from '@hooks/useAuth';
 import useTelegram from '@hooks/useTelegram';
 import { Check, Clock, Edit, Trash, Calendar } from 'react-feather';
 
-export default ({ service, selected, onHandleSelect }) => {
+export default ({ service, selected, onHandleSelect, profile }) => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { WebApp, isIos } = useTelegram();
@@ -17,7 +17,7 @@ export default ({ service, selected, onHandleSelect }) => {
   return (
     <Section 
       style={{ 
-        width: '250px',
+        width: '270px',
         border: selected ? `1.5px solid ${theme.link_color}` : 'none', 
         borderRadius: '12px' 
       }} 
@@ -45,7 +45,7 @@ export default ({ service, selected, onHandleSelect }) => {
         }
       >
         <Text weight='1' style={{ color: theme.text_color }}>
-          {t('common.price', { price: service.price, context: Number(service.price) ? '' : 'free' })}
+        {t('common.price', { price: service.price, context: !!Number(service.price) ? '' : 'free', formatParams: { price: { currency: profile?.currency } } })}
         </Text>
       </Cell>
     </Section>

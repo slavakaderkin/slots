@@ -1,9 +1,10 @@
 export default {
   you: 'Это вы',
+  how: 'Как?',
   allowsWrite: 'Чтобы получать уведомления о записях, разрешите нам их отправлять',
   currency: '₽',
   writeHere: 'Пишите тут...',
-  price: '{{price, currency(currency: RUB)}}',
+  price: '{{price, currency}}',
   price_free: 'Бесплатно',
   date: '{{date, datetime}}',
   date_subscription: 'Подписка до {{date, datetime}}',

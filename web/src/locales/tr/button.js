@@ -3,6 +3,8 @@ export default {
   close: 'Kapat',
   next: 'İleri',
   submit: 'Gönder',
+  edit: 'Yönet',
+  create: 'Oluştur',
   ok: 'Tamam',
   add: 'Ekle',
   show: 'Göster',
@@ -18,5 +20,7 @@ export default {
   trial: '14 gün ücretsiz dene',
   subscription_month: '30 günlük {{count}} ⭐️ karşılığı satın al',
   subscription_year: '1 yıllık {{count}} ⭐️ karşılığı satın al',
+  extend_month: '{{count}} ⭐️ karşılığında 30 gün uzat',
+  extend_year: '{{count}} ⭐️ karşılığında bir yıl uzat',
   meetLink: 'Bağlantıyı kaydet',
 };

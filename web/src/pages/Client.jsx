@@ -33,7 +33,7 @@ const BOOKINGS_PER_PAGE = 10;
 export default () => {
   const { clientId } = useParams();
   const { account } = useAuth();
-  const { unactiveProfile } = account;
+  const { unactiveProfile, profile } = account;
   const { api } = useMetacom();
   const location = useLocation();
   const navigate = useNavigate();
@@ -58,9 +58,6 @@ export default () => {
   
 
   useBackButton();
-
-  const { data: profile, loading: profileLoading } = 
-    useApiCall('profile.my', { autoFetch: true });
 
   const { call: getClient, data: client, loading: clientLoading } =
     useApiCall('client.byId', { autoFetch: false });
@@ -148,7 +145,7 @@ export default () => {
     setLoading(true);
     const created = await api.booking.create(booking);
     if (created) {
-      showAlert(t('popup.alert.booking.success', { context: selectedService?.autoConfirm ? 'auto' : 'pending' }));
+      showAlert(t('popup.alert.booking.success', { context: 'self' }));
       navigate(`/bookings/${created?.bookingId}`);
     } else {
       showAlert(t('popup.alert.booking.failed'));
@@ -306,7 +303,7 @@ export default () => {
     
     return (
       <div style={{ paddingTop: '12px', zIndex: 1 }}>
-        <BookingCard profile={profile} key={`booking_${index}_${booking.bookingId}`} booking={booking} isOwner={true}/>
+        <BookingCard key={`booking_${index}_${booking.bookingId}`} booking={booking} isOwner={true}/>
       </div>
     );
   }, [getBookingByGlobalIndex]);
@@ -323,7 +320,6 @@ export default () => {
   const telegramLink = username ? `https://t.me/${username}` : null;
   const toTelegram = telegramLink ? () => openTelegramLink(telegramLink) : null;
 
-  if (profileLoading || clientLoading) return <InfoPage type='loading'/>;
   if (!profile) return <InfoPage type='empty' />;
   
 
@@ -379,6 +375,7 @@ export default () => {
           <Scrollable>
             {services?.map((service) => (
               <ServiceSmallCard 
+                profile={profile}
                 key={service.serviceId}
                 service={service}
                 selected={selectedService?.serviceId === service.serviceId}

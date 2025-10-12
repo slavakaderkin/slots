@@ -18,7 +18,7 @@ export default {
       country: 'Scegli il paese dove si trovano i tuoi clienti o tu.',
       specialization: 'Chi sei in due parole: estetista, avvocato, idraulico, mago, ecc...',
       category: '',
-      mapLink: 'I clienti possono trovarti sulla mappa cliccando sul link.',
+      mapLink: 'I clienti possono trovarti sulla mappa cliccando sul link. ',
       mapLink_link: 'Dove trovare il link >',
       address: 'Se hai un indirizzo, scrivilo partendo dalla città. Lo mostreremo nel profilo.',
       slotDuration: 'Per default uno slot è di un\'ora, ma puoi ridurlo a mezz\'ora. Se i servizi sono più lunghi di un\'ora - nessun problema, il sistema lo terrà in considerazione.'

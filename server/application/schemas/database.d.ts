@@ -14,6 +14,7 @@ interface Profile {
   name: string;
   description: string;
   country?: string;
+  currency?: string;
   city?: string;
   address?: string;
   mapLink?: string;

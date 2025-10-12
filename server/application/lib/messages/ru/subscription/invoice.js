@@ -2,7 +2,7 @@
 async ({ accountId, level, type }) => {
   const period = type === 'month' ? '30 дней' : 'год';
   const label = type === 'month' ? 'Цена за 30 дней' : 'Цена за год';
-  const amount = type === 'month' ? 350  : 2500;
+  const amount = 2 //type === 'month' ? 35000  : 250000;
   const prices = JSON.stringify([{ label, amount }]);
   const title = `Подписка на ${period}`;
   const description = `Оплата подписки на сервис бронирования слотов Квик Пик.`;
@@ -12,7 +12,7 @@ async ({ accountId, level, type }) => {
     title,
     description,
     payload,
-    provider_token: '', //config.bot.payment_token,
+    provider_token: '', // config.bot.payment_token, // ''
     currency: 'XTR',
     prices,
   };

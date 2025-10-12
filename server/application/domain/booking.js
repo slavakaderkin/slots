@@ -32,7 +32,7 @@
     
     let [booking] = await db.pg.insert('Booking', record);
 
-    if (service.autoConfirm) booking = await domain.booking.confirm({ bookingId: booking.bookingId });
+    if (service.autoConfirm || clientId) booking = await domain.booking.confirm({ bookingId: booking.bookingId });
     else domain.booking.scheduleAutoCancel({ bookingId: booking.bookingId });
 
     const profileAccount = await domain.profile.getAccount({ profileId: booking.profileId });
@@ -224,8 +224,10 @@
 
     const query = lib.pg.queries.booking.byProfileId({ profileId, kind, limit, offset });
     const records = await lib.pg.builder.query(query);
+    const profile = await db.pg.row('Profile', { profileId });
     
     const mapper = async (booking) => {
+      booking['profile'] = profile;
       booking['client'] = await domain.client.byId({ clientId: booking.clientId, full: true });
       booking['service'] = await domain.service.byId({ serviceId: booking.serviceId });
       booking['slot'] = await db.pg.row('Slot', { slotId: booking.slotId });

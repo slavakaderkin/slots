@@ -3,6 +3,8 @@ export default {
   close: 'Fechar',
   next: 'Próximo',
   submit: 'Enviar',
+  create: 'Criar',
+  edit: 'Gerenciar',
   ok: 'Ok',
   add: 'Adicionar',
   show: 'Mostrar',
@@ -18,5 +20,7 @@ export default {
   trial: 'Experimente 14 dias grátis',
   subscription_month: 'Comprar por 30 dias por {{count}} ⭐️',
   subscription_year: 'Comprar por um ano por {{count}} ⭐️',
+  extend_month: 'Estender por 30 dias por {{count}} ⭐️',
+  extend_year: 'Estender por um ano por {{count}} ⭐️',
   meetLink: 'Salvar link',
 };

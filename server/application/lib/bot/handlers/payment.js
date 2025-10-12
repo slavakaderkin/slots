@@ -17,15 +17,22 @@ async (params) => {
     const paymentData = JSON.stringify(payment);
 
     let subscription = await db.pg.row('Subscription', { accountId });
+    const trial = await db.pg.row('Trial', { accountId });
 
     if (subscription) {
-      const { end: start, subscriptionId } = subscription;
-      const end = lib.utils.modTime(start, days, 'd');
-      const updates = { end, isActive: true, level };
-      await db.pg.update('Subscription', updates, { subscriptionId });
+      const { end: oldEnd, subscriptionId } = subscription;
 
+      const [lastPayment] = await db.pg.select('SubPayment', { subscriptionId }).desc('date').limit(1);
+      if (lastPayment.type === 'month' && type === 'year' && !subscription.isCancelled) {
+        await api.subscription.cancel({ subscriptionId, accountId });
+      }
+
+      const start = subscription.isActive ? oldEnd : new Date().toISOString();
+      const end = lib.utils.modTime(start, days, 'd');
+      const updates = { end, isActive: true, isCancelled: false, level };
+      await db.pg.update('Subscription', updates, { subscriptionId });
     } else {
-      const start = new Date().toISOString();
+      const start = trial?.isActive ? trial?.end : new Date().toISOString();
       const end = lib.utils.modTime(start, days, 'd');
       const record = { level, accountId, start, end, isActive: true };
       [subscription] = await db.pg.insert('Subscription', record);

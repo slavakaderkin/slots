@@ -88,7 +88,7 @@ export default () => {
       {isIos && <Space />}
      
       {!feedback && <Form {...formProps}/>}
-      {booking && <BookingCard profile={booking?.profile} booking={booking} clickable={false}/>}
+      {booking && <BookingCard booking={booking} clickable={false}/>}
       {feedback && <FeedbackCard feedback={feedback} single my />}
 
       <Space gap={isFocus ? '50px' : '200px'}/>

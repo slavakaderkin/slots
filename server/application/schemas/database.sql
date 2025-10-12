@@ -17,6 +17,7 @@ CREATE TABLE "Profile" (
   "name" varchar NOT NULL,
   "description" text NOT NULL,
   "country" varchar NULL,
+  "currency" varchar NULL,
   "city" varchar NULL,
   "address" varchar NULL,
   "mapLink" varchar NULL,

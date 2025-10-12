@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Section, Cell, Avatar, Text, SegmentedControl, Caption, Subheadline, Button } from '@telegram-apps/telegram-ui';
+import { Section, Cell, Avatar, Text, SegmentedControl, Caption, Subheadline, Button, Navigation } from '@telegram-apps/telegram-ui';
 import { GroupedVirtuoso } from 'react-virtuoso';
 import { Player } from '@lottiefiles/react-lottie-player';
 
@@ -10,11 +10,10 @@ import useAuth from '@hooks/useAuth';
 import useApiCall from '@hooks/useApiCall';
 
 import Space from '@components/layout/Space';
-import Menu from '@components/ui/Menu';
 import BookingCard from '@components/ui/BookingCard';
 import ProfileCard from '@components/ui/ProfileCard';
 import InfoPage from '@pages/Info';
-import { Calendar, X } from 'react-feather';
+import { Briefcase, Calendar, X } from 'react-feather';
 
 import animation from '../assets/animation/promo_2.json';
 
@@ -22,7 +21,7 @@ const BOOKINGS_PER_PAGE = 10;
 
 export default () => {
   const { account , token } = useAuth();
-  const { unactiveProfile } = account;
+  const { unactiveProfile, profile } = account;
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
@@ -47,13 +46,10 @@ export default () => {
   const [hasMore, setHasMore] = useState(true);
   const [allBookings, setAllBookings] = useState([]);
 
-  const { data: profile, loading: profileLoading } = 
-    useApiCall('profile.my', { autoFetch: true });
-
   const { call: getBookings, loading: bookingsLoading, error } = 
     useApiCall('booking.byAccount', { autoFetch: false });
 
-  const { call: getProfiles, data: profiles, loading: profielsLoading } = 
+  const { call: getProfiles, data: profiles } = 
     useApiCall('profile.list', { autoFetch: true });
 
   const groupedData = useMemo(() => {
@@ -196,7 +192,7 @@ export default () => {
     
     return (
       <div style={{ paddingTop: '12px', zIndex: 1 }}>
-        <BookingCard profile={profile} key={`booking_${index}_${booking.bookingId}`} booking={booking}/>
+        <BookingCard key={`booking_${index}_${booking.bookingId}`} booking={booking}/>
       </div>
     );
   }, [getBookingByGlobalIndex]);
@@ -222,8 +218,6 @@ export default () => {
     else go('/settings')();
   }
 
-  if (profileLoading) return <InfoPage type='loading'/>
-
   return (
     <>
       {isIos && <Space />}
@@ -247,6 +241,19 @@ export default () => {
           {`${info.first_name} ${info.last_name}`}
         </Cell>
       </Section>
+
+      {profile && 
+        <Section style={{ width: '100%' }}>
+          <Cell
+            before={<Briefcase />}
+            after={<Navigation></Navigation>}
+            style={{ background: theme.secondary_bg_color }}
+            onClick={go('/workspace')}
+          >
+            {t('account.profile')}
+          </Cell>
+        </Section>
+      }
       
       {!profile && isBannerOpen && 
         <div
@@ -257,7 +264,7 @@ export default () => {
             justifyContent: 'space-between',
             borderRadius: '10px',
             //padding: '0 8px',
-            background: '#eb8218',
+            background: '#f1ae1e',
             margin: '0 12px',
             border: `1px solid ${theme.link_color}`
           }}
@@ -269,10 +276,10 @@ export default () => {
               style={{ padding: '0 0 0 12px', width: 54, height: 54 }}
             />
           <div onClick={bannerHandler} style={{ padding: '8px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-            <Subheadline>{t('account.cta.header', { context: !unactiveProfile ? 'noprofile' : '' })}</Subheadline>
-            <Caption >{t('account.cta.description', { context: !unactiveProfile ? 'noprofile' : '' })}</Caption>
+            <Subheadline style={{ color: '#000000' }}>{t('account.cta.header', { context: !unactiveProfile ? 'noprofile' : '' })}</Subheadline>
+            <Caption style={{ color: '#000000' }}>{t('account.cta.description', { context: !unactiveProfile ? 'noprofile' : '' })}</Caption>
           </div>
-          <div  style={{ padding: '0 12px' }} onClick={closeBanner}><X size={12}/></div>
+          <div  style={{ padding: '0 12px' }} onClick={closeBanner}><X  style={{ color: '#000000' }} size={16}/></div>
         </div>
       }
 
@@ -315,8 +322,6 @@ export default () => {
         </>
        )
       }
-
-      {profile && <Menu />}
     </>
 
   )

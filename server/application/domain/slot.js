@@ -3,18 +3,19 @@
     console.info('domain/slot/create');
     console.debug({ params });
 
-    await db.pg.insert('Slot', params);
-    return true;
+    const [slot] = await db.pg.insert('Slot', params);
+    return { action: 'added', datetime: slot.datetime };
   },
 
   async delete(slotId) {
     console.info('domain/slot/delete');
     console.debug({ slotId });
 
+    const slot = await db.pg.row('Slot', { slotId });
     const booking = await db.pg.row('Booking', { slotId });
     if (booking) return false;
     await db.pg.delete('Slot', { slotId });
-    return true;
+    return { action: 'deleted', datetime: slot.datetime };
   },
 
   async mySlots({ profileId, withBooking }) {

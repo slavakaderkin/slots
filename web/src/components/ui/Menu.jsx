@@ -39,14 +39,10 @@ const USER_MENU = [
 const PROFILE_MENU = [
   { id: 'account', icon: AccountIcon },
   { id: 'workspace', icon: ProfileIcon },
-  { id: 'clients', icon: ClientsIcon },
-  //{ id: 'stats', icon: StatsIcon },
-  { id: 'settings', icon: SettingsIcon },
 ];
 
 export default ({ children }) => {
   const { account } = useAuth();
-  const { unactiveProfile } = account;
   const { themeParams: theme, platform } = useTelegram().WebApp;
   const { t } = useTranslation();
   const { go, currentPath, isHome } = useNavigation();

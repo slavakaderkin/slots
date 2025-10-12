@@ -1,9 +1,10 @@
 export default {
   you: 'This is you',
+  how: 'How?',
   allowsWrite: 'To receive booking notifications, allow us to send them',
   currency: '€',
   writeHere: 'Write here...',
-  price: '{{price, currency(currency: EUR)}}',
+  price: '{{price, currency}}',
   price_free: 'Free',
   date: '{{date, datetime}}',
   date_subscription: 'Subscription until {{date, datetime}}',

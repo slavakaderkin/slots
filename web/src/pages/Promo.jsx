@@ -11,6 +11,8 @@ import useAuth from '@hooks/useAuth';
 
 import MainButton from '@components/ui/MainButton';
 import Space from '@components/layout/Space';
+import PremiumBotBanner from '@components/ui/PremiumBotBanner';
+import ReferalProgram from '@components/ui/ReferalProgram';
 
 import { ChevronRight } from 'react-feather';
 
@@ -34,7 +36,11 @@ export default () => {
   const { WebApp, isIos } = useTelegram();
   const { HapticFeedback, themeParams: theme, openInvoice, showAlert, openTelegramLink} = WebApp;
   const { trial, subscription, accountId } = account;
-  const [type, setType] = useState('month');
+  const { lastPayment } = subscription || {};
+  const hasActiveSubscription = subscription?.isActive && !subscription?.isCancelled;
+  const isMonthSubscription = hasActiveSubscription && lastPayment?.type === 'month';
+
+  const [type, setType] = useState(isMonthSubscription ? 'year' : 'month');
   const [level, setLevel] = useState('min');
   const [loading, setLoading] = useState(false);
 
@@ -90,7 +96,7 @@ export default () => {
       size='l'
       disabled={loading}
       onClick={secondButtonHandler}
-      style={{ marginBottom: '16px' }}
+      style={{ marginBottom: '12px' }}
     >
       {secondButtonText}
     </Button>
@@ -123,25 +129,8 @@ export default () => {
             style={{ width: 150, height: 150 }}
           />
         </Placeholder>
-
-        {renderTabs()}
-        <div
-          onClick={() => openTelegramLink('https://t.me/PremiumBot')}
-          style={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            borderRadius: '10px',
-            //background: '#eb8218',
-            margin: '12px',
-            border: `1px solid ${theme.link_color}`
-          }}
-        > 
-
-          <div style={{ padding: '12px' }}><Subheadline>{t('promo.stars')}</Subheadline></div>
-          <div style={{ padding: '12px' }}><ChevronRight size={20}/></div>
-        </div>
+        {!isMonthSubscription && renderTabs()}
+        
       </div>
     
       <Section>
@@ -158,6 +147,7 @@ export default () => {
                   style={{ width: 48, height: 48 }}
                 />
               }
+              style={{ background: theme.secondary_bg_color }}
               description={t(`promo.${key}.description`)}
             >
               {t(`promo.${key}.header`)}
@@ -166,16 +156,21 @@ export default () => {
         })}
       </Section>
 
+      <ReferalProgram />
+
+      <PremiumBotBanner />
+      
+
       <Space gap={(!trial && !subscription) ? '200px' : '120px'} />
 
-      <MainButton
+      {<MainButton
         loading={loading}
         disabled={loading}
         text={mainButtonText}
         handler={mainButtonHandler}
       >
         {!trial && !subscription && renderSecondButton()}
-      </MainButton>
+      </MainButton>}
     </>
 
   )

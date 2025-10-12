@@ -3,6 +3,7 @@ export default {
     bookings: 'Записи',
     profiles: 'Специалисты',
   },
+  profile: 'Рабочий кабинет',
   cta: {
     header: 'Оказываете услуги?',
     description: 'Создайте профиль с услугами и слотами за 5 минут и принимайте клиентов из Telegram.',

@@ -10,5 +10,6 @@ export default {
     description_noprofile: 'You have a subscription but still no profile. Create one in 5 minutes and start accepting clients.',
   },
   empty_bookings: 'We\'ll put your future bookings here',
-  empty_profiles: 'Your favorite professionals will be waiting here'
+  empty_profiles: 'Your favorite professionals will be waiting here',
+  profile: 'Workspace',
 }

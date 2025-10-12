@@ -54,7 +54,7 @@ export default ({ service, profile, isOwner, onClick, selected, onHandleSelect, 
     if (isOwner) {
       return (
         <div style={{ display: 'flex', gap: '8px' }}>
-          <IconButton size='s' onClick={go(`/settings/services/edit/${service.serviceId}`)}><Edit /></IconButton>
+          <IconButton size='s' onClick={go(`/services/edit/${service.serviceId}`)}><Edit /></IconButton>
           <IconButton size='s' onClick={switchServiceState('arhived')}><Trash /></IconButton>
         </div>
       );
@@ -105,7 +105,7 @@ export default ({ service, profile, isOwner, onClick, selected, onHandleSelect, 
       >
         {service.name}
       </Cell>
-      {service.description && <Cell 
+      {service.description && !isOwner && <Cell 
         style={{ background: theme.secondary_bg_color }}
         multiline
       >

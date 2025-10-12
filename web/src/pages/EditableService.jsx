@@ -91,7 +91,7 @@ export default () => {
       await metacom.api.service.save(formData);
      
       showAlert(t('popup.alert.service.save.success'));
-      navigate('/settings/services');
+      navigate('/services');
     } catch (error) {
       console.error('Save error:', error);
       showAlert(t('popup.alert.service.save.failed'));
@@ -104,7 +104,8 @@ export default () => {
     ...formMethods,
     errors,
     handleFocus,
-    handleBlur
+    handleBlur,
+    profile: profileData
   };
 
   // Показываем загрузку если данные еще грузятся
@@ -119,15 +120,12 @@ export default () => {
       <Space gap={isFocus ? '50px' : '200px'}/>
       
       {!isFocus && (
-        <Menu>
-          <MainButton
-            loading={updating} 
-            disabled={!isDirty || Object.keys(errors).length > 0}
-            text={t('button.save')}
-            handler={handleSubmit(handleSave)}
-            wrapped={true}
-          />
-        </Menu>
+        <MainButton
+          loading={updating} 
+          disabled={!isDirty || Object.keys(errors).length > 0}
+          text={t('button.save')}
+          handler={handleSubmit(handleSave)}
+        />
       )}
     </>
   );

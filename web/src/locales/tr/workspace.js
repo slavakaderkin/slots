@@ -9,6 +9,7 @@ export default {
   },
   empty_future: 'Gelecekteki randevularınızı buraya ekleyeceğiz',
   empty_past: 'Geçmiş randevularınızı buraya ekleyeceğiz',
+  empty_profile: 'Henüz bir profiliniz yok, ama oluşturması kolay',
   empty_description: '',
   tabs: {
     bookings_future: 'Gelecek Randevular',
@@ -17,5 +18,15 @@ export default {
   sub: {
     expired: 'Abonelik sona erdi',
     expired_description: 'Profil erişilebilir, ancak yeni zaman aralığı eklenemez veya müşteri kaydedilemez.',
+    referal: '{{date, datetime}} tarihine kadar abonelik, ancak altı ay ücretsiz uzatabilirsiniz',
+  },
+  slot_added: '{{day}} günü {{time}} saatindeki slot eklendi',
+  slot_deleted: '{{day}} günü {{time}} saatindeki slot silindi',
+  menu: {
+    workspace: 'Randevular',
+    slots: 'Slotlar',
+    services: 'Hizmetler',
+    clients: 'Müşteriler',
+    settings: 'Ayarlar'
   }
 }

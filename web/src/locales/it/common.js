@@ -1,9 +1,10 @@
 export default {
   you: 'Sei tu',
+  how: 'Come?',
   allowsWrite: 'Per ricevere notifiche sugli appuntamenti, permetici di inviarle',
   currency: '€',
   writeHere: 'Scrivi qui...',
-  price: '{{price, currency(currency: EUR)}}',
+  price: '{{price, currency}}',
   price_free: 'Gratuito',
   date: '{{date, datetime}}',
   date_subscription: 'Abbonamento fino al {{date, datetime}}',

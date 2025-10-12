@@ -30,7 +30,7 @@
     const { ip } = context.client;
     
     const token = api.auth.provider.generateToken();
-    await api.auth.provider.createSession(token, account, { ip, accountId });
+    await api.auth.provider.createSession(token, info, { ip, accountId });
     context.client.startSession(token, account);
 
     return { account, token };

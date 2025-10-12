@@ -228,7 +228,6 @@ export default () => {
       }
 
       <BookingCard
-        profile={profile}
         booking={booking}
         isOwner={isOwner}
         selected={true}

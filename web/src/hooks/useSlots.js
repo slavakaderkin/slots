@@ -5,7 +5,7 @@ import { getLocalTimeFromUTC } from '@helpers/time';
 
 export default (profile, options = { withBooking: false }) => {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showFullDay, setShowFullDay] = useState(false);
+  const [showFullDay, setShowFullDay] = useState(true);
   
   const { call: getSlots, data: slotsData, loading: slotsLoading } =
     useApiCall('slot.byDay', { autoFetch: false });

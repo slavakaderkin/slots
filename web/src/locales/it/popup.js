@@ -1,8 +1,9 @@
 export default {
   alert: {
     booking: {
-      success_pending: 'Prenotazione inviata, attendi la conferma.',
-      success_auto: 'Tutto OK, hai prenotato il servizio con successo.',
+      success_pending: 'Inviata la prenotazione, bisogna aspettare la conferma.',
+      success_auto: 'Tutto OK, hai prenotato con successo il servizio.',
+      success_self: 'Fatto! Hai prenotato con successo un cliente',
       failed: ':( Impossibile inviare la prenotazione.'
     },
     payment: {
@@ -16,11 +17,12 @@ export default {
     },
     profile: {
       save: {
-        success_toservices: 'Fantastico! Ora hai un profilo. Resta solo da aggiungere i servizi.',
+        success_toservices: 'Ottimo! Ora hai un profilo. Resta da aggiungere i servizi.',
         success_toprofile: 'Fatto! Abbiamo modificato il profilo, ecco come appare ora.',
         failed: ':( Impossibile salvare il profilo.',
       },
-      sended: 'Profilo inviato nella chat, puoi fissarlo nel canale o inoltrare.'
+      sended: 'Profilo inviato nella chat, puoi fissarlo nel canale o inviarlo.',
+      copied: 'Link del profilo copiato negli appunti.',
     },
     service: {
       save: {
@@ -30,9 +32,12 @@ export default {
     },
     feedback: {
       save: {
-        success: 'Fatto! Abbiamo inviato la recensione.',
-        failed: ':( Impossibile inviare la recensione.',
+        success: 'Fatto! Abbiamo inviato il feedback.',
+        failed: ':( Impossibile inviare il feedback.',
       }
+    },
+    subscription: {
+      cancelled: 'Rinnovo abbonamento annullato'
     },
     meetLink_saved: 'Fatto! Abbiamo salvato il link.',
     meetLink_copied: 'Link copiato negli appunti.',
@@ -40,7 +45,8 @@ export default {
   confirm: {
     profile_map: 'Aprire il link con la mappa?',
     booking_confirm: 'Confermare la prenotazione?',
-    booking_cancel: 'Cancellare la prenotazione?',
+    booking_cancel: 'Annullare la prenotazione?',
     service_remove: 'Sicuro di voler eliminare?',
+    subscription_cancel: 'Annullare l\'abbonamento?'
   }
 }

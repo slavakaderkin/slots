@@ -7,6 +7,9 @@
     console.debug({ accountId });
 
     try {
+      const exists = await db.pg.row('Trial', { accountId });
+      if (exists) return false;
+      
       const start = new Date().toISOString();
       const end = lib.utils.modTime(start, 14, 'd');
       const record = { start, end, accountId };

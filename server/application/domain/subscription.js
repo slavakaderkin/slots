@@ -22,4 +22,20 @@
     const messagePath = 'subscription.expired';
     lib.bot.notify.one({ accountId, path: messagePath });
   },
+
+  async byAccount({ accountId }) {
+    console.info('domain/subscription/byAccount');
+    console.debug({ accountId });
+
+    const subscription = await db.pg.row('Subscription', { accountId });
+    if (subscription) {
+      const { subscriptionId } = subscription;
+      const [lastPayment, ...payments] = await db.pg.select('SubPayment', { subscriptionId }).desc('date');
+      subscription['payments'] = [lastPayment, ...payments];
+      subscription['lastPayment'] = lastPayment;
+    }
+
+    const trial = await db.pg.row('Trial', { accountId });
+    return { subscription, trial };
+  }
 });

@@ -10,5 +10,6 @@ export default {
     description_noprofile: 'Hai un abbonamento ma ancora nessun profilo. Crealo in 5 minuti e accetta clienti.',
   },
   empty_bookings: 'Metteremo qui i tuoi futuri appuntamenti',
-  empty_profiles: 'Qui troverai i tuoi professionisti preferiti'
+  empty_profiles: 'Qui troverai i tuoi professionisti preferiti',
+  profile: 'Area di lavoro',
 }

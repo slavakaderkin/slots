@@ -1,29 +1,33 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Section, Cell, Avatar, Caption, Text, SegmentedControl, Navigation, Subheadline } from '@telegram-apps/telegram-ui';
+import { 
+  Section, 
+  Cell, 
+  Avatar, 
+  Caption, 
+  Text, 
+  SegmentedControl, 
+  Navigation, 
+  Subheadline,
+  InlineButtons,
+  Button
+} from '@telegram-apps/telegram-ui';
 import { GroupedVirtuoso } from 'react-virtuoso';
 import { Player } from '@lottiefiles/react-lottie-player';
 
 import useTelegram from '@hooks/useTelegram';
 import useAuth from '@hooks/useAuth';
 import useMetacom from '@hooks/useMetacom';
-import useSlots from '@hooks/useSlots';
 import useApiCall from '@hooks/useApiCall';
 
-import DaysScroll from '@components/ui/DaysScroll';
-import TimeSlotsGrid from '@components/ui/TimeSlotsGrid';
 import Space from '@components/layout/Space';
 import Menu from '@components/ui/Menu';
 import BookingCard from '@components/ui/BookingCard';
-import RatingBadge from '@components/ui/RatingBadge';
+import ProfileHeader from '@components/ui/ProfileHeader';
+import SubscriptionBanner from '@components/ui/SubscriptionBanner';
 
 import InfoPage from '@pages/Info';
-
-import { createUTCDateFromLocal } from '@helpers/time';
-import { Calendar, Star, X, ChevronRight } from 'react-feather';
-
-import animation from '../assets/animation/expired.json';
 
 const BOOKINGS_PER_PAGE = 10;
 
@@ -32,7 +36,7 @@ export default () => {
   const { t } = useTranslation();
   const { api } = useMetacom();
   const { account, token } = useAuth();
-  const { unactiveProfile, subscription, trial } = account;
+  const { unactiveProfile, subscription, trial, profile } = account;
   const subscribtionEndDate = subscription?.end || trial?.end;
   const { WebApp, isIos } = useTelegram();
   const { HapticFeedback, themeParams: theme } = WebApp;
@@ -40,6 +44,7 @@ export default () => {
 
   const [isSlotsOpen, setIsSlotsOpen] = useState(false);
   const [selectedBooking, setSlotBooking] = useState(null);
+  const [slotAction, setSlotAction] = useState(null);
   const [offset, setOffset] = useState(0);
   const [hasMore, setHasMore] = useState(true);
   const [allBookings, setAllBookings] = useState([]);
@@ -50,9 +55,6 @@ export default () => {
     setBookingsKind(kind)
     loadInitialBookings(kind);
   }
-
-  const { data: profile, loading: profileLoading } = 
-    useApiCall('profile.my', { autoFetch: true });
 
   const { call: getBookings, loading: bookingsLoading, error } = 
     useApiCall('booking.byProfile', { autoFetch: false });
@@ -116,10 +118,7 @@ export default () => {
     for (let i = 0; i < groupedData.length; i++) {
       const groupDate = new Date(groupedData[i].date);
       groupDate.setHours(0, 0, 0, 0);
-    
-      if (groupDate.getTime() >= today.getTime()) {
-        return totalBefore;
-      }
+      if (groupDate.getTime() >= today.getTime()) return totalBefore;
       totalBefore += groupedData[i].count;
     }
     
@@ -136,9 +135,7 @@ export default () => {
 
   // Загрузка начальных данных
   useEffect(() => {
-    if (profile) {
-      loadInitialBookings(bookingsKind);
-    }
+    if (profile) loadInitialBookings(bookingsKind);
   }, [profile, bookingsKind]);
 
   const loadInitialBookings = useCallback(async (kind) => {
@@ -226,115 +223,17 @@ export default () => {
     
     return (
       <div style={{ paddingTop: '12px', zIndex: 1 }}>
-        <BookingCard profile={profile} key={`booking_${index}_${booking.bookingId}`} isOwner={true} booking={booking}/>
+        <BookingCard key={`booking_${index}_${booking.bookingId}`} isOwner={true} booking={booking}/>
       </div>
     );
   }, [getBookingByGlobalIndex]);
 
-  // Footer для загрузки
-  const Footer = useCallback(() => {
-    if (allBookings.length === 0 && !bookingsLoading) return <InfoPage type='empty' />
-    else return <Space gap='150px'/>
-  }, [allBookings.length]);
 
   const go = useCallback((path) => () => {
     HapticFeedback.impactOccurred('soft');
     navigate(path);
   }, [HapticFeedback, navigate]);
 
-  const {
-    selectedDate,
-    setSelectedDate,
-    showFullDay,
-    setShowFullDay,
-    days,
-    timeSlots,
-    slots,
-    slotsLoading,
-    formatDate,
-    loadSlots
-  } = useSlots(profile, { withBooking: true });
-
-  useEffect(() => {
-    if (isSlotsOpen) {
-      loadSlots(selectedDate);
-    }
-  }, [isSlotsOpen, selectedDate, loadSlots]);
-
-  const openSlots = useCallback(() => {
-    HapticFeedback.impactOccurred('soft');
-    if (!unactiveProfile) {
-      setIsSlotsOpen(true);
-      setSelectedDate(new Date());
-    } else {
-      //setBannerIsOpen(true);
-    }
-    
-  }, [HapticFeedback, setSelectedDate]);
-
-  const closeSlots = useCallback(() => {
-    HapticFeedback.impactOccurred('soft');
-    if (!unactiveProfile) {
-      setSlotBooking(null);
-      setIsSlotsOpen(false);
-    } else {
-      //setBannerIsOpen(false);
-    }
-  }, [HapticFeedback]);
-
-  const handleDateSelect = useCallback((date) => {
-    HapticFeedback.impactOccurred('light');
-    setSlotBooking(null);
-    setSelectedDate(date);
-  }, [HapticFeedback, setSelectedDate]);
-
-  const handleSlotClick = useCallback(async (time, slot) => {
-    HapticFeedback.impactOccurred('soft');
-    
-    if (slot?.booking) {
-      setSlotBooking(slot.booking);
-      return;
-    } else if (slot?.isBlocked) {
-      HapticFeedback.notificationOccurred('error');
-      return;
-    }
-    
-    try {
-      const datetime = createUTCDateFromLocal(time, selectedDate);
-
-      await api.slot.toggle({ 
-        datetime,
-        profileId: profile.profileId,
-        accountId: account.accountId,
-        token
-      });
-
-      loadSlots(selectedDate);
-    } catch (error) {
-      console.error('Slot booking failed:', error);
-    }
-  }, [selectedDate, profile, account, loadSlots]);
-
-  const handleToggleFullDay = useCallback(() => {
-    setShowFullDay(prev => !prev);
-  }, [setShowFullDay]);
-
-  const renderCalendarHint = () => {
-    const { slotCount } = profile;
-    if (slotCount === 0) {
-      return (
-        <div style={{ padding: '4px 12px' }}>
-          <Caption>{t('workspace.hint.slots', { context: 'none' })}</Caption>
-        </div>
-      );
-    } else if (slotCount < 5) {
-      return (
-        <div style={{ padding: '4px 12px' }}>
-          <Caption>{t('workspace.hint.slots', { count: slotCount })}</Caption>
-        </div>
-      );
-    }
-  };
 
   const renderTabs = () => (
     <SegmentedControl style={{ maxHeight: 32, background: theme.secondary_bg_color }}>
@@ -347,105 +246,18 @@ export default () => {
     </SegmentedControl>
   );
 
-  const renderSubscriptionDate = () => {
-    const formatParams = { date: { day: 'numeric', month: 'long', year: 'numeric' } };
-    const date = new Date(subscribtionEndDate);
-    const text = unactiveProfile ? 
-      t('workspace.sub.expired') :
-      t('common.date', { date, formatParams, context: 'subscription' });
-    return <Caption>{text}</Caption>
-  };
-
-  if (profileLoading) return <InfoPage type='loading'/>;
-  if (!profile && (subscription?.isActive || trial?.isActive)) navigate('/settings');
-  if (!profile && !(subscription?.isActive || trial?.isActive)) navigate('/promo');
-
   return (
     <>
       {isIos && <Space />}
-      
-      <Section style={{ width: '100%' }}>
-        <Cell
-          style={{ background: theme.secondary_bg_color, padding: '8px 12px' }}
-          onClick={go(`/preview/${profile.profileId}`)}
-          subhead={<RatingBadge rating={profile?.rating}/>}
-          subtitle={renderSubscriptionDate()}
-          before={<Avatar src={profile.photo} size={52}></Avatar>}
-          after={<Navigation></Navigation>}
-        >
-          {profile?.name}
-        </Cell>
-      </Section>
+      <SubscriptionBanner />
+      <ProfileHeader />
+  
+      {profile && renderTabs()}
 
-      {unactiveProfile 
-        ? <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              borderRadius: '10px',
-              //padding: '0 8px',
-              background: '#eb8218',
-              margin: '0 12px',
-              border: `1px solid ${theme.link_color}`
-            }}
-          > 
-              <Player
-                src={animation}
-                loop
-                autoplay
-                style={{ padding: '0 0 0 12px', width: 54, height: 54 }}
-              />
-            <div onClick={go('/promo')} style={{ padding: '8px 12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <Subheadline>{t('workspace.sub.expired')}</Subheadline>
-              <Caption >{t('workspace.sub.expired', { context: 'description' })}</Caption>
-            </div>
-             <div  style={{ padding: '0 12px' }}><ChevronRight size={20}/></div>
-          </div>
-
-        : <Section style={{ width: '100%' }} footer={!isSlotsOpen && renderCalendarHint()}>
-            <Cell
-              style={{ background: theme.secondary_bg_color }}
-              onClick={isSlotsOpen ? closeSlots : openSlots}
-              before={!isSlotsOpen && <Calendar />}
-              after={isSlotsOpen && <X />}
-            >
-              {isSlotsOpen ? t('button.close') : t('workspace.calendar')}
-            </Cell>
-          </Section>
-      }
-
-      {!isSlotsOpen && renderTabs()}
-     
-      {isSlotsOpen && (
-        <>
-          <div style={{ width: '100%' }}>
-            <DaysScroll
-              days={days}
-              selectedDate={selectedDate}
-              formatDate={formatDate}
-              onDateSelect={handleDateSelect}
-            />
-          </div>
-        
-          <TimeSlotsGrid
-            timeSlots={timeSlots}
-            slots={slots}
-            selectedDate={selectedDate}
-            showFullDay={showFullDay}
-            onSlotClick={handleSlotClick}
-            onToggleFullDay={handleToggleFullDay}
-          />
-        </>
-      )}
-
-      {selectedBooking && isSlotsOpen && <BookingCard isOwner={true} booking={selectedBooking}/>}
-
-      {!isSlotsOpen && allBookings.length > 0 && (
+      {allBookings.length > 0 && (
         <GroupedVirtuoso
           ref={bookingList}
-          components={{ Footer }}
+          components={{ Footer: () => <Space gap='150px'/> }}
           increaseViewportBy={{ top: 3, bottom: 3 }}
           groupCounts={groupedData.map(g => g.count)}
           style={{ width: "100%", height: '100%' }}
@@ -456,21 +268,32 @@ export default () => {
         />
       )}
 
-      {isSlotsOpen && <Space gap='120px'/>}
-
-      {!isSlotsOpen && allBookings.length === 0 && (
-          <>
-            <InfoPage
-              type='empty' 
-              header={t('workspace.empty', { context: bookingsKind })} 
-              text={t('workspace.empty', { context: 'description' })}
-            />
-            <Space gap='120px'/>
-          </>
-        )
+      {allBookings.length === 0 && profile &&
+        <>
+          <InfoPage
+            type='empty' 
+            header={t('workspace.empty', { context: bookingsKind })} 
+            text={t('workspace.empty', { context: 'description' })}
+          />
+          <Space gap='120px'/>
+        </>
       }
 
-      <Menu />
+      {!profile && 
+        <>
+          <InfoPage
+            type='empty' 
+            header={t('workspace.empty', { context: 'profile' })} 
+            button={
+              <Button onClick={ go((subscription?.isActive || trial?.isActive) ? '/settings' : '/promo')}>
+                {t('button.create')}
+              </Button>
+            }
+          />
+          <Space gap='120px'/>
+        </>
+      }
+
     </>
   );
 };

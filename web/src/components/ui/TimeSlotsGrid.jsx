@@ -1,6 +1,6 @@
 // components/slots/TimeSlotsGrid.jsx
-import { Chip, Avatar, Section, Cell, Text } from '@telegram-apps/telegram-ui';
-import { Clock } from 'react-feather';
+import { Chip, Avatar, Section, Cell, Text, Caption } from '@telegram-apps/telegram-ui';
+import { Clock, Maximize, Minimize } from 'react-feather';
 import { useTranslation } from 'react-i18next';
 import { useMemo } from 'react';
 import useTelegram from '@hooks/useTelegram';
@@ -15,7 +15,8 @@ const TimeSlotsGrid = ({
   onSlotClick,
   onToggleFullDay,
   selectedSlot,
-  selectedService
+  selectedService,
+  slotCount,
 }) => {
   const { t } = useTranslation();
   const { themeParams: theme } = useTelegram().WebApp;
@@ -134,6 +135,22 @@ const TimeSlotsGrid = ({
     return !isDisabled;
   };
 
+  const renderSlotsHint = () => {
+    if (slotCount === 0) {
+      return (
+        <div style={{ padding: '4px 12px' }}>
+          <Caption>{t('workspace.hint.slots', { context: 'none' })}</Caption>
+        </div>
+      );
+    } else if (slotCount < 5) {
+      return (
+        <div style={{ padding: '4px 12px' }}>
+          <Caption>{t('workspace.hint.slots', { count: slotCount })}</Caption>
+        </div>
+      );
+    }
+  };
+
   const renderTimeSlot = (time, index) => {
     const { slot, isDisabled, clientAvatarUrl, backgroundColor, hasConflict } = getSlotData(time);
     
@@ -152,18 +169,24 @@ const TimeSlotsGrid = ({
       </Chip>
     );
   };
+
   const filteredSlots = timeSlots.filter(filterTimeSlot);
 
   return (
-    <Section
-      style={{ width: '100%' }}
-      footer={
-        <Cell onClick={onToggleFullDay} before={<Clock size={16} />}>
-          {showFullDay ? t('button.hide') : t('button.show')}
-        </Cell>
-      }
-    >
-   
+    <>
+      <Section
+        style={{ width: '100%' }}
+        footer={!forBooking &&
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Cell 
+              onClick={onToggleFullDay} 
+              description={showFullDay ? t('button.hide') : t('button.show')}
+              before={showFullDay ? <Minimize size={16} /> : <Maximize size={16} />}>
+            </Cell>
+          </div>
+        }
+      >
+    
         {filteredSlots.length === 0 
           ? <div style={{ background: theme.secondary_bg_color, padding: '12px', width: '100%' }}>
               <Text style={{ textAlign: 'center' }}>{t('profile.noSlots')}</Text> 
@@ -172,7 +195,9 @@ const TimeSlotsGrid = ({
               {filteredSlots.map(renderTimeSlot)}
             </div>
         }
-    </Section>
+      </Section>
+      {!forBooking && renderSlotsHint()}
+    </>
   );
 };
 

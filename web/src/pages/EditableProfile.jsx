@@ -45,7 +45,7 @@ export default () => {
     specialization: '',
     slotDuration: 60,
     country: '',
-    currency: '',
+    currency: 'USD',
     city: '',
     address: '',
     mapLink: '',
@@ -102,7 +102,7 @@ export default () => {
         const name = `${Date.now()}.${ext}`;
         await upload(imageFile, name, path);
       }
-      navigate(!profile ? '/settings/services' : `/preview/${profile.profileId}`);
+      navigate(!profile ? '/services' : `/preview/${profile.profileId}`);
       showAlert(t('popup.alert.profile.save.success', { context: profile ? 'toprofile' : 'toservices' }));
     } catch {
       showAlert(t('popup.alert.profile.save.failed'));
@@ -121,24 +121,6 @@ export default () => {
     });
   };
 
-  const renderTabs = () => (
-    <div style={{ 
-      top: 0, 
-      width: '100%', 
-      background: theme.bottom_bar_bg_color, 
-      position: 'fixed', 
-      zIndex: 999 
-    }}>
-      {isIos && <Space gap='90px'/>}
-      <TabsList style={{ maxHeight: '40px' }}>
-        <TabsList.Item selected>{t('settings.tabs.profile')}</TabsList.Item>
-        <TabsList.Item disabled={!profile} onClick={go('/settings/services')}>
-          {t('settings.tabs.services')}
-        </TabsList.Item>
-      </TabsList>
-    </div>
-  );
-
   const formProps = {
     ...formMethods,
     errors,
@@ -146,10 +128,16 @@ export default () => {
     handleBlur,
   };
 
+  const buttonProps = {
+    loading: updating || loading,
+    disabled: Object.keys(errors).length > 0 || !imageUrl,
+    text: t('button.save'),
+    handler: handleSubmit(handleSave)
+  };
+
   return (
     <>
-      <Space gap={isIos ? '140px' : '70px'}/>
-      {renderTabs()}
+      {isIos && <Space />}
 
       <div style={{ width: '100%' }}>
         <input 
@@ -181,22 +169,7 @@ export default () => {
 
       <Space gap={isFocus ? '50px' : '200px'}/>
       
-      {!isFocus && (() => {
-        const buttonProps = {
-          loading: updating || loading,
-          disabled: Object.keys(errors).length > 0,
-          text: t('button.save'),
-          handler: handleSubmit(handleSave)
-        };
-
-        return profile ? (
-          <Menu>
-            <MainButton {...buttonProps} wrapped={true} />
-          </Menu>
-        ) : (
-          <MainButton {...buttonProps} />
-        );
-      })()}
+      {!isFocus && <MainButton {...buttonProps} />}
     </>
   );
 };
@@ -210,14 +183,14 @@ const imageLabelStyle = {
   width: '100%'
 };
 
-const imageContainerStyle = (theme) => ({
+const imageContainerStyle = (theme, error) => ({
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',
   width: '100%',
   aspectRatio: '1/1',
   borderRadius: '10px',
-  border: `1px dashed ${theme.link_color}`,
+  border: `1px ${error ? 'solid' : 'dashed'} ${error ? theme.destructive_text_color : theme.link_color}`,
   background: theme.section_bg_color
 });
 

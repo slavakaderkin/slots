@@ -4,6 +4,7 @@ import useTelegram from '@hooks/useTelegram';
 import Info from '@pages/Info';
 
 import { getClientTimezone } from '@helpers/time';
+import useApiCall from '@hooks/useApiCall';
 
 export const context = createContext(null);
 

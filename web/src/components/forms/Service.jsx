@@ -6,7 +6,7 @@ import { Input, Textarea, Section, Text, Cell, Switch } from '@telegram-apps/tel
 import useTelegram from '@hooks/useTelegram';
 import InputWraper from '@components/forms/helpers/InputWraper';
 
-export default ({ control, register, errors, handleFocus, handleBlur, watch, setValue, trigger }) => {
+export default ({ control, register, errors, handleFocus, handleBlur, watch, setValue, trigger, profile }) => {
   const { t } = useTranslation();
   const { themeParams: theme, HapticFeedback } = useTelegram().WebApp;
   
@@ -52,7 +52,7 @@ export default ({ control, register, errors, handleFocus, handleBlur, watch, set
             type='tel'
             {...genInputProps('price')}
             status={errors.price ? 'error' : 'default'} 
-            after={<Text>{t('common.currency')}</Text>}
+            after={<Text>{profile?.currency}</Text>}
           />
         </InputWraper>
 

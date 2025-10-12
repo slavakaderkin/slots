@@ -18,7 +18,7 @@ export default {
       country: 'Müşterilerinizin bulunduğu veya sizin bulunduğunuz ülkeyi seçin.',
       specialization: 'İki kelimeyle kimsiniz: manikürcü, avukat, tesisatçı, sihirbaz vb...',
       category: '',
-      mapLink: 'Müşterileriniz bağlantıya tıklayarak sizi haritada bulabilir.',
+      mapLink: 'Müşterileriniz bağlantıya tıklayarak sizi haritada bulabilir. ',
       mapLink_link: 'Bağlantıyı nereden alırım >',
       address: 'Adresiniz varsa, şehirden başlayarak yazın. Profilde göstereceğiz.',
       slotDuration: 'Varsayılan olarak bir aralık bir saattir, ancak yarım saate kadar daraltabilirsiniz. Hizmetler bir saatten uzunsa - sorun değil, sistem bunu hesaba katacaktır.'

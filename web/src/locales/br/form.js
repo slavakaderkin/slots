@@ -18,7 +18,7 @@ export default {
       country: 'Escolha o país onde seus clientes estão localizados ou você está.',
       specialization: 'Quem você é em duas palavras: manicure, advogado, encanador, mágico, etc...',
       category: '',
-      mapLink: 'Clientes podem encontrar você no mapa clicando no link.',
+      mapLink: 'Clientes podem encontrar você no mapa clicando no link. ',
       mapLink_link: 'Onde conseguir o link >',
       address: 'Se você tem um endereço, escreva começando pela cidade. Vamos mostrar no perfil.',
       slotDuration: 'Por padrão, um horário é de uma hora, mas pode reduzir para meia hora. Se os serviços forem mais longos - sem problema, o sistema vai considerar.'

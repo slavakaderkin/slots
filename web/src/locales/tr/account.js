@@ -10,5 +10,6 @@ export default {
     description_noprofile: 'Aboneliğiniz var ama hala profiliniz yok. 5 dakikada oluşturun ve müşteri kabul edin.',
   },
   empty_bookings: 'Gelecekteki randevularınızı buraya ekleyeceğiz',
-  empty_profiles: 'Favori profesyonelleriniz burada sizi bekliyor olacak'
+  empty_profiles: 'Favori profesyonelleriniz burada sizi bekliyor olacak',
+  profile: 'Çalışma alanı',
 }

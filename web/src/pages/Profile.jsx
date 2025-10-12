@@ -149,6 +149,7 @@ export default () => {
   const handleServiceSelect = (service) => {
     HapticFeedback.impactOccurred('light');
     setService(service);
+    setShowFullDay(true);
     if (service.serviceId !== selectedService?.serviceId) setSlot(null);
     openModal();
   };

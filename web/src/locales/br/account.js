@@ -10,5 +10,6 @@ export default {
     description_noprofile: 'Você tem uma assinatura mas ainda não tem perfil. Crie um em 5 minutos e comece a atender clientes.',
   },
   empty_bookings: 'Vamos colocar seus futuros agendamentos aqui',
-  empty_profiles: 'Seus profissionais favoritos estarão esperando aqui'
+  empty_profiles: 'Seus profissionais favoritos estarão esperando aqui',
+  profile: 'Área de trabalho',
 }

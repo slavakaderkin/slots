@@ -9,6 +9,7 @@ export default {
   },
   empty_future: 'Metteremo qui le tue future prenotazioni',
   empty_past: 'Metteremo qui le tue prenotazioni passate',
+  empty_profile: 'Non hai ancora un profilo, ma è facile crearne uno',
   empty_description: '',
   tabs: {
     bookings_future: 'Prenotazioni future',
@@ -17,5 +18,15 @@ export default {
   sub: {
     expired: 'Abbonamento scaduto',
     expired_description: 'Il profilo è accessibile, ma non puoi aggiungere nuovi slot e prenotare clienti.',
+    referal: 'Abbonamento fino al {{date, datetime}}, ma puoi estenderlo gratuitamente per sei mesi',
+  },
+  slot_added: 'Slot {{day}} alle {{time}} aggiunto',
+  slot_deleted: 'Slot {{day}} alle {{time}} eliminato',
+  menu: {
+    workspace: 'Prenotazioni',
+    slots: 'Slot',
+    services: 'Servizi', 
+    clients: 'Clienti',
+    settings: 'Impostazioni'
   }
 }

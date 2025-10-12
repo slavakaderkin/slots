@@ -1,9 +1,10 @@
 export default {
   you: 'Bu sizsiniz',
+  how: 'Nasıl?',
   allowsWrite: 'Randevu bildirimleri almak için, göndermemize izin verin',
   currency: '₺',
   writeHere: 'Buraya yazın...',
-  price: '{{price, currency(currency: TRY)}}',
+  price: '{{price, currency}}',
   price_free: 'Ücretsiz',
   date: '{{date, datetime}}',
   date_subscription: 'Abonelik {{date, datetime}} tarihine kadar',
