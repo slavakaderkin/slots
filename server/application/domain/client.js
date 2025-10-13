@@ -20,7 +20,7 @@
 
   async mapper(client) {
     const { accountId, clientId } = client;
-    const { info } = await db.pg.row('Account', { accountId });
+    const { info, phone } = await db.pg.row('Account', { accountId });
     const bookings = await db.pg.select('Booking', { clientId });
     const cancelledBookings = bookings.filter(({ state }) => state === 'cancelled');
     const [lastBooking] = await lib.pg.builder.query(lib.pg.queries.booking.lastClientBooking({ clientId })) || [];
@@ -29,6 +29,7 @@
     client['cancelledBookingCount'] = cancelledBookings?.length;
     client['cancelledBookingPercent'] = Math.floor((cancelledBookings?.length / bookings?.length) * 100);
     client['info'] = info;
+    client['phone'] = phone;
 
     return client;
   },

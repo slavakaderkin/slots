@@ -15,7 +15,7 @@ async ({ booking, timezone }) => {
 
   const inline_keyboard = [
     [{ text: 'Страница записи', web_app: { url: `${config.bot.web}/bookings/${bookingId}` } }],
-    [{ text: 'Клиент', url: `tg://user?id=${tg}` }]
+    [{ text: 'Связаться с клиентом', url: `tg://user?id=${tg}` }]
   ];
   
   const actionButtons = [

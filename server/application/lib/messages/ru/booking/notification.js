@@ -22,7 +22,7 @@ async ({ booking, timezone, isDayly, accountId }) => {
     [{ text: 'Страница записи', web_app: { url: `${config.bot.web}/bookings/${bookingId}` } }]
   ];
 
-  if (isOwner) inline_keyboard.push( [{ text: 'Клиент', url: `tg://user?id=${tg}` }]);
+  if (isOwner) inline_keyboard.push( [{ text: 'Связаться с клиентом', url: `tg://user?id=${tg}` }]);
   if (!isOwner && isDayly) inline_keyboard.push([{ text: 'Не смогу :(', callback_data: `booking|cancel|id=${bookingId}` }])
  
   const reply_markup = JSON.stringify({ inline_keyboard });

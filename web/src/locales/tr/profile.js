@@ -11,4 +11,5 @@ export default {
   services: 'Hizmetler',
   address: 'Adres',
   noSlots: 'Uygun zaman aralığı yok',
+  label: '@PickQuickBot üzerinden çalışır',
 }

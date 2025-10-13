@@ -107,7 +107,7 @@
 
     const booking = await db.pg.row('Booking', { bookingId });
     if (booking.state === 'confirmed') return true;
-    if (booking.state !== 'pending') return false;
+    if (booking.state !== 'pending' || booking.state === 'cancelled') return false;
 
     const { slotId, duration, allDay, profileId } = booking;
     const isAvailable = await domain.slot.isAvailable(slotId, duration, allDay);

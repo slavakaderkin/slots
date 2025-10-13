@@ -26,7 +26,7 @@ import FeedbackBadge from '@components/ui/FeedbackBadge';
 import FeedbackCard from '../components/ui/FeedbackCard';
 
 export default () => {
-  const { account, subscription, trial } = useAuth();
+  const { account, init } = useAuth();
   const { api } = useMetacom();
   const { profileId } = useParams();
   const location = useLocation();
@@ -36,7 +36,7 @@ export default () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
-  const { HapticFeedback, themeParams: theme, showAlert, showConfirm, openLink } = WebApp;
+  const { HapticFeedback, themeParams: theme, showAlert, showConfirm, openLink, requestContact, openTelegramLink } = WebApp;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -160,15 +160,26 @@ export default () => {
 
   const handleBooking = useCallback(async (booking) => {
     HapticFeedback.impactOccurred('light');
-    setLoading(true);
-    const created = await api.booking.create(booking);
-    if (created) {
-      showAlert(t('popup.alert.booking.success', { context: selectedService?.autoConfirm ? 'auto' : 'pending' }));
-      navigate(`/bookings/${created?.bookingId}`);
-    } else {
-      showAlert(t('popup.alert.booking.failed'));
+    const submit = async () => {
+      setLoading(true);
+      const created = await api.booking.create(booking);
+      if (created) {
+        await init();
+        showAlert(t('popup.alert.booking.success', { context: selectedService?.autoConfirm ? 'auto' : 'pending' }));
+        navigate(`/bookings/${created?.bookingId}`);
+      } else {
+        showAlert(t('popup.alert.booking.failed'));
+      }
+      setLoading(false);
+    };
+
+    if (account?.phone) await submit();
+    else {
+      requestContact(async (ok) => {
+        if (ok) await submit();
+      });
     }
-    setLoading(false);
+   
   }, [selectedService]);
 
   const [isProfileSended, setIsProfileSended] = useState(false);
@@ -298,7 +309,11 @@ export default () => {
         </div>
       }
 
-      <Space />
+      <div style={{ width: '100%', padding: '24px' }}onClick={() => openTelegramLink('https://t.me/PickQuickBot?profile')} >
+        <Caption style={{ color: theme.link_color, textAlign: 'center' }}>{t('profile.label')}</Caption>
+      </div>
+
+      <Space gap='20px'/>
      
       <Modal
         open={isModalOpen}

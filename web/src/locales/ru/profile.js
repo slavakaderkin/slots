@@ -11,4 +11,5 @@ export default {
   services: 'Услуги',
   address: 'Адрес',
   noSlots: 'Нет свободных слотов',
+  label: 'Работает через @PickQuickBot',
 }

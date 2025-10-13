@@ -3,10 +3,15 @@ async (args) => {
   console.debug({ args });
 
   try {
-    const { text, from, successful_payment: payment } = args;
+    const { text, from, successful_payment: payment, contact } = args;
 
     if (payment) {
       lib.bot.handlers.payment({ payment, from });
+      return;
+    }
+
+    if (contact) {
+      lib.bot.handlers.contact({ contact });
       return;
     }
 

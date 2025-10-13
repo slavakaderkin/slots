@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Modal, Cell, Section, Divider, Text, Button, Navigation } from '@telegram-apps/telegram-ui';
+import { Avatar, Modal, Cell, Section, Divider, Text, Button, IconButton } from '@telegram-apps/telegram-ui';
 import { GroupedVirtuoso } from 'react-virtuoso';
 
 import { useForm } from 'react-hook-form';
@@ -26,7 +26,7 @@ import InfoPage from '@pages/Info';
 import schema from '@schemas/booking';
 
 import BookingCard from '@components/ui/BookingCard';
-import { Download, Send, Star, CheckCircle, Slash } from 'react-feather';
+import { MessageCircle as Chat, Send, Star, CheckCircle, Slash } from 'react-feather';
 
 const BOOKINGS_PER_PAGE = 10;
 
@@ -319,7 +319,7 @@ export default () => {
   const name = `${client?.info?.first_name} ${client?.info?.last_name}`;
 
   const username = client?.info?.username;
-  const telegramLink = username ? `https://t.me/${username}` : null;
+  const telegramLink = client?.phone ? `https://t.me/+${client?.phone}` : null;
   const toTelegram = telegramLink ? () => openTelegramLink(telegramLink) : null;
 
   if (!profile) return <InfoPage type='empty' />;
@@ -336,7 +336,7 @@ export default () => {
           subtitle={username && `@${username}`}
           //subhead={t('client.lastBooking', { date: lastBooking?.datetime, formatParams })}
           description={t('client.bookingCount', { bookingCount, cancelledBookingCount, cancelledBookingPercent })}
-          after={toTelegram && <Navigation></Navigation>}
+          after={toTelegram && <IconButton><Chat /></IconButton>}
           before={<Avatar size={54} src={photo}/>}
           onClick={toTelegram}
         >

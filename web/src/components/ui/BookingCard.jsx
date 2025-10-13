@@ -1,14 +1,14 @@
 import { useCallback, useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { Section, Cell, Caption, Button, Subheadline, Text, Avatar, Navigation, Badge } from '@telegram-apps/telegram-ui';
+import { Section, Cell, Caption, Button, Subheadline, Text, Avatar, Navigation, Badge, IconButton } from '@telegram-apps/telegram-ui';
 import { Calendar } from 'react-feather';
 
 import useMetacom from '@hooks/useMetacom';
 import useAuth from '@hooks/useAuth';
 import useTelegram from '@hooks/useTelegram';
 import { formatDate, getLocalTimeFromUTC } from '@helpers/time';
-import { Clock } from 'react-feather';
+import { Clock, MessageCircle as Chat } from 'react-feather';
 
 const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
   const { t } = useTranslation();
@@ -61,9 +61,9 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
     setIsFullDescription(prev => !prev);
   }, []);
 
-  const handleTelegramLink = useCallback((username) => () => {
-    if (!clickable) return;
-    openTelegramLink(`https://t.me/${username}`);
+  const handleTelegramLink = useCallback((client) => () => {
+    if (!clickable || !client?.phone) return;
+    openTelegramLink(`https://t.me/+${client?.phone}`);
   }, [openTelegramLink]);
 
   // Вспомогательные функции рендера
@@ -95,7 +95,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
         before={<Calendar size={16} />}
         style={themeStyles.button}
       >
-        <Caption weight="1" style={themeStyles.text}>
+        <Caption weight="2" style={{ color: '#ffffff' }}>
           {t('button.select', { context: 'checked', time, date: day })}
         </Caption>
       </Button>
@@ -114,25 +114,18 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
     const username = client?.info?.username;
 
     const handler = isOwner 
-      ? username ? handleTelegramLink(username) : null
+      ? handleTelegramLink(client)
       : handleNavigate(`/profile/${profile?.profileId}`);
 
     return (
       <Cell 
         style={themeStyles.cell}
         subhead={<Caption>{role}</Caption>}
-        onClick={handler && clickable && handler}
+        onClick={clickable && handler}
         before={photo && <Avatar size={32} src={photo} />}
-        after={
-          handler && clickable && (
-            <Navigation>
-              {isOwner && username && (
-                <Subheadline style={themeStyles.link}>
-                  {`@${username}`}
-                </Subheadline>
-              )}
-            </Navigation>
-          )
+        after={clickable && isOwner 
+          ? <IconButton size='s'><Chat /></IconButton>
+          : <Navigation></Navigation>
         }
       >
         <Subheadline level="2">{name || t('common.anonymous')}</Subheadline>

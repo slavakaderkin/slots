@@ -14,7 +14,7 @@ import Space from '@components/layout/Space';
 
 import InfoPage from '@pages/Info';
 import BookingCard from '@components/ui/BookingCard';
-import { Download, Send, Star, CheckCircle, Slash, MapPin, Copy } from 'react-feather';
+import { Download, Send, Star, CheckCircle, Slash, MapPin, Copy, MessageCircle as Chat } from 'react-feather';
 import FeedbackCard from '../components/ui/FeedbackCard';
 
 export default () => {
@@ -104,7 +104,7 @@ export default () => {
     : profile?.name;
   const role = !isOwner ? profile?.specialization : t('booking.role', { context: 'client' });
   const username = client?.info?.username;
-  const telegramLink = username ? `https://t.me/${username}` : null;
+  const telegramLink = client?.phone ? `https://t.me/+${client?.phone}` : null;
 
   const handler = isOwner 
     ? telegramLink ? () => openTelegramLink(telegramLink) : null
@@ -167,7 +167,7 @@ export default () => {
             style={{ background: theme.secondary_bg_color }}
             multiline
             onClick={handler}
-            after={handler && <Navigation></Navigation>}
+            after={isOwner ? <IconButton><Chat /></IconButton> : <Navigation></Navigation>}
             subhead={role}
           >
             <Title level='2' weight='2'>{name}</Title>
