@@ -5,8 +5,7 @@ code.txt
 /server/data/
 /ansible/group_vars/
 .env
-/server/application/static/twa
-/server/application/static/files
+/server/application/static/
 /server/application/tasks/*
 /server/application/cert/default
 /server/log
