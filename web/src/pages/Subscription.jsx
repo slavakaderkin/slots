@@ -23,10 +23,9 @@ export default () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
-  const { HapticFeedback, themeParams: theme, openInvoice, showAlert, openTelegramLink, showConfirm } = WebApp;
+  const { HapticFeedback, themeParams: theme, openInvoice, showAlert, showConfirm } = WebApp;
   const { accountId } = account;
  
-
   useBackButton();
 
   const { subscription, trial } = account;
@@ -63,8 +62,8 @@ export default () => {
       .then((invoice) => {
         openInvoice(invoice, async (status) => {
           setLoading(false);
+          if (status === 'paid') await init();
           showAlert(t('popup.alert.payment.status', { context: status }));
-          if (status === 'paid') await init()
         })
       });
    
@@ -85,11 +84,13 @@ export default () => {
     HapticFeedback.impactOccurred('soft');
     showConfirm(t('popup.confirm.subscription', { context: 'cancel' }), (ok) => {
       if (ok) {
-        const args = { subscriptionId: subscription.subscriptionId, accountId: account.accountId };
+        const { subscriptionId, accountId } = subscription;
+        const args = { subscriptionId, accountId, refund: true };
         api.subscription.cancel(args)
-        .then(() => {
-          showAlert(t('popup.alert.subscription.cancelled'));
-        
+          .then(async () => {
+            await init();
+            showAlert(t('popup.alert.subscription.cancelled'));
+          
         });
       }
     })

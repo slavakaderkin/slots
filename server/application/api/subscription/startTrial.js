@@ -23,6 +23,10 @@
       };
 
       await application.scheduler.add(task);
+
+      const account = await db.pg.row('Account', { accountId });
+      const msg = await lib.messages.ru.admin.trial({ account });
+      await lib.bot.notify.admin({ msg });
       
       return true;
     } catch (e) {

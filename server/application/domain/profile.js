@@ -113,7 +113,7 @@
     const [name] = (await node.fsp.readdir(dirPath)).reverse();
     if (!name) return { url: null, size: 0 };
     const { size } = await node.fsp.stat(`${dirPath}/${name}`);
-    const staticPath = `${config.bot.files}/profile/${accountId}`;
+    const staticPath = `${config.bot.web}/files/profile/${accountId}`;
     const url = `${staticPath}/${name}`;
     return { url, size };
   },

@@ -1,3 +1,4 @@
 export default {
-  booking: 'A quale servizio e orario?'
+  booking: 'Per quale servizio e orario?',
+  bookingCount: 'Prenotazioni {{bookingCount}} / cancellazioni {{cancelledBookingCount}} ({{cancelledBookingPercent}}%)',
 }

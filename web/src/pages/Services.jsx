@@ -74,7 +74,7 @@ export default () => {
       )}
  
       <MainButton
-        text={t('button.add')}
+        text={t('button.add', { context: 'service' })}
         handler={go('/services/add')}
       />
     </>

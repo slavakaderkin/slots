@@ -120,6 +120,7 @@ interface Subscription {
   end: string;
   level: string;
   isActive: boolean;
+  isCancelled: boolean;
   subscriptionId?: string;
 }
 

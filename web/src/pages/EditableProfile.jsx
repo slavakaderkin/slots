@@ -21,7 +21,7 @@ import InfoPage from '@pages/Info';
 const IMAGE_SIZE = 512;
 
 export default () => {
-  const { account } = useAuth();
+  const { account, init } = useAuth();
   const navigate = useNavigate();
  
   const { t } = useTranslation();
@@ -102,6 +102,7 @@ export default () => {
         const name = `${Date.now()}.${ext}`;
         await upload(imageFile, name, path);
       }
+      await init();
       navigate(!profile ? '/services' : `/preview/${profile.profileId}`);
       showAlert(t('popup.alert.profile.save.success', { context: profile ? 'toprofile' : 'toservices' }));
     } catch {
@@ -109,7 +110,7 @@ export default () => {
     } finally {
       setUpdating(false);
     }
-  }, [imageFile, upload, profile]);
+  }, [imageFile, upload, profile, init]);
 
   const changeImage = async (e) => {
     const [file] = e.target.files;
@@ -148,7 +149,7 @@ export default () => {
           accept="image/*"
         />
         <label htmlFor="picture" style={imageLabelStyle}>
-          <div style={imageContainerStyle(theme)}>
+          <div style={imageContainerStyle(theme, !imageUrl)}>
             {imageUrl ? (
               <img src={imageUrl} style={imageStyle} /> 
             ) : (
@@ -190,7 +191,7 @@ const imageContainerStyle = (theme, error) => ({
   width: '100%',
   aspectRatio: '1/1',
   borderRadius: '10px',
-  border: `1px ${error ? 'solid' : 'dashed'} ${error ? theme.destructive_text_color : theme.link_color}`,
+  border: `1px ${error ? 'solid' : 'dashed'} ${error ? theme.destructive_text_color : theme.hint_color}`,
   background: theme.section_bg_color
 });
 

@@ -2,10 +2,10 @@
 async ({ accountId, level, type }) => {
   const period = type === 'month' ? '30 дней' : 'год';
   const label = type === 'month' ? 'Цена за 30 дней' : 'Цена за год';
-  const amount = 2 //type === 'month' ? 35000  : 250000;
+  const amount = type === 'month' ? 350  : 2500;
   const prices = JSON.stringify([{ label, amount }]);
   const title = `Подписка на ${period}`;
-  const description = `Оплата подписки на сервис бронирования слотов Квик Пик.`;
+  const description = `Оплата подписки на сервис онлайн-записи Квик Пик.`;
   const payload = `accountId=${accountId}+level=${level}+type=${type}`;
 
   const params = {

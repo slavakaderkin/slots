@@ -162,7 +162,8 @@ CREATE TABLE "Subscription" (
   "start" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "end" timestamp with time zone NOT NULL,
   "level" varchar NOT NULL,
-  "isActive" boolean NOT NULL DEFAULT true
+  "isActive" boolean NOT NULL DEFAULT true,
+  "isCancelled" boolean NOT NULL DEFAULT false
 );
 
 ALTER TABLE "Subscription" ADD CONSTRAINT "pkSubscription" PRIMARY KEY ("subscriptionId");

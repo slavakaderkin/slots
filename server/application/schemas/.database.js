@@ -1,5 +1,5 @@
 ({
-  name: 'logos',
+  name: 'qp',
   description: 'database schema',
   version: 1,
   driver: 'pg',

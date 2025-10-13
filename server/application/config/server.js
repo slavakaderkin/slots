@@ -2,7 +2,7 @@
   host: '0.0.0.0',
   //balancer: 8000,
   protocol: process.env.PROTOCOL || 'http',
-  ports: [8000, 8001, 8002, 8443],
+  ports: [8000, 8001, 8002, 8443, 443],
   nagle: false,
   timeouts: {
     bind: 2000,

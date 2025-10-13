@@ -249,8 +249,8 @@ export default () => {
   return (
     <>
       {isIos && <Space />}
-      <SubscriptionBanner />
-      <ProfileHeader />
+      {profile && <SubscriptionBanner />}
+      {profile && <ProfileHeader />}
   
       {profile && renderTabs()}
 

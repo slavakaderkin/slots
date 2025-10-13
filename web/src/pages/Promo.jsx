@@ -35,7 +35,7 @@ export default () => {
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
   const { HapticFeedback, themeParams: theme, openInvoice, showAlert, openTelegramLink} = WebApp;
-  const { trial, subscription, accountId } = account;
+  const { trial, subscription, accountId, profile } = account;
   const { lastPayment } = subscription || {};
   const hasActiveSubscription = subscription?.isActive && !subscription?.isCancelled;
   const isMonthSubscription = hasActiveSubscription && lastPayment?.type === 'month';
@@ -71,11 +71,13 @@ export default () => {
         openInvoice(invoice, async (status) => {
           setLoading(false);
           showAlert(t('popup.alert.payment.status', { context: status }));
-          if (status === 'paid') init().then(() => void navigate('/settings', { replace: true }));
+          if (status === 'paid') init().then(
+            () => void navigate(profile ? '/workspace' : '/settings', { replace: true })
+          );
         })
       });
    
-  }, [level, type]);
+  }, [level, type, profile]);
 
   const secondButtonHandler = useCallback(() => {
     api.subscription.startTrial({ accountId }).then((ok) => {

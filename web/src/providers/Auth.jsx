@@ -1,10 +1,10 @@
-import { createContext, useState, useEffect } from 'react';
+// AuthProvider.jsx
+import { createContext, useState, useEffect, useCallback } from 'react';
 import useMetacom from '@hooks/useMetacom';
 import useTelegram from '@hooks/useTelegram';
 import Info from '@pages/Info';
 
 import { getClientTimezone } from '@helpers/time';
-import useApiCall from '@hooks/useApiCall';
 
 export const context = createContext(null);
 
@@ -13,7 +13,7 @@ export default ({ children }) => {
   const [authData, setAuthData] = useState({ account: null, token: '' });
   const [loading, setLoading] = useState(true);
   const [ref, setRef] = useState('');
-  const { initData, HapticFeedback, initDataUnsafe , showAlert } = useTelegram().WebApp;
+  const { initData, initDataUnsafe } = useTelegram().WebApp;
   const { user, start_param } = initDataUnsafe;
   const timezone = getClientTimezone();
   
@@ -21,19 +21,31 @@ export default ({ children }) => {
     setRef('');
   };
 
-  const init = async () => {
+  const init = useCallback(async () => {
     const result = await metacom.api.auth.twa({ initData, timezone });
     setAuthData(result);
     setLoading(false);
     setRef(start_param);
-  };
+    return result;
+  }, [initData, timezone, start_param]);
 
-  useEffect(() => void init(), [initData]);
+  useEffect(() => {
+    init();
+  }, [init]);
 
   if (loading || !authData.account) return <Info type="loading" />
 
   return (
-    <context.Provider value={{ ...authData, user, ref, resetRef, init }}>
+    <context.Provider value={{ 
+      ...authData, 
+      user, 
+      ref, 
+      resetRef, 
+      init,
+      // Добавляем отдельные поля для удобства
+      account: authData.account,
+      token: authData.token 
+    }}>
       {children}
     </context.Provider>
   );

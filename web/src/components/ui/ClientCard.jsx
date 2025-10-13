@@ -14,7 +14,7 @@ const ClientCard = ({ client }) => {
   const { WebApp } = useTelegram();
   const { HapticFeedback, themeParams: theme, openTelegramLink, } = WebApp;
 
-  const { clientId, info } = client;
+  const { clientId, info, bookingCount, cancelledBookingCount, cancelledBookingPercent } = client;
   const photo = info?.photo_url;
   const name = `${info?.first_name || ''} ${info?.last_name || ''}`.trim();
   const username = client?.info?.username;
@@ -32,6 +32,7 @@ const ClientCard = ({ client }) => {
         style={{ background: theme.secondary_bg_color, padding: '4px 12px' }}
         multiline
         subtitle={username && `@${username}`}
+        description={t('client.bookingCount', { bookingCount, cancelledBookingCount, cancelledBookingPercent })}
         after={<Navigation></Navigation>}
         before={<Avatar size={40} src={photo}/>}
         onClick={go(`/clients/${clientId}`)} //toTelegram && toTelegram}

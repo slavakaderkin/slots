@@ -68,6 +68,9 @@ export default () => {
   const { call: getServices, data: services, loading: servicesLoading } =
     useApiCall('service.byProfile', { autoFetch: false });
 
+  const { bookingCount, cancelledBookingCount, cancelledBookingPercent, lastBooking } = client || {};
+  const formatParams = { date: { day: 'numeric', month: 'long', year: 'numeric' } };
+
   const {
     selectedDate,
     setSelectedDate,
@@ -133,7 +136,6 @@ export default () => {
     HapticFeedback.impactOccurred('light');
     setService(service);
     //if (service.serviceId !== selectedService?.serviceId) setSlot(null);
-
   };
 
   const handleToggleFullDay = useCallback(() => {
@@ -321,7 +323,7 @@ export default () => {
   const toTelegram = telegramLink ? () => openTelegramLink(telegramLink) : null;
 
   if (!profile) return <InfoPage type='empty' />;
-  
+  if (clientLoading) return <InfoPage type='loading' />;
 
   return (
     <>
@@ -332,6 +334,8 @@ export default () => {
           style={{ background: theme.secondary_bg_color, padding: '8px 12px' }}
           multiline
           subtitle={username && `@${username}`}
+          //subhead={t('client.lastBooking', { date: lastBooking?.datetime, formatParams })}
+          description={t('client.bookingCount', { bookingCount, cancelledBookingCount, cancelledBookingPercent })}
           after={toTelegram && <Navigation></Navigation>}
           before={<Avatar size={54} src={photo}/>}
           onClick={toTelegram}

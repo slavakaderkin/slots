@@ -7,6 +7,7 @@ export default {
   submit: 'Отправить',
   ok: 'Ok',
   add: 'Добавить',
+  add_service: 'Добавить услугу',
   show: 'Развернуть',
   hide: 'Свернуть',
   select: 'Выбрать',

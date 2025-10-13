@@ -12,7 +12,7 @@
     };
 
     let info;
-    if (process.env.mode !== 'production') {
+    if (process.env.MODE !== 'production') {
       if (initData) {
         const data = lib.bot.utils.validate(initData);
         info = JSON.parse(data.user); 

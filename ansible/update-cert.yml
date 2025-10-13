@@ -1,14 +1,14 @@
 ---
-- name: Update static files only
+- name: Update cert files
   hosts: all
   vars_files:
     - group_vars/all/vars.yml
 
   tasks:
-    - name: Sync only static/twa files
+    - name: Sync only cert files
       synchronize:
-        src: "{{ local_path }}/application/static/"
-        dest: "{{ remote_path }}/application/static/"
+        src: "{{ local_path }}/application/cert/"
+        dest: "{{ remote_path }}/application/cert/"
         archive: yes
         recursive: yes
         owner: yes
@@ -17,10 +17,9 @@
         delete: yes
         rsync_opts:
           - "--chmod=755"
-          - "--exclude=files/"
       become: yes
 
 
     - name: Show update info
       debug:
-        msg: "Static files updated on {{ inventory_hostname }}"
+        msg: "Cert files updated on {{ inventory_hostname }}"

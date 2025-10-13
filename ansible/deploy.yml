@@ -62,6 +62,7 @@
           - "--exclude=docker-compose.yml"
           - "--exclude=Makefile"
           - "--exclude=node_modules"
+          - "--exclude=log/"
 
     - name: Copy docker-compose template
       become: yes
