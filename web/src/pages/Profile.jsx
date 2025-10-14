@@ -309,7 +309,7 @@ export default () => {
         </div>
       }
 
-      <div style={{ width: '100%', padding: '24px' }}onClick={() => openTelegramLink('https://t.me/PickQuickBot?profile')} >
+      <div style={{ width: '100%', padding: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}onClick={() => openTelegramLink('https://t.me/PickQuickBot?profile')} >
         <Caption style={{ color: theme.link_color, textAlign: 'center' }}>{t('profile.label')}</Caption>
       </div>
 
