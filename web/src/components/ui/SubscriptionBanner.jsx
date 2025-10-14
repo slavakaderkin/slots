@@ -45,7 +45,7 @@ const SubscriptionBanner = () => {
         alignItems: 'center',
         justifyContent: 'space-between',
         borderRadius: '10px',
-        background: unactiveProfile ? '#f1ae1e' : theme.secondary_bg_color,
+        background: unactiveProfile ? '#fcf5e2' : theme.secondary_bg_color,
         margin: '0 12px',
         border: unactiveProfile ? `1px solid ${theme.link_color}` : 'none',
         cursor: 'pointer'

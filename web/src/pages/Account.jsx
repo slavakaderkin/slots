@@ -264,7 +264,7 @@ export default () => {
             justifyContent: 'space-between',
             borderRadius: '10px',
             //padding: '0 8px',
-            background: '#f1ae1e',
+            background: '#fcf5e2',
             margin: '0 12px',
             border: `1px solid ${theme.link_color}`
           }}
