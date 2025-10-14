@@ -3,9 +3,8 @@
   const end = lib.utils.modTime(now, 1, 'd');
   
   const builder = lib.pg.builder.build.select()
-    .from('Subscription')
+    .from('Trial')
     .where('end', '<=', now)
-    .where('isCancelled', '=', false)
     .where('isActive', '=', true);
 
   return builder;
