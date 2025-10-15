@@ -21,7 +21,7 @@ export default Yup.object().shape({
   mapLink: Yup.string()
     .notRequired()
     .test('mapLink', i18n.t('form.profile.error.mapLink'), (value) => {
-      if (!value || value === '') return true; // пустое значение - ок
-      return /^https:\/\/(\+?[a-zA-Z0-9_.=?\/\-]+)$/.test(value);
+      if (!value || value === '') return true;
+      return /^https:\/\/.*$/.test(value);
     })
 });
