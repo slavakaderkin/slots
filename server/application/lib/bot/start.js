@@ -14,5 +14,5 @@ async () => {
     //console.debug('Deliver was started');
   };
 
-  setInterval(runDeliver, 1500);
+  setInterval(runDeliver, 1500); // setTimeout(runDeliver, 3000); // 
 };

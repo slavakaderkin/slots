@@ -22,10 +22,10 @@ export default ({ children }) => {
   };
 
   const init = useCallback(async () => {
+    setRef(start_param);
     const result = await metacom.api.auth.twa({ initData, timezone });
     setAuthData(result);
     setLoading(false);
-    setRef(start_param);
     return result;
   }, [initData, timezone, start_param]);
 
@@ -42,7 +42,6 @@ export default ({ children }) => {
       ref, 
       resetRef, 
       init,
-      // Добавляем отдельные поля для удобства
       account: authData.account,
       token: authData.token 
     }}>

@@ -1,15 +1,21 @@
 export default {
   alert: {
     booking: {
-      success_pending: 'Enviamos o agendamento, precisa aguardar confirmação.',
+      success_pending: 'Agendamento enviado, aguardando confirmação.',
       success_auto: 'Tudo OK, você agendou o serviço com sucesso.',
       success_self: 'Pronto! Você agendou um cliente com sucesso',
-      failed: ':( Não foi possível enviar o agendamento.'
+      failed: ':( Não foi possível enviar o agendamento.',
+      haveActiveToday: 'Você já tem um agendamento para hoje.',
+      youAreBanned: 'Este profissional bloqueou você',
     },
     payment: {
-      status_paid: 'Pronto! Recebemos o pagamento.',
+      status_paid: 'Pronto! Recebemos seu pagamento.',
       status_failed: ':( Não foi possível processar o pagamento.',
       status_cancelled: ':( Pagamento cancelado.'
+    },
+    client: {
+      blocked: 'Cliente bloqueado',
+      unblocked: 'Cliente desbloqueado',
     },
     trial: {
       status_success: 'Você tem 14 dias, aproveite ao máximo.',
@@ -18,10 +24,10 @@ export default {
     profile: {
       save: {
         success_toservices: 'Ótimo! Agora você tem um perfil. Só falta adicionar serviços.',
-        success_toprofile: 'Pronto! Alteramos o perfil, veja como ficou.',
+        success_toprofile: 'Pronto! Atualizamos seu perfil, veja como ficou.',
         failed: ':( Não foi possível salvar o perfil.',
       },
-      sended: 'Enviamos o perfil no chat, você pode fixar no canal ou enviar.',
+      sended: 'Perfil enviado no chat, você pode fixar no canal ou encaminhar.',
       copied: 'Link do perfil copiado para a área de transferência.',
     },
     service: {
@@ -32,8 +38,8 @@ export default {
     },
     feedback: {
       save: {
-        success: 'Pronto! Enviamos o feedback.',
-        failed: ':( Não foi possível enviar o feedback.',
+        success: 'Pronto! Enviamos sua avaliação.',
+        failed: ':( Não foi possível enviar a avaliação.',
       }
     },
     subscription: {
@@ -43,10 +49,11 @@ export default {
     meetLink_copied: 'Link copiado para a área de transferência.',
   },
   confirm: {
-    profile_map: 'Abrir link com mapa?',
+    profile_map: 'Abrir link do mapa?',
     booking_confirm: 'Confirmar agendamento?',
     booking_cancel: 'Cancelar agendamento?',
     service_remove: 'Tem certeza que deseja excluir?',
-    subscription_cancel: 'Cancelar assinatura?'
+    subscription_cancel: 'Cancelar assinatura?',
+    client_block: 'Bloquear cliente?',
   }
 }

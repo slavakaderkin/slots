@@ -29,6 +29,30 @@
     if (!exp) return value;
     return value * 10 ** exp;
   },
+
+  encodeRef(str) {
+    return Buffer.from(String(str).split('').reverse().join('')).toString('base64').replace(/=*$/, '');
+  },
+
+  decodeRef(encodedStr) {
+    if (!encodedStr) return null;
+
+    while (encodedStr.length % 4) {
+      encodedStr += '=';
+    }
+    const base64Regex = /^(?:[A-Za-z0-9+/]{4})*?(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/;
+
+    if (!base64Regex.test(encodedStr)) {
+      return null;
+    }
+    try {
+      const decodedStr = Buffer.from(encodedStr, 'base64').toString();
+      if (decodedStr.includes('\ufffd')) return null;
+      return decodedStr.split('').reverse().join('');
+    } catch (e) {
+      return null;
+    }
+  },
   
   wait: async ({ delay }) => {
     return new Promise((resolve) => {
@@ -112,6 +136,27 @@
     return formats[formatType];
   },
 
+  isoToCron: (isoString, includeSeconds = true) => {
+    const date = new Date(isoString);
+    
+    if (isNaN(date.getTime())) {
+      throw new Error('Invalid ISO date string');
+    }
+    
+    const seconds = date.getSeconds();
+    const minutes = date.getMinutes();
+    const hours = date.getHours();
+    const day = date.getDate();
+    const month = date.getMonth() + 1; // Месяцы с 1
+    const dayOfWeek = '?'; // Не указываем день недели для конкретных дат
+    
+    if (includeSeconds) {
+      return `${seconds} ${minutes} ${hours} ${day} ${month} *`;
+    } else {
+      return `${minutes} ${hours} ${day} ${month} *`;
+    }
+  },
+
   getTime9AM: (datetime, userTimeZone) => {
     const date = new Date(datetime);
     
@@ -130,5 +175,47 @@
     const utcDate = new Date(date.toLocaleString('en-US', { timeZone: 'UTC' }));
     const tzDate = new Date(date.toLocaleString('en-US', { timeZone }));
     return utcDate.getTime() - tzDate.getTime();
+  },
+
+  setSpecificTime: (isoString, hours = 9, minutes = 0, timezone = 'UTC') => {
+    const date = new Date(isoString);
+    
+    if (timezone === 'UTC') {
+      date.setUTCHours(hours, minutes, 0, 0);
+    } else {
+      const localDateStr = date.toLocaleString('en-US', { timeZone: timezone });
+      const localDate = new Date(localDateStr);
+      localDate.setHours(hours, minutes, 0, 0);
+      return localDate.toISOString();
+    }
+    
+    return date.toISOString();
+  },
+
+  getTimeInfo: (datetimeISO, timezone) => {
+    const date = new Date(datetimeISO);
+    
+    const userTime = date.toLocaleString('en-US', { 
+      timeZone: timezone,
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    });
+    
+    const [datePart, timePart] = userTime.split(', ');
+    const [hours, minutes] = timePart.split(':').map(Number);
+    
+    const isNight = hours >= 23 || hours < 9;
+    
+    return {
+      isNight,
+      userTime: `${datePart} ${timePart}`,
+      hours,
+      minutes,
+      timezone
+    };
   }
 });

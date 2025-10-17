@@ -19,7 +19,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
 
   const [isFullDescription, setIsFullDescription] = useState(false);
 
-  const { service, slot, client, bookingId, state, profile } = booking;
+  const { service, slot, client, bookingId, state, profile } = booking || {};
 
   const stateColors = {
     confirmed: theme.link_color,
@@ -62,8 +62,11 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
   }, []);
 
   const handleTelegramLink = useCallback((client) => () => {
-    if (!clickable || !client?.phone) return;
-    openTelegramLink(`https://t.me/+${client?.phone}`);
+  const username = client?.info?.username;
+  const link = client?.phone ? `https://t.me/+${client?.phone}` : username ? `https://t.me/@${username}` : null;
+
+    if (!clickable || !link) return;
+    openTelegramLink(link);
   }, [openTelegramLink]);
 
   // Вспомогательные функции рендера
@@ -83,11 +86,12 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
   }, [isFullDescription, handleToggleDescription, themeStyles.link, t]);
 
   const renderSlot = useCallback(() => {
-    if (!slot?.datetime || !clickable) return null;
+    const datetime = slot?.datetime || booking?.datetime;
+    if (!datetime || !clickable) return null;
 
-    const [date] = slot.datetime.split('T');
+    const [date] = datetime.split('T');
     const [, day] = formatDate(new Date(date));
-    const time = getLocalTimeFromUTC(slot.datetime);
+    const time = getLocalTimeFromUTC(datetime);
 
     return (
       <Button
@@ -100,10 +104,10 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
         </Caption>
       </Button>
     );
-  }, [slot, selected, t]);
+  }, [slot, selected, t, booking]);
 
   const renderUserInfo = useCallback(() => {
-    if (selected || (isOwner && !client)) return null;
+    if (selected || (isOwner && !client) || (!isOwner && !profile)) return null;
 
     const photo = isOwner ? client?.info?.photo_url : profile?.photo;
     const name = isOwner 
@@ -121,6 +125,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
       <Cell 
         style={themeStyles.cell}
         subhead={<Caption>{role}</Caption>}
+        //subtitle={username && `@${username}`}
         onClick={clickable && handler}
         before={photo && <Avatar size={32} src={photo} />}
         after={clickable && isOwner 

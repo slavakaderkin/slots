@@ -1,4 +1,4 @@
-async ({ profile }) => {
+async ({ profile, refererId }) => {
   const { name, description, profileId } = profile;
   const { url: photo } = await domain.profile.getPhotoUrl({ profileId });
   const lines = [
@@ -8,7 +8,7 @@ async ({ profile }) => {
 
   const reply_markup = JSON.stringify({
     inline_keyboard: [
-      [{  text: 'Записаться', url: `${config.bot.botUrl}/profile?startapp=profile_${profileId}` }]  // ,
+      [{  text: 'Записаться', url: `${config.bot.botUrl}/profile?startapp=p_${profileId}_${refererId}` }]  // ,
     ],
   });
 

@@ -20,10 +20,11 @@ import Scrollable from '@components/layout/Scrollable';
 import InfoPage from '@pages/Info';
 import schema from '@schemas/booking';
 import ServiceCard from '@components/ui/ServiceCard';
-import { MapPin, Send } from 'react-feather';
+import { MapPin, Send, Percent } from 'react-feather';
 import RatingBadge from '@components/ui/RatingBadge';
 import FeedbackBadge from '@components/ui/FeedbackBadge';
 import FeedbackCard from '../components/ui/FeedbackCard';
+import BookingCard from '../components/ui/BookingCard';
 
 export default () => {
   const { account, init } = useAuth();
@@ -31,8 +32,8 @@ export default () => {
   const { profileId } = useParams();
   const location = useLocation();
   const isPreview = !!profileId && location.pathname.startsWith('/preview');
-  const { ref, resetRef } = useAuth();
-  const refProfileId = ref?.split('_')[1];
+  const { ref = '', resetRef } = useAuth();
+  const [pref, refProfileId, refererId] = ref.startsWith('p') ? ref.split('_') : [, '', ''];
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
@@ -133,7 +134,7 @@ export default () => {
 
   useEffect(() => void trigger(), [trigger]);
 
-  console.log(watch())
+  //console.log(watch())
 
   const handleDateSelect = useCallback((date) => {
     HapticFeedback.impactOccurred('light');
@@ -146,13 +147,22 @@ export default () => {
     //closeModal();
   }, [selectedDate]);
 
-  const handleServiceSelect = (service) => {
+  const handleServiceSelect = useCallback((service) => {
+    if (profile?.todayBooking) {
+      HapticFeedback.notificationOccurred('error');
+      showAlert(t('popup.alert.booking.haveActiveToday'));
+      return;
+    } else if (profile?.isClientBanned) {
+      HapticFeedback.notificationOccurred('error');
+      showAlert(t('popup.alert.booking.yoaAreBanned'));
+      return;
+    }
     HapticFeedback.impactOccurred('light');
     setService(service);
     setShowFullDay(true);
     if (service.serviceId !== selectedService?.serviceId) setSlot(null);
     openModal();
-  };
+  }, [profile?.todayBooking]);
 
   const handleToggleFullDay = useCallback(() => {
     setShowFullDay(prev => !prev);
@@ -162,7 +172,7 @@ export default () => {
     HapticFeedback.impactOccurred('light');
     const submit = async () => {
       setLoading(true);
-      const created = await api.booking.create(booking);
+      const created = await api.booking.create({ ...booking, refererId });
       if (created) {
         await init();
         showAlert(t('popup.alert.booking.success', { context: selectedService?.autoConfirm ? 'auto' : 'pending' }));
@@ -180,7 +190,7 @@ export default () => {
       });
     }
    
-  }, [selectedService]);
+  }, [selectedService, refererId]);
 
   const [isProfileSended, setIsProfileSended] = useState(false);
   const handleSendProfile = useCallback(async () => {
@@ -189,6 +199,18 @@ export default () => {
     const ok = await api.profile.sendToChat(args);
     if (ok) {
       setIsProfileSended(true);
+      showAlert(t('popup.alert.profile.sended'));
+    }
+  }, [profile, account]);
+
+  const [isRefLinkSended, setisRefLinkSended] = useState(false);
+  const handleSendRefLink = useCallback(async () => {
+    HapticFeedback.impactOccurred('light');
+    const { accountId, tg: refererId } = account;
+    const args = { accountId, refererId, profileId: profile.profileId }
+    const ok = await api.profile.sendToChat(args);
+    if (ok) {
+      setisRefLinkSended(true);
       showAlert(t('popup.alert.profile.sended'));
     }
   }, [profile, account]);
@@ -229,9 +251,9 @@ export default () => {
           <MapPin />
         </IconButton>
       }
-      <IconButton disabled={isProfileSended} onClick={handleSendProfile}>
-        <Send />
-      </IconButton>
+      {/*<IconButton disabled={isRefLinkSended} onClick={handleSendRefLink}>
+        <Percent />
+      </IconButton>*/}
     </div>
   );
 
@@ -277,6 +299,8 @@ export default () => {
         </Cell>
       </Section>
 
+      {profile?.todayBooking && <BookingCard booking={profile?.todayBooking} isOwner={false} selected={true}/>}
+
       {!!services?.length && 
         <div style={{ display: 'flex', width: '100%', flexDirection: 'column', gap: '12px' }}>
           <div style={{ width: '100%', padding: '12px 12px 0 12px' }}>
@@ -321,6 +345,7 @@ export default () => {
         header={<Modal.Header>{t('profile.slots')}</Modal.Header>}
         style={{
           maxHeight: '80vh',
+          minHeight: '40vh',
           background: theme.secondary_bg_color,
           padding: '12px 12px 40px 12px'
         }}
@@ -355,7 +380,7 @@ export default () => {
           />
         </Section>
 
-        {!isPreview && !isOwner && 
+        {!isPreview && !isOwner && !profile?.isClientBanned &&
           <>
             <br />
             <Divider />

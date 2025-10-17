@@ -26,20 +26,20 @@ import InfoPage from '@pages/Info';
 import schema from '@schemas/booking';
 
 import BookingCard from '@components/ui/BookingCard';
-import { MessageCircle as Chat, Send, Star, CheckCircle, Slash } from 'react-feather';
+import { MessageCircle as Chat, Send, Star, CheckCircle, Slash, Lock, Unlock } from 'react-feather';
 
 const BOOKINGS_PER_PAGE = 10;
 
 export default () => {
   const { clientId } = useParams();
-  const { account } = useAuth();
-  const { unactiveProfile, profile } = account;
+  const { account, token } = useAuth();
+  const { unactiveProfile, profile, accountId } = account;
   const { api } = useMetacom();
   const location = useLocation();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
-  const { HapticFeedback, themeParams: theme, showAlert, openTelegramLink } = WebApp;
+  const { HapticFeedback, themeParams: theme, showAlert, openTelegramLink, showConfirm } = WebApp;
   const bookingList = useRef(null);
 
   const [offset, setOffset] = useState(0);
@@ -84,9 +84,7 @@ export default () => {
   } = useSlots(profile);
 
   useEffect(() => {
-    if (isModalOpen) {
-      loadSlots(selectedDate);
-    }
+    if (isModalOpen) loadSlots(selectedDate);
   }, [isModalOpen, selectedDate, loadSlots]);
 
   const defaultValues = {
@@ -319,8 +317,34 @@ export default () => {
   const name = `${client?.info?.first_name} ${client?.info?.last_name}`;
 
   const username = client?.info?.username;
-  const telegramLink = client?.phone ? `https://t.me/+${client?.phone}` : null;
+  const telegramLink = client?.phone ? `https://t.me/+${client?.phone}` : username ? `https://t.me/@${username}` : null;
   const toTelegram = telegramLink ? () => openTelegramLink(telegramLink) : null;
+
+  const toggleBlock = useCallback(() => {
+    const { profileId } = profile;
+    const method = client?.isBanned ? api.client.unblock : api.client.block;
+    const args = { accountId, clientId, token, profileId };
+    const callback = () => {
+      getClient({ profileId, clientId });
+      showAlert(t(`popup.alert.client.${client?.isBanned ? 'unblocked' : 'blocked'}`));
+    };
+    if (client?.isBanned) {
+      method(args).then(callback);
+    } else {
+      showConfirm(t('popup.confirm.client', { context: 'block' }), (ok) => {
+        if (ok) method(args).then(callback);
+      });
+    }
+  }, [client, account, profile])
+
+  const renderButtons = () => {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <IconButton onClick={toggleBlock}>{client?.isBanned ? <Unlock /> : <Lock />}</IconButton>
+        <IconButton onClick={toTelegram}><Chat /></IconButton>
+      </div>
+    )
+  };
 
   if (!profile) return <InfoPage type='empty' />;
   if (clientLoading) return <InfoPage type='loading' />;
@@ -336,9 +360,8 @@ export default () => {
           subtitle={username && `@${username}`}
           //subhead={t('client.lastBooking', { date: lastBooking?.datetime, formatParams })}
           description={t('client.bookingCount', { bookingCount, cancelledBookingCount, cancelledBookingPercent })}
-          after={toTelegram && <IconButton><Chat /></IconButton>}
+          after={renderButtons()}
           before={<Avatar size={54} src={photo}/>}
-          onClick={toTelegram}
         >
           {name}
         </Cell>

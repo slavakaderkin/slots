@@ -8,4 +8,5 @@
   lastSeen: { type: 'datetime', default: 'now' },
   isBanned: { type: 'boolean', default: false },
   timezone: '?string',
+  ref: '?string',
 });

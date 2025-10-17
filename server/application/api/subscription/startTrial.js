@@ -15,14 +15,14 @@
       const record = { start, end, accountId };
       const [trial] = await db.pg.insert('Trial', record);
 
-      const task = {
+      /*const task = {
         name: `cancelTrial_${trial.trialId}`,
         every: lib.utils.dateForPlanner(end),
         run: 'domain.subscription.cancelTrial',
         args: { trialId: trial.trialId },
       };
 
-      await application.scheduler.add(task);
+      await application.scheduler.add(task);*/
 
       const account = await db.pg.row('Account', { accountId });
       const msg = await lib.messages.ru.admin.trial({ account });

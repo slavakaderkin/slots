@@ -19,7 +19,8 @@
 
   isCommand(str) {
     if (!str) return false;
-    const [first] = str.slice(1).split(' ');
+    const [line] = str.split('\n');
+    const [first] = line.slice(1).split(' ');
     const command = first.trim();
     const available = Object.keys(lib.bot.commands).filter((k) => k !== 'parent');
     return command && available.includes(command);

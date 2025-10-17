@@ -7,15 +7,15 @@
     return account;
   },
 
-  async init({ data, timezone }) {
+  async init({ data, timezone, ref = '' }) {
     console.info('domain/account/init');
-    console.debug({ data });
+    console.debug({ data, ref });
 
     const { id: tg, ...obj } = data;
     const info = JSON.stringify(data);
     let account = await db.pg.row('Account', { tg });
     if (!account) {
-      [account] = await db.pg.insert('Account', { tg,  info, timezone });
+      [account] = await db.pg.insert('Account', { tg,  info, timezone, ref });
       account['isNew'] = true;
     } else {
       [account] = await db.pg.update('Account', { info, timezone }, { tg });

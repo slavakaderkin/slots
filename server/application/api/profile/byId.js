@@ -6,12 +6,12 @@
     if (!session) throw new Error('Permission denied', 403);
   },
   
-  method: async ({ profileId }) => {
+  method: async ({ profileId, accountId }) => {
     console.info('api/profile/byId');
-    console.debug({ profileId });
+    console.debug({ profileId, accountId });
 
     try {
-      const profile = await domain.profile.byId({ profileId });
+      const profile = await domain.profile.byId({ profileId, accountId });
       return profile;
     } catch (e) {
       console.error(e);

@@ -6,7 +6,7 @@ async (worker = 'W1') => {
   const jobs = Object.keys(lib.jobs).filter(check);
 
   for (const name of jobs) {
-    //const { every } =  config.jobs[name];
+    const { every, interval } =  config.jobs[name];
     //const methodName = `lib.jobs.${name}`;
     //const task = { name, every, run: methodName };
 
@@ -16,6 +16,6 @@ async (worker = 'W1') => {
       console.debug(`Job ${name} was started`);
     };
 
-    setInterval(runJob, 1000 * 60 * 60);
+    setInterval(runJob, interval);
   }
 };

@@ -18,9 +18,12 @@ async (args) => {
     // нужен парсер сообщения и роутинг на обработчик
 
     if (lib.bot.utils.isCommand(text)) {
-      const [first, ref] = args.text.slice(1).split(' ');
-      const command = first.trim()
-      lib.bot.commands[command]({ args, ref });
+      const [line, ...rest] = args.text.split('\n');
+      const [first, ref] = line.slice(1).split(' ');
+      const text = rest?.join('\n')?.trim() || '';
+      const command = first.trim();
+
+      lib.bot.commands[command]({ args, ref: ref?.trim(), text });
     } else if (text) {
       // какая-то другая логика
     } else {

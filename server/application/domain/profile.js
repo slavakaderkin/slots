@@ -23,16 +23,34 @@
     return await db.pg.row('Account', { accountId });
   },
 
-  async byId({ profileId }) {
+  async byId({ profileId, accountId }) {
     console.info('domain/profile/byId');
     console.debug({ profileId });
-  
+    
     const profile = await db.pg.row('Profile', { profileId });
     const { url } = await this.getPhotoUrl({ profileId });
     profile['photo'] = url;
     profile['rating'] = await this.getRating({ profileId });
     profile['feedbacks'] = await this.getFeedbacks({ profileId });
     profile['availableSlots'] = await domain.slot.getAvailableSlots({ profileId });
+
+    const client = await db.pg.row('Client', { profileId, accountId });
+    if (client) {
+      const { clientId } = client;
+      const query = lib.pg.queries.booking.byClientId({ clientId, today: true });
+      const [todayBooking] = await lib.pg.builder.query(query);
+      if (!todayBooking) profile['todayBooking'] = null;
+      else {
+        const { serviceId } = todayBooking;
+        todayBooking['service'] = await await domain.service.byId({ serviceId });
+        profile['todayBooking'] = todayBooking;
+      }
+    } else {
+      profile['todayBooking'] = null;
+    }
+   
+    profile['isClientBanned'] = !!client?.isBanned;
+
     return profile;
   },
 

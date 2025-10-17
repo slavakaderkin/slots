@@ -1,4 +1,4 @@
-async ({ args, ref }) => {
+async ({ args, ref = '' }) => {
   console.info('lib/bot/commands/start');
   console.debug({ args, ref });
 
@@ -16,7 +16,7 @@ async ({ args, ref }) => {
   await bus.bot.setMyCommands({ commands, scope, language_code });
 
   let account = await db.pg.row('Account', { tg });
-  if (!account) account = account = await domain.account.init({ data: { ...from, allows_write_to_pm: true } });
+  if (!account) account = account = await domain.account.init({ data: { ...from, allows_write_to_pm: true }, ref });
   const messagePath = 'command.start';
   lib.bot.notify.one({ accountId: account.accountId, path: messagePath, args: { account } });
 };

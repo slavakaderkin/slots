@@ -3,7 +3,7 @@
     console.info('domain/booking/create');
     console.debug({ params });
 
-    const { accountId, clientId, profileId, slotId, serviceId, ...rest } = params;
+    const { accountId, clientId, profileId, slotId, serviceId, refererId, ...rest } = params;
     const service = await db.pg.row('Service', { serviceId });
     const { duration, allDay, isOnline } = service;
     
@@ -14,8 +14,10 @@
 
     let client = null;
     if (!clientId) {
-      client = await db.pg.row('Client', { accountId, profileId });
-      if (!client) [client] = await db.pg.insert('Client', { accountId, profileId });
+      const where = { accountId, profileId };
+      client = await db.pg.row('Client', where);
+      if (refererId) where['refererId'] = lib.utils.decodeRef(refererId);
+      if (!client) [client] = await db.pg.insert('Client', where);
     };
     
     const record = { 
@@ -29,7 +31,9 @@
       datetime: slot.datetime,
       clientId: clientId || client.clientId,
     };
-    
+
+    if (refererId) record['refererId'] = lib.utils.decodeRef(refererId);;
+
     let [booking] = await db.pg.insert('Booking', record);
 
     if (service.autoConfirm || clientId) booking = await domain.booking.confirm({ bookingId: booking.bookingId });
@@ -75,7 +79,8 @@
     console.debug({ bookingId });
 
     const future = lib.utils.modTime(null, 30, 'mm');
-    const every = lib.utils.dateForPlanner(future);
+
+    /*const every = lib.utils.dateForPlanner(future);
     const task = { 
       name: `booking_autoCancel_${bookingId}`,
       every,
@@ -83,7 +88,13 @@
       args: { bookingId }
     };
 
-    await application.scheduler.add(task);
+    await application.scheduler.add(task);*/
+
+    const cronString = lib.utils.isoToCron(future, false);
+    const schedule = npm['node-schedule'].scheduleJob;
+    const task = schedule(cronString, function() {
+      domain.booking.autoCancel({ bookingId });
+    });
   },
 
   async autoCancel({ bookingId }) {
@@ -95,8 +106,8 @@
 
     domain.booking.cancel({ bookingId });
 
-    const taskName = `booking_autoCancel_${bookingId}`;
-    application.scheduler.stop(taskName);
+    //const taskName = `booking_autoCancel_${bookingId}`;
+    //application.scheduler.stop(taskName);
 
     return true;
   },
@@ -131,8 +142,8 @@
     lib.bot.notify.one({ accountId: profileAccount.accountId, path: messagePath, args: profileArgs });
     domain.booking.scheduleNotifications({ booking: updated, accountId });
 
-    const taskName = `booking_autoCancel_${bookingId}`;
-    application.scheduler.stop(taskName);
+    //const taskName = `booking_autoCancel_${bookingId}`;
+    //application.scheduler.stop(taskName);
 
     const slots = await domain.slot.getAvailableSlots({ profileId });
     if (slots?.length === 0) {
@@ -172,32 +183,51 @@
     const { timezone } = await db.pg.row('Account', { accountId });
 
     // дневное уведомление
-    const server9AM = lib.utils.getTime9AM(datetime, timezone);
+    const date = new Date(lib.utils.setSpecificTime(datetime));
 
-    if (new Date(server9AM) > new Date()) {
-      const daylyEvery = lib.utils.dateForPlanner(server9AM);
+    if (date > new Date()) {
+      /*const daylyEvery = lib.utils.dateForPlanner(server9AM);
       const daylyTask = {
         name: `daylyNotification_${bookingId}`,
         every: daylyEvery,
         run: 'domain.booking.notify',
         args: { bookingId, accountId, isDayly: true },
       }
-      await application.scheduler.add(daylyTask);
+      await application.scheduler.add(daylyTask);*/
+
+      // 
+      const dateObject = {
+        year: date.getFullYear(),
+        month: date.getMonth(), // 0-11
+        day: date.getDate(),
+        hour: date.getHours(),
+        minute: date.getMinutes(),
+        tz: timezone
+      };
+      const schedule = npm['node-schedule'].scheduleJob;
+      const task = schedule(dateObject, function() {
+        domain.booking.notify({ bookingId, accountId, isDayly: true });
+      });
     }
   
-  
-    // уведомление за 1 часа
-    const beforeTime = new Date(lib.utils.modTime(datetime, -1, 'h')).toISOString();
+    // уведомление за 1 час
+    const before = new Date(lib.utils.modTime(datetime, -1, 'h'));
 
-    if (new Date(beforeTime) > new Date()) {
-      const beforeEvery = lib.utils.dateForPlanner(beforeTime);
+    if (before > new Date()) {
+      /*const beforeEvery = lib.utils.dateForPlanner(beforeTime);
       const beforeTask = {
         name: `beforeNotification_${bookingId}`,
         every: beforeEvery,
         run: 'domain.booking.notify',
         args: { bookingId, accountId, isDayly: false },
       }
-      await application.scheduler.add(beforeTask);
+      await application.scheduler.add(beforeTask);*/
+
+      const cronString = lib.utils.isoToCron(before.toISOString(), false);
+      const schedule = npm['node-schedule'].scheduleJob;
+      const task = schedule(cronString, function() {
+        domain.booking.notify({ bookingId, accountId, isDayly: false });
+      });
     }
 
   }, 
@@ -206,12 +236,16 @@
     console.info('domain/booking/complete');
     console.debug({ booking });
 
-    const { bookingId, clientId } = booking;
+    const { bookingId, clientId, datetime } = booking;
+    const { accountId } = await db.pg.row('Client', { clientId });
+    const { timezone } = await db.pg.row('Account', { accountId });
+
+    const { isNight } = lib.utils.getTimeInfo(datetime, timezone);
+    if (isNight) return false;
+    
     const updates = { state: 'completed' };
     const [updated] = await db.pg.update('Booking', updates, { bookingId });
 
-    const { accountId } = await db.pg.row('Client', { clientId });
-    const { timezone } = await db.pg.row('Account', { accountId });
     const messagePath = 'booking.completed';
     const args = { booking: updated, timezone };
     lib.bot.notify.one({ accountId, path: messagePath, args });

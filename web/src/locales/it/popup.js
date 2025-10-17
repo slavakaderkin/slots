@@ -1,15 +1,21 @@
 export default {
   alert: {
     booking: {
-      success_pending: 'Inviata la prenotazione, bisogna aspettare la conferma.',
-      success_auto: 'Tutto OK, hai prenotato con successo il servizio.',
+      success_pending: 'Prenotazione inviata, in attesa di conferma.',
+      success_auto: 'Tutto OK, hai prenotato il servizio con successo.',
       success_self: 'Fatto! Hai prenotato con successo un cliente',
-      failed: ':( Impossibile inviare la prenotazione.'
+      failed: ':( Impossibile inviare la prenotazione.',
+      haveActiveToday: 'Hai già una prenotazione per oggi.',
+      youAreBanned: 'Questo professionista ti ha bloccato',
     },
     payment: {
-      status_paid: 'Fatto! Abbiamo ricevuto il pagamento.',
+      status_paid: 'Fatto! Abbiamo ricevuto il tuo pagamento.',
       status_failed: ':( Impossibile elaborare il pagamento.',
       status_cancelled: ':( Pagamento cancellato.'
+    },
+    client: {
+      blocked: 'Cliente bloccato',
+      unblocked: 'Cliente sbloccato',
     },
     trial: {
       status_success: 'Hai 14 giorni, divertiti al massimo.',
@@ -17,11 +23,11 @@ export default {
     },
     profile: {
       save: {
-        success_toservices: 'Ottimo! Ora hai un profilo. Resta da aggiungere i servizi.',
-        success_toprofile: 'Fatto! Abbiamo modificato il profilo, ecco come appare ora.',
+        success_toservices: 'Fantastico! Ora hai un profilo. Resta solo da aggiungere i servizi.',
+        success_toprofile: 'Fatto! Abbiamo aggiornato il tuo profilo, ecco come appare ora.',
         failed: ':( Impossibile salvare il profilo.',
       },
-      sended: 'Profilo inviato nella chat, puoi fissarlo nel canale o inviarlo.',
+      sended: 'Profilo inviato nella chat, puoi fissarlo nel canale o inoltrare.',
       copied: 'Link del profilo copiato negli appunti.',
     },
     service: {
@@ -32,21 +38,22 @@ export default {
     },
     feedback: {
       save: {
-        success: 'Fatto! Abbiamo inviato il feedback.',
-        failed: ':( Impossibile inviare il feedback.',
+        success: 'Fatto! Abbiamo inviato la tua recensione.',
+        failed: ':( Impossibile inviare la recensione.',
       }
     },
     subscription: {
-      cancelled: 'Rinnovo abbonamento annullato'
+      cancelled: 'Rinnovo abbonamento cancellato'
     },
     meetLink_saved: 'Fatto! Abbiamo salvato il link.',
     meetLink_copied: 'Link copiato negli appunti.',
   },
   confirm: {
-    profile_map: 'Aprire il link con la mappa?',
+    profile_map: 'Aprire il link della mappa?',
     booking_confirm: 'Confermare la prenotazione?',
-    booking_cancel: 'Annullare la prenotazione?',
-    service_remove: 'Sicuro di voler eliminare?',
-    subscription_cancel: 'Annullare l\'abbonamento?'
+    booking_cancel: 'Cancellare la prenotazione?',
+    service_remove: 'Sei sicuro di voler eliminare?',
+    subscription_cancel: 'Cancellare l\'abbonamento?',
+    client_block: 'Bloccare il cliente?',
   }
 }

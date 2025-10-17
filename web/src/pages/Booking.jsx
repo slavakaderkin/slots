@@ -104,7 +104,7 @@ export default () => {
     : profile?.name;
   const role = !isOwner ? profile?.specialization : t('booking.role', { context: 'client' });
   const username = client?.info?.username;
-  const telegramLink = client?.phone ? `https://t.me/+${client?.phone}` : null;
+  const telegramLink = client?.phone ? `https://t.me/+${client?.phone}` : username ? `https://t.me/@${username}` : null;
 
   const handler = isOwner 
     ? telegramLink ? () => openTelegramLink(telegramLink) : null
@@ -169,6 +169,7 @@ export default () => {
             onClick={handler}
             after={isOwner ? <IconButton><Chat /></IconButton> : <Navigation></Navigation>}
             subhead={role}
+            subtitle={isOwner && username && `@${username}`}
           >
             <Title level='2' weight='2'>{name}</Title>
           </Cell>

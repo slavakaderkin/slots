@@ -3,6 +3,7 @@
 
   profile: 'Profile',
   client: 'Client',
+  refererId: '?bigint',
   slot: 'Slot',
   datetime: 'datetime',
   service: 'Service',

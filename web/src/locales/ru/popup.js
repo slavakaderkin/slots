@@ -4,12 +4,18 @@ export default {
       success_pending: 'Отправили запись, надо подождать подтверждения.',
       success_auto: 'Все ОК, вы успешно записались на услугу.',
       success_self: 'Готово! Вы успешно записали клиента',
-      failed: ':( Не получилось отправить запись.'
+      failed: ':( Не получилось отправить запись.',
+      haveActiveToday: 'У вас уже есть запись на сегодня.',
+      yoaAreBanned: 'Этот специалист вас заблокировал',
     },
     payment: {
       status_paid: 'Готово! Мы получили платеж.',
       status_failed: ':( Не удается провести оплату.',
       status_cancelled: ':( Платеж отменен.'
+    },
+    client: {
+      blocked: 'Клиент заблокирован',
+      unblocked: 'Клиент разблокирован',
     },
     trial: {
       status_success: 'У вас 14 дней, развлекайтесь на полную.',
@@ -47,6 +53,7 @@ export default {
     booking_confirm: 'Подтвердить запись?',
     booking_cancel: 'Отменить запись?',
     service_remove: 'Точно удалить?',
-    subscription_cancel: 'Отменить подписку?'
+    subscription_cancel: 'Отменить подписку?',
+    client_block: 'Заблокировать?',
   }
 }

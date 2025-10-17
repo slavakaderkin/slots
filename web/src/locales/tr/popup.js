@@ -2,26 +2,32 @@ export default {
   alert: {
     booking: {
       success_pending: 'Randevu gönderildi, onay bekleniyor.',
-      success_auto: 'Her şey tamam, hizmeti başarıyla randevu aldınız.',
-      success_self: 'Tamamlandı! Bir müşteriyi başarıyla randevu aldınız',
-      failed: ':( Randevu gönderilemedi.'
+      success_auto: 'Tamam, hizmeti başarıyla rezerve ettiniz.',
+      success_self: 'Tamamlandı! Müşteriyi başarıyla kaydettiniz',
+      failed: ':( Randevu gönderilemedi.',
+      haveActiveToday: 'Zaten bugün için bir randevunuz var.',
+      youAreBanned: 'Bu profesyonel sizi engelledi',
     },
     payment: {
-      status_paid: 'Tamamlandı! Ödemeyi aldık.',
-      status_failed: ':( Ödeme işlemi gerçekleştirilemedi.',
+      status_paid: 'Tamamlandı! Ödemenizi aldık.',
+      status_failed: ':( Ödeme işleme alınamadı.',
       status_cancelled: ':( Ödeme iptal edildi.'
     },
+    client: {
+      blocked: 'Müşteri engellendi',
+      unblocked: 'Müşterinin engeli kaldırıldı',
+    },
     trial: {
-      status_success: '14 gününüz var, sonuna kadar eğlenin.',
-      status_failed: ':( Başarısız, lütfen destekle iletişime geçin.',
+      status_success: '14 gününüz var, tadını çıkarın.',
+      status_failed: ':( Başarısız oldu, lütfen destekle iletişime geçin.',
     },
     profile: {
       save: {
-        success_toservices: 'Harika! Artık bir profiliniz var. Sadece hizmet eklemek kaldı.',
-        success_toprofile: 'Tamamlandı! Profili değiştirdik, işte şimdi nasıl göründüğü.',
+        success_toservices: 'Harika! Artık bir profiliniz var. Sadece hizmet eklemeniz gerekiyor.',
+        success_toprofile: 'Tamamlandı! Profilinizi güncelledik, işte şimdi nasıl göründüğü.',
         failed: ':( Profil kaydedilemedi.',
       },
-      sended: 'Profili sohbete gönderdik, kanalda sabitleyebilir veya gönderebilirsiniz.',
+      sended: 'Profil sohbete gönderildi, kanala sabitleyebilir veya iletebilirsiniz.',
       copied: 'Profil bağlantısı panoya kopyalandı.',
     },
     service: {
@@ -32,8 +38,8 @@ export default {
     },
     feedback: {
       save: {
-        success: 'Tamamlandı! Geri bildirimi gönderdik.',
-        failed: ':( Geri bildirim gönderilemedi.',
+        success: 'Tamamlandı! Yorumunuzu gönderdik.',
+        failed: ':( Yorum gönderilemedi.',
       }
     },
     subscription: {
@@ -47,6 +53,7 @@ export default {
     booking_confirm: 'Randevuyu onayla?',
     booking_cancel: 'Randevuyu iptal et?',
     service_remove: 'Silmek istediğinizden emin misiniz?',
-    subscription_cancel: 'Aboneliği iptal et?'
+    subscription_cancel: 'Aboneliği iptal et?',
+    client_block: 'Müşteriyi engelle?',
   }
 }

@@ -3,7 +3,10 @@
     console.info('domain/subscription/cancelTrial');
     console.debug({ trialId });
 
-    const [trial] = await db.pg.update('Trial', { isActive: false }, { trialId });
+    const trial = await db.pg.row('Trial', { trialId });
+    if (!trial?.isActive) return;
+    
+    await db.pg.update('Trial', { isActive: false }, { trialId });
     const { accountId } = trial;
     const subscription = await db.pg.row('Subscription', { accountId });
 
