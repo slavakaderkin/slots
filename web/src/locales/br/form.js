@@ -10,6 +10,7 @@ export default {
       mapLink: 'Link no Google Maps/Yandex/etc',
       address: 'Endereço',
       slotDuration: 'Duração do horário',
+      affiliateReward: 'Recompensa de afiliado'
     },
     hint: {
       picture: 'Formatos JPG ou PNG são aceitos',
@@ -18,10 +19,11 @@ export default {
       country: 'Escolha o país onde seus clientes estão localizados ou você está.',
       specialization: 'Quem você é em duas palavras: manicure, advogado, encanador, mágico, etc...',
       category: '',
-      mapLink: 'Clientes podem encontrar você no mapa clicando no link. ',
+      mapLink: 'Clientes podem encontrar você no mapa clicando no link.',
       mapLink_link: 'Onde conseguir o link >',
       address: 'Se você tem um endereço, escreva começando pela cidade. Vamos mostrar no perfil.',
-      slotDuration: 'Por padrão, um horário é de uma hora, mas pode reduzir para meia hora. Se os serviços forem mais longos - sem problema, o sistema vai considerar.'
+      slotDuration: 'Por padrão, um horário é de uma hora, mas pode reduzir para meia hora. Se os serviços forem mais longos - sem problema, o sistema vai considerar.',
+      affiliateReward_description: 'Recomende o perfil e receba porcentagens (do custo do serviço) pela primeira reserva de cada cliente através do link de indicação. O dinheiro pode ser usado para pagar serviços do perfil. Para obter um post com link clique em %.',
     },
     placeholder: {
       picture: 'Escolha uma imagem',

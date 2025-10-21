@@ -118,7 +118,7 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
     const username = client?.info?.username;
 
     const handler = isOwner 
-      ? handleTelegramLink(client)
+      ? handleNavigate(`/clients/${client?.clientId}`)
       : handleNavigate(`/profile/${profile?.profileId}`);
 
     return (
@@ -126,14 +126,14 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
         style={themeStyles.cell}
         subhead={<Caption>{role}</Caption>}
         //subtitle={username && `@${username}`}
-        onClick={clickable && handler}
-        before={photo && <Avatar size={32} src={photo} />}
+        //onClick={clickable && handler}
+        before={photo && <Avatar onClick={handler} size={32} src={photo} />}
         after={clickable && isOwner 
-          ? <IconButton size='s'><Chat /></IconButton>
+          ? <IconButton size='s' onClick={handleTelegramLink(client)}><Chat /></IconButton>
           : <Navigation></Navigation>
         }
       >
-        <Subheadline level="2">{name || t('common.anonymous')}</Subheadline>
+        <Subheadline level="2" onClick={handler}>{name || t('common.anonymous')}</Subheadline>
       </Cell>
     );
   }, [isOwner, client, profile, selected, themeStyles, handleTelegramLink, handleNavigate]);
@@ -201,9 +201,13 @@ const BookingCard = ({ isOwner, selected, booking, clickable = true }) => {
       )}
       
       {/* Цена и длительность */}
-      <Cell style={themeStyles.cell} after={renderDuration()}>
+      <Cell
+        style={themeStyles.cell}
+        after={renderDuration()}
+        subtitle={<Caption style={{ color: theme.link_color }}>{!!Number(booking?.bonuses) && t('booking.bonuses', { count: booking?.bonuses, formatParams: { count: { currency: profile?.currency } } })}</Caption>}
+      >
         <Text weight="1" style={themeStyles.text}>
-          {t('common.price', { price: service.price, context: !!Number(service.price) ? '' : 'free', formatParams: { price: { currency: profile?.currency } } })}
+          {t('common.price', { price: Number(service.price) - booking?.bonuses || 0, context: !!Number(service.price) ? '' : 'free', formatParams: { price: { currency: profile?.currency } } })}
         </Text>
       </Cell>
     </Section>

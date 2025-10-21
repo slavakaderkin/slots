@@ -6,7 +6,8 @@ CREATE TABLE "Account" (
   "registered" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "lastSeen" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "isBanned" boolean NOT NULL DEFAULT false,
-  "timezone" varchar NULL
+  "timezone" varchar NULL,
+  "ref" varchar NULL
 );
 
 ALTER TABLE "Account" ADD CONSTRAINT "pkAccount" PRIMARY KEY ("accountId");
@@ -26,17 +27,31 @@ CREATE TABLE "Profile" (
   "category" varchar NOT NULL,
   "specialization" varchar NULL,
   "balance" bigint NOT NULL DEFAULT '0',
-  "slotDuration" integer NOT NULL DEFAULT 60
+  "slotDuration" integer NOT NULL DEFAULT 60,
+  "affiliateReward" integer NULL DEFAULT 0
 );
 
 ALTER TABLE "Profile" ADD CONSTRAINT "pkProfile" PRIMARY KEY ("profileId");
 ALTER TABLE "Profile" ADD CONSTRAINT "fkProfileAccount" FOREIGN KEY ("accountId") REFERENCES "Account" ("accountId");
 
+CREATE TABLE "AffiliateReward" (
+  "affiliateRewardId" bigint generated always as identity,
+  "profileId" bigint NOT NULL,
+  "accountId" bigint NOT NULL,
+  "balance" bigint NOT NULL DEFAULT '0',
+  "startAt" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+ALTER TABLE "AffiliateReward" ADD CONSTRAINT "pkAffiliateReward" PRIMARY KEY ("affiliateRewardId");
+ALTER TABLE "AffiliateReward" ADD CONSTRAINT "fkAffiliateRewardProfile" FOREIGN KEY ("profileId") REFERENCES "Profile" ("profileId");
+ALTER TABLE "AffiliateReward" ADD CONSTRAINT "fkAffiliateRewardAccount" FOREIGN KEY ("accountId") REFERENCES "Account" ("accountId");
+
 CREATE TABLE "Client" (
   "clientId" bigint generated always as identity,
   "accountId" bigint NOT NULL,
   "profileId" bigint NOT NULL,
-  "isBanned" boolean NOT NULL DEFAULT false
+  "isBanned" boolean NOT NULL DEFAULT false,
+  "refererId" bigint NULL
 );
 
 ALTER TABLE "Client" ADD CONSTRAINT "pkClient" PRIMARY KEY ("clientId");
@@ -75,6 +90,7 @@ CREATE TABLE "Booking" (
   "bookingId" bigint generated always as identity,
   "profileId" bigint NOT NULL,
   "clientId" bigint NOT NULL,
+  "refererId" bigint NULL,
   "slotId" bigint NOT NULL,
   "datetime" timestamp with time zone NOT NULL,
   "serviceId" bigint NOT NULL,
@@ -85,7 +101,8 @@ CREATE TABLE "Booking" (
   "meetLink" varchar NULL,
   "state" varchar NOT NULL DEFAULT 'pending',
   "createdAt" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  "comment" text NULL
+  "comment" text NULL,
+  "bonuses" bigint NULL
 );
 
 ALTER TABLE "Booking" ADD CONSTRAINT "pkBooking" PRIMARY KEY ("bookingId");
@@ -147,6 +164,7 @@ ALTER TABLE "PaymentProvider" ADD CONSTRAINT "fkPaymentProviderProfile" FOREIGN 
 CREATE TABLE "Session" (
   "sessionId" bigint generated always as identity,
   "token" varchar NOT NULL,
+  "datetime" timestamp with time zone NOT NULL DEFAULT CURRENT_TIMESTAMP,
   "accountId" bigint NOT NULL,
   "ip" inet NOT NULL,
   "data" jsonb NOT NULL

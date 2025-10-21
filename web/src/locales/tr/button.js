@@ -3,6 +3,7 @@ export default {
   close: 'Kapat',
   next: 'İleri',
   submit: 'Gönder',
+  complete_booking: 'Hizmet tamamlandı',
   edit: 'Yönet',
   create: 'Oluştur',
   ok: 'Tamam',

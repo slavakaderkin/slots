@@ -4,6 +4,7 @@ export default {
   next: 'Avanti',
   create: 'Creare',
   edit: 'Gestisci',
+  complete_booking: 'Servizio completato',
   submit: 'Invia',
   ok: 'Ok',
   add: 'Aggiungi',

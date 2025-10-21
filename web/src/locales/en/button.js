@@ -2,6 +2,7 @@ export default {
   save: 'Save',
   close: 'Close',
   create: 'Create',
+  complete_booking: 'Service completed',
   edit: 'Manage',
   next: 'Next',
   submit: 'Submit',

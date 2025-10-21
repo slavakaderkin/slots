@@ -1,8 +1,9 @@
 async ({ booking, timezone }) => {
-  const { serviceId, datetime, clientId, bookingId, comment } = booking;
+  const { serviceId, datetime, clientId, bookingId, comment, profileId, bonuses } = booking;
   const { accountId } = await db.pg.row('Client', { clientId })
   const { tg, info } = await db.pg.row('Account', { accountId });
   const service = await db.pg.row('Service', { serviceId });
+  const profile = await db.pg.row('Profile', { profileId });
 
   const lines = [
     '<b>New booking</b>\n',
@@ -12,6 +13,9 @@ async ({ booking, timezone }) => {
 
   if (info?.username) lines.push(`<b>TG account:</b> @${info.username}`);
   if (comment) lines.push(`<b>Comment: </b> <i>${comment}</i>`);
+  if (Number(bonuses)) {
+    lines.push(`\n❗️ <b>To pay:</b> ${service.price - bonuses} ${profile.currency}\nClient pays ${bonuses} ${profile.currency} with bonuses.`);
+  }
 
   const inline_keyboard = [
     [{ text: 'Booking page', web_app: { url: `${config.bot.web}/bookings/${bookingId}` } }],

@@ -1,5 +1,5 @@
 async ({ booking, timezone, accountId }) => {
-  const { serviceId, datetime, bookingId, profileId, clientId } = booking;
+  const { serviceId, datetime, bookingId, profileId, clientId, bonuses } = booking;
   const client = await db.pg.row('Client', { clientId })
   const { tg, info } = await db.pg.row('Account', { accountId: client.accountId });
   const profile = await db.pg.row('Profile', { profileId });
@@ -15,6 +15,10 @@ async ({ booking, timezone, accountId }) => {
 
   if (isOwner && info?.username) lines.push(`<b>TG аккаунт:</b> @${info.username}`);
   if (!isOwner) lines.push(`<b>Специалист:</b> ${profile.name}`);
+  if (isOwner && Number(bonuses)) {
+    lines.push(`\n❗️ <b>К оплате:</b> ${service.price - bonuses} ${profile.currency}\nКлиент платит ${bonuses} ${profile.currency} бонусами.`);
+  }
+
   if (needMeetLink) lines.push('\nНе забудьте указать ссылку на онлайн встречу. Это можно сделать на странице записи.');
 
   const inline_keyboard = [

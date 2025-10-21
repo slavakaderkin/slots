@@ -1,7 +1,7 @@
 import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
-import { Avatar, Modal, Cell, Section, Divider, Text, Button, IconButton } from '@telegram-apps/telegram-ui';
+import { Avatar, Modal, Cell, Section, Divider, Text, Button, IconButton, Subheadline } from '@telegram-apps/telegram-ui';
 import { GroupedVirtuoso } from 'react-virtuoso';
 
 import { useForm } from 'react-hook-form';
@@ -16,6 +16,7 @@ import useApiCall from '@hooks/useApiCall';
 import useSlots from '@hooks/useSlots';
 
 import DaysScroll from '@components/ui/DaysScroll';
+import ClientReferer from '@components/ui/ClientReferer';
 import TimeSlotsGrid from '@components/ui/TimeSlotsGrid';
 import ServiceSmallCard from '@components/ui/ServiceSmallCard';
 import Space from '@components/layout/Space';
@@ -357,8 +358,8 @@ export default () => {
         <Cell
           style={{ background: theme.secondary_bg_color, padding: '8px 12px' }}
           multiline
-          subtitle={username && `@${username}`}
-          //subhead={t('client.lastBooking', { date: lastBooking?.datetime, formatParams })}
+          subtitle={!!Number(client?.affiliateReward) && <Subheadline level='2' style={{ color: theme.text_color }}>{t('client.affiliateReward', { count: client?.affiliateReward, formatParams: { count: { currency: profile?.currency } } })}</Subheadline>}
+          //subhead={username && `@${username}`}
           description={t('client.bookingCount', { bookingCount, cancelledBookingCount, cancelledBookingPercent })}
           after={renderButtons()}
           before={<Avatar size={54} src={photo}/>}
@@ -366,7 +367,7 @@ export default () => {
           {name}
         </Cell>
 
-        {}
+        {client?.refererInfo && <ClientReferer info={client?.refererInfo}/>}
       </Section>
 
       {allBookings.length > 0 && <GroupedVirtuoso

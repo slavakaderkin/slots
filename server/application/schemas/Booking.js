@@ -22,4 +22,5 @@
   },
   createdAt: { type: 'datetime', default: 'now' },
   comment: '?text',
+  bonuses: '?bigint',
 })

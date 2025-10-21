@@ -7,9 +7,10 @@ export default {
       specialization: 'Specialization',
       category: 'Field of activity',
       country: 'Country',
-      mapLink: 'Link on Google/etc maps',
+      mapLink: 'Link on Yandex/Google/etc maps',
       address: 'Address',
-      slotDuration: 'Slot step',
+      slotDuration: 'Slot duration',
+      affiliateReward: 'Affiliate reward'
     },
     hint: {
       picture: 'JPG or PNG format works',
@@ -18,10 +19,11 @@ export default {
       country: 'Choose the country where your clients are located or you are.',
       specialization: 'Who you are in two words: nail technician, lawyer, plumber, magician, etc...',
       category: '',
-      mapLink: 'Clients can find you on the map by clicking the link. ',
+      mapLink: 'Clients can find you on the map by clicking the link.',
       mapLink_link: 'Where to get the link >',
       address: 'If you have an address, write it starting with the city. We\'ll show it in the profile.',
-      slotDuration: 'By default, a slot is one hour, but you can narrow it down to half an hour. If services are longer than an hour - no problem, the system will account for it.'
+      slotDuration: 'By default, a slot is one hour, but you can reduce it to half an hour. If services are longer than an hour - no problem, the system will account for it.',
+      affiliateReward_description: 'Recommend the profile and receive percentages (from service cost) for the first booking of each client through referral link. Money can be used to pay for profile services. To get a post with link click on %.',
     },
     placeholder: {
       picture: 'Choose image',

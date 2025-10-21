@@ -50,6 +50,7 @@ export default () => {
     address: '',
     mapLink: '',
     termLink: '',
+    affiliateReward: 0,
   };
 
   const formMethods = useForm({ 

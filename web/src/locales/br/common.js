@@ -1,6 +1,7 @@
 export default {
   you: 'É você',
   how: 'Como?',
+  percent: '{{count}}%',
   allowsWrite: 'Para receber notificações de agendamentos, permita que as enviemos',
   currency: 'R$',
   writeHere: 'Escreva aqui...',

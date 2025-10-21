@@ -10,5 +10,6 @@ export default {
   feedback: 'Review',
   feedback_my: 'Your review',
   service: 'Service',
-  meetLink: 'Meeting link'
+  meetLink: 'Meeting link',
+  bonuses: 'Payment with bonuses {{count, currency}}',
 }

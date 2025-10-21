@@ -3,7 +3,7 @@ async (args) => {
   console.debug({ args });
 
   try {
-    const { text, from, successful_payment: payment, contact } = args;
+    const { text, from, successful_payment: payment, contact, write_access_allowed } = args;
 
     if (payment) {
       lib.bot.handlers.payment({ payment, from });
@@ -12,6 +12,13 @@ async (args) => {
 
     if (contact) {
       lib.bot.handlers.contact({ contact });
+      return;
+    }
+
+    if (write_access_allowed) {
+      const { id: tg } = from;
+      const updates = { info: JSON.stringify({ ...from,  allows_write_to_pm: true }) };
+      await db.pg.update('Account', updates, { tg });
       return;
     }
 

@@ -15,8 +15,9 @@
     let client = null;
     if (!clientId) {
       const where = { accountId, profileId };
+      const account = await db.pg.row('Account', { accountId });
       client = await db.pg.row('Client', where);
-      if (refererId) where['refererId'] = lib.utils.decodeRef(refererId);
+      if (refererId && refererId !== account.tg) where['refererId'] = lib.utils.decodeRef(refererId);
       if (!client) [client] = await db.pg.insert('Client', where);
     };
     
@@ -63,13 +64,23 @@
     if (dontNotify) return true;
 
     if (booking.state === 'confirmed') await domain.slot.activate(booking.slotId, booking.duration, booking.allDay);
-  
-    const client = await db.pg.row('Client', { clientId: booking.clientId });
+    
+    const { clientId, profileId, bonuses } = booking;
+    const client = await db.pg.row('Client', { clientId });
     const account = await db.pg.row('Account', { accountId: client.accountId });
-    const profileAccount = await domain.profile.getAccount({ profileId: booking.profileId });
+    const profileAccount = await domain.profile.getAccount({ profileId });
     const messagePath = 'booking.cancelled';
     lib.bot.notify.one({ accountId: account.accountId, path: messagePath, args: { booking, timezone: account.timezone } });
     lib.bot.notify.one({ accountId: profileAccount.accountId, path: messagePath, args: { booking, timezone: profileAccount.timezone } });
+
+    // если были бонусы, то возвращаем на баланс
+    if (Number(bonuses)) {
+      const { accountId } = client;
+      const reward = await db.pg.row('AffiliateReward', { accountId, profileId });
+      const { balance, affiliateRewardId } = reward;
+      const updates = { balance: Number(reward.balance) + Number(bonuses) };
+      await db.pg.update('AffiliateReward', updates, { affiliateRewardId });
+    }
 
     return true;
   },
@@ -120,7 +131,7 @@
     if (booking.state === 'confirmed') return true;
     if (booking.state !== 'pending' || booking.state === 'cancelled') return false;
 
-    const { slotId, duration, allDay, profileId } = booking;
+    const { slotId, duration, allDay, profileId, clientId, bonuses } = booking;
     const isAvailable = await domain.slot.isAvailable(slotId, duration, allDay);
     if (!isAvailable) {
       // сообщение, что слоты заняты 
@@ -129,9 +140,9 @@
 
     const updates = { state: 'confirmed' };
     const [updated] = await db.pg.update('Booking', updates, { bookingId });
-    await domain.slot.deactivate(booking.slotId, booking.duration, booking.allDay);
+    await domain.slot.deactivate(slotId, duration, allDay);
 
-    const { accountId } = await db.pg.row('Client', { clientId: booking.clientId });
+    const { accountId } = await db.pg.row('Client', { clientId });
     const profile = await db.pg.row('Profile', { profileId });
     const profileAccount = await db.pg.row('Account', { accountId: profile.accountId });
     const { timezone } = await db.pg.row('Account', { accountId });
@@ -144,6 +155,14 @@
 
     //const taskName = `booking_autoCancel_${bookingId}`;
     //application.scheduler.stop(taskName);
+
+    // списываем бонусы с баланса
+    if (Number(bonuses)) {
+      const reward = await db.pg.row('AffiliateReward', { accountId, profileId });
+      const { balance, affiliateRewardId } = reward;
+      const updates = { balance: Number(balance) - Number(bonuses) };
+      await db.pg.update('AffiliateReward', updates, { affiliateRewardId });
+    }
 
     const slots = await domain.slot.getAvailableSlots({ profileId });
     if (slots?.length === 0) {
@@ -236,15 +255,33 @@
     console.info('domain/booking/complete');
     console.debug({ booking });
 
-    const { bookingId, clientId, datetime } = booking;
+    const { bookingId, clientId, datetime, refererId, serviceId, profileId } = booking;
     const { accountId } = await db.pg.row('Client', { clientId });
-    const { timezone } = await db.pg.row('Account', { accountId });
+    const { timezone, tg } = await db.pg.row('Account', { accountId });
+    const { affiliateReward } = await db.pg.row('Profile', { profileId });
+
+    const isReferal = await this.isReferalBooking(booking);
 
     const { isNight } = lib.utils.getTimeInfo(datetime, timezone);
     if (isNight) return false;
     
     const updates = { state: 'completed' };
     const [updated] = await db.pg.update('Booking', updates, { bookingId });
+
+    if (isReferal && affiliateReward) {
+      const { price } = await db.pg.row('Service', { serviceId });
+      const { accountId } = await db.pg.row('Account', { tg: refererId });
+      const reward = await db.pg.row('AffiliateReward', { profileId, accountId });
+      if (reward) {
+        const { balance, affiliateRewardId } = reward;
+        const amount = (Number(price) / 100 ) * affiliateReward;
+        const updates = { balance: Number(balance) + Number(amount) };
+        await db.pg.update('AffiliateReward', updates, { affiliateRewardId });
+      } else {
+        const balance = (Number(price) / 100 ) * affiliateReward;
+        await db.pg.insert('AffiliateReward', { accountId, profileId, balance });
+      }
+    }
 
     const messagePath = 'booking.completed';
     const args = { booking: updated, timezone };
@@ -326,5 +363,15 @@
     console.debug({ bookingId });
 
     return await db.pg.row('Feedback', { bookingId });
+  },
+
+  async isReferalBooking(booking) {
+    console.info('domain/booking/isReferalBooking');
+    console.debug({ booking });
+
+    const { refererId, clientId } = booking;
+    if (!refererId) return false;
+    const bookings = await db.pg.select('Booking', { clientId, refererId });
+    return bookings?.length === 1;
   }
 });

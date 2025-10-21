@@ -1,6 +1,7 @@
 export default {
   you: 'Bu sizsiniz',
   how: 'Nasıl?',
+  percent: '{{count}}%',
   allowsWrite: 'Randevu bildirimleri almak için, göndermemize izin verin',
   currency: '₺',
   writeHere: 'Buraya yazın...',

@@ -3,6 +3,7 @@ export default {
   close: 'Fechar',
   next: 'Próximo',
   submit: 'Enviar',
+  complete_booking: 'Serviço concluído',
   create: 'Criar',
   edit: 'Gerenciar',
   ok: 'Ok',

@@ -3,7 +3,8 @@ import { useLocation, useNavigate, useParams } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
-import { Switch, Title, Modal, Cell, Section, Caption, Text, IconButton, Button, Divider, Textarea, Subheadline } from '@telegram-apps/telegram-ui';
+import { Slider, Title, Modal, Cell, Section, Caption, Text, IconButton, Button, Divider, Textarea, Subheadline } from '@telegram-apps/telegram-ui';
+import { MapPin, Send, Percent } from 'react-feather';
 
 import useTelegram from '@hooks/useTelegram';
 import useAuth from '@hooks/useAuth';
@@ -16,15 +17,16 @@ import DaysScroll from '@components/ui/DaysScroll';
 import TimeSlotsGrid from '@components/ui/TimeSlotsGrid';
 import Space from '@components/layout/Space';
 import Scrollable from '@components/layout/Scrollable';
-
+import InputWraper from '@components/forms/helpers/InputWraper';
 import InfoPage from '@pages/Info';
-import schema from '@schemas/booking';
+
 import ServiceCard from '@components/ui/ServiceCard';
-import { MapPin, Send, Percent } from 'react-feather';
+
 import RatingBadge from '@components/ui/RatingBadge';
 import FeedbackBadge from '@components/ui/FeedbackBadge';
-import FeedbackCard from '../components/ui/FeedbackCard';
-import BookingCard from '../components/ui/BookingCard';
+import FeedbackCard from '@components/ui/FeedbackCard';
+import BookingCard from '@components/ui/BookingCard';
+import schema from '@schemas/booking';
 
 export default () => {
   const { account, init } = useAuth();
@@ -37,11 +39,18 @@ export default () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { WebApp, isIos } = useTelegram();
-  const { HapticFeedback, themeParams: theme, showAlert, showConfirm, openLink, requestContact, openTelegramLink } = WebApp;
+  const { HapticFeedback, themeParams: theme, showAlert, showConfirm, openLink, requestContact, openTelegramLink, requestWriteAccess } = WebApp;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const feedbacksRef = useRef(null);
+
+  const [allowsWrite, setAllowsWrite] = useState(account?.info?.allows_write_to_pm);
+
+  const handleAllowsWrite = useCallback(() => {
+    HapticFeedback.impactOccurred('soft');
+    requestWriteAccess((ok) => void setAllowsWrite(ok))
+  }, [setAllowsWrite]);
 
   const scrollToFeedbacks = () => {
     feedbacksRef.current?.scrollIntoView({
@@ -109,6 +118,7 @@ export default () => {
     slotId: '',
     serviceId: '',
     comment: '',
+    bonuses: 0,
   };
   
   const formMethods = useForm({ 
@@ -205,6 +215,10 @@ export default () => {
 
   const [isRefLinkSended, setisRefLinkSended] = useState(false);
   const handleSendRefLink = useCallback(async () => {
+    if (isOwner || (!account?.info?.allows_write_to_pm && !allowsWrite)) {
+      HapticFeedback.notificationOccurred('error');
+      return;
+    }
     HapticFeedback.impactOccurred('light');
     const { accountId, tg: refererId } = account;
     const args = { accountId, refererId, profileId: profile.profileId }
@@ -244,6 +258,12 @@ export default () => {
     });
   };
 
+  const handleBonuses = (value) => {
+    if (value < 0 || value > selectedService?.price) return;
+    setValue('bonuses', value, { shouldDirty: true, shouldValidate: true });
+    trigger();
+  };
+
   const renderButtons = () => (
     <div style={{ display: 'flex', gap: '8px' }}>
       {profile?.mapLink && 
@@ -251,17 +271,45 @@ export default () => {
           <MapPin />
         </IconButton>
       }
-      {/*<IconButton disabled={isRefLinkSended} onClick={handleSendRefLink}>
-        <Percent />
-      </IconButton>*/}
+      {/**/}
     </div>
   );
+
+  const [isFullAffiliateInfo, setIsFullAffiliateInfo] = useState(false);
+  const showFullAffiliateInfo = useCallback(() => {
+    HapticFeedback.selectionChanged();
+    setIsFullAffiliateInfo(!isFullAffiliateInfo);
+  }, [isFullAffiliateInfo])
 
   if (profileLoading) return <InfoPage type='loading'/>;
 
   return (
     <>
       {isIos && <Space />}
+
+      {!isOwner && !account?.info?.allows_write_to_pm && !allowsWrite &&
+        <Section style={{ width: '100%' }}>
+          <Cell
+            style={{
+              background: theme.secondary_bg_color,
+              border: `1px solid ${theme.link_color}`,
+            }}
+            multiline
+            description={t('common.allowsWrite')}
+            after={
+              <Button
+                size='s'
+                style={{ maxHeight: '32px', margin: '8px 0' }}
+                onClick={handleAllowsWrite}
+              >
+                <Caption weight='1'>
+                  {t('button.allowsWrite')}
+                </Caption>
+              </Button>}
+          >
+          </Cell>
+        </Section>
+      }
 
       <Section style={{ width: '100%', marginBottom: '8px' }}>
         <div style={{ width: '100%', background: theme.secondary_bg_color, display: 'flex', flexDirection: 'column' }}>
@@ -270,7 +318,7 @@ export default () => {
             style={{ background: theme.secondary_bg_color }}
             multiline
             subtitle={
-              <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', gap: '4px', alignItems: 'center', padding: '4px 0' }}>
                 <RatingBadge rating={profile?.rating}/>
                 <FeedbackBadge count={profile?.feedbacks?.length} onClick={scrollToFeedbacks}/>
               </div>
@@ -282,7 +330,24 @@ export default () => {
             <Title level='2' weight='2'>{profile?.name}</Title>
           </Cell>
         </div>
-       {profile?.address &&
+        {profile?.affiliateReward && 
+          <Cell
+            style={{ background: theme.secondary_bg_color }}
+            multiline
+            description={isFullAffiliateInfo && t('profile.affileateReward', { context: 'description' })}
+            after={
+              <IconButton disabled={isRefLinkSended} onClick={handleSendRefLink}>
+                <Percent />
+              </IconButton>
+            }
+            subtitle={profile?.clientRewardBalance &&
+              <Caption style={{ color: theme.text_color }}>{t('profile.clientRewardBalance', { count: profile?.clientRewardBalance, formatParams: { count: { currency: profile?.currency } } })}</Caption>
+            }
+          >
+            {<Text style={{ color: isFullAffiliateInfo ? theme.text_color : theme.link_color }} onClick={showFullAffiliateInfo}>{t('profile.affileateReward', { percent: profile?.affiliateReward })}</Text>}
+          </Cell>
+        }
+        {profile?.address &&
           <Cell
             style={{ background: theme.secondary_bg_color }}
             subhead={t('profile.address')}
@@ -290,7 +355,8 @@ export default () => {
           >
             {profile.address}
           </Cell>
-       }
+        }
+       
         <Cell
           style={{ background: theme.secondary_bg_color }}
           multiline
@@ -369,8 +435,23 @@ export default () => {
           onSlotClick={handleSlotClick}
           onToggleFullDay={handleToggleFullDay}
         />
-
+        
         <br />
+
+        {profile?.affiliateReward && profile.clientRewardBalance &&
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+          
+            <Slider
+              before={
+                <Caption style={{ minWidth: '150px' }}>{t('profile.bonuses', { count: watch('bonuses'), formatParams: { count: { currency: profile?.currency } } })}</Caption>
+              }
+              min={0}
+              max={selectedService?.price}
+              value={watch('bonuses')} 
+              onChange={handleBonuses}
+            />
+          </div>
+        }
         <Section style={{ width: '100%' }}>
           <Textarea 
             placeholder={t('form.booking.placeholder.comment')}

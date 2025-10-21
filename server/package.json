@@ -28,6 +28,7 @@
     "impress": "https://github.com/slavakaderkin/impress.git",
     "metasql": "^3.0.0-alpha.3",
     "node-cron": "^4.2.1",
+    "node-schedule": "^2.1.1",
     "pg": "^8.16.0",
     "redis": "^5.5.6"
   }

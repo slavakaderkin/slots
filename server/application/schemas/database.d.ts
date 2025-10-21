@@ -6,6 +6,7 @@ interface Account {
   lastSeen: string;
   isBanned: boolean;
   timezone?: string;
+  ref?: string;
   accountId?: string;
 }
 
@@ -24,13 +25,23 @@ interface Profile {
   specialization?: string;
   balance: string;
   slotDuration: number;
+  affiliateReward?: number;
   profileId?: string;
+}
+
+interface AffiliateReward {
+  profileId: string;
+  accountId: string;
+  balance: string;
+  startAt: string;
+  affiliateRewardId?: string;
 }
 
 interface Client {
   accountId: string;
   profileId: string;
   isBanned: boolean;
+  refererId?: string;
   clientId?: string;
 }
 
@@ -59,6 +70,7 @@ interface Service {
 interface Booking {
   profileId: string;
   clientId: string;
+  refererId?: string;
   slotId: string;
   datetime: string;
   serviceId: string;
@@ -70,6 +82,7 @@ interface Booking {
   state: string;
   createdAt: string;
   comment?: string;
+  bonuses?: string;
   bookingId?: string;
 }
 
@@ -108,6 +121,7 @@ interface PaymentProvider {
 
 interface Session {
   token: string;
+  datetime: string;
   accountId: string;
   ip: string;
   data: string;

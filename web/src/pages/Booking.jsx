@@ -9,6 +9,8 @@ import useMetacom from '@hooks/useMetacom';
 import useBackButton from '@hooks/useBackButton';
 import useApiCall from '@hooks/useApiCall';
 
+import { getLocalTimeFromUTC } from '@helpers/time';
+
 import MainButton from '@components/ui/MainButton';
 import Space from '@components/layout/Space';
 
@@ -18,7 +20,8 @@ import { Download, Send, Star, CheckCircle, Slash, MapPin, Copy, MessageCircle a
 import FeedbackCard from '../components/ui/FeedbackCard';
 
 export default () => {
-  const { account } = useAuth();
+  const { account, token } = useAuth();
+  const { accountId } = account
   const { bookingId } = useParams();
   const { api } = useMetacom();
   const location = useLocation();
@@ -53,6 +56,8 @@ export default () => {
   const isShowFeedbackButton = !feedback && booking?.state === 'completed' && !isOwner;
   const isShowMeetLinkForm = (booking?.isOnline || service?.isOnline) && isOwner && booking?.state === 'confirmed';
   const isMeetLinkShow = !isOwner && booking?.meetLink && booking?.state === 'confirmed' ;
+  const isPast = booking?.datetime ? new Date() > new Date(booking?.datetime) : false;
+  const isShowCompleteButton = isOwner && isPast && booking?.state === 'confirmed';
 
   const [updatingLink, setUpdatingLink] = useState(false);
   const [meetLink, setMeetLink] = useState('');
@@ -84,6 +89,11 @@ export default () => {
       if (ok) api.booking.cancel({ bookingId }).then(getBooking);
     })
   };
+
+  const complete = useCallback(() => {
+    HapticFeedback.impactOccurred('soft');
+    api.booking.complete({ bookingId, accountId, profileId: profile.profileId, token }).then(getBooking);
+  }, [accountId, profile, token]);
 
   const renderButtons = () => {
     if (['completed', 'cancelled'].includes(state)) return;
@@ -166,12 +176,11 @@ export default () => {
           <Cell
             style={{ background: theme.secondary_bg_color }}
             multiline
-            onClick={handler}
-            after={isOwner ? <IconButton><Chat /></IconButton> : <Navigation></Navigation>}
+            after={isOwner ? <IconButton onClick={handler}><Chat /></IconButton> : <Navigation></Navigation>}
             subhead={role}
             subtitle={isOwner && username && `@${username}`}
           >
-            <Title level='2' weight='2'>{name}</Title>
+            <Title level='2' weight='2' onClick={isOwner && go(`/clients/${client?.clientId}`)}>{name}</Title>
           </Cell>
         </div>
         {!isOwner && profile?.address && renderAddress()}
@@ -249,6 +258,12 @@ export default () => {
           handler={go(`/feedback/${bookingId}`)}
         />
       }
+      {/*isShowCompleteButton &&
+        <MainButton
+          text={t('button.complete', { context: 'booking' })}
+          handler={complete}
+        />
+      */}
       {isShowMeetLinkForm &&
         <MainButton
           loading={updatingLink}

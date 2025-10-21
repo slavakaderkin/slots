@@ -188,7 +188,7 @@ const TimeSlotsGrid = ({
       >
     
         {filteredSlots.length === 0 
-          ? <div style={{ background: theme.secondary_bg_color, padding: '12px', width: '100%' }}>
+          ? <div style={{ background: theme.secondary_bg_color, padding: '16px 0' }}>
               <Text style={{ textAlign: 'center' }}>{t('profile.noSlots')}</Text> 
             </div>
           :  <div style={gridStyle}>

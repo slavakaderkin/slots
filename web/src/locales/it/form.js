@@ -10,6 +10,7 @@ export default {
       mapLink: 'Link su mappe Yandex/Google/ecc',
       address: 'Indirizzo',
       slotDuration: 'Durata slot',
+      affiliateReward: 'Ricompensa affiliato'
     },
     hint: {
       picture: 'Va bene formato JPG o PNG',
@@ -18,10 +19,11 @@ export default {
       country: 'Scegli il paese dove si trovano i tuoi clienti o tu.',
       specialization: 'Chi sei in due parole: estetista, avvocato, idraulico, mago, ecc...',
       category: '',
-      mapLink: 'I clienti possono trovarti sulla mappa cliccando sul link. ',
+      mapLink: 'I clienti possono trovarti sulla mappa cliccando sul link.',
       mapLink_link: 'Dove trovare il link >',
       address: 'Se hai un indirizzo, scrivilo partendo dalla città. Lo mostreremo nel profilo.',
-      slotDuration: 'Per default uno slot è di un\'ora, ma puoi ridurlo a mezz\'ora. Se i servizi sono più lunghi di un\'ora - nessun problema, il sistema lo terrà in considerazione.'
+      slotDuration: 'Per default uno slot è di un\'ora, ma puoi ridurlo a mezz\'ora. Se i servizi sono più lunghi di un\'ora - nessun problema, il sistema lo terrà in considerazione.',
+      affiliateReward_description: 'Raccomanda il profilo e ricevi percentuali (dal costo del servizio) per la prima prenotazione di ogni cliente tramite link di referral. I soldi possono essere utilizzati per pagare i servizi del profilo. Per ottenere un post con link clicca su %.',
     },
     placeholder: {
       picture: 'Scegli immagine',

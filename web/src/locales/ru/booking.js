@@ -10,6 +10,6 @@ export default {
   feedback: 'Oтзыв',
   feedback_my: 'Ваш отзыв',
   service: 'Услуга',
-  meetLink: 'Ссылка на встречу'
-
+  meetLink: 'Ссылка на встречу',
+  bonuses: 'Оплата бонусами {{count, currency}}'
 }

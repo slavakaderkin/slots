@@ -19,7 +19,8 @@
   },
 
   async mapper(client) {
-    const { accountId, clientId } = client;
+    const { accountId, clientId, profileId, refererId: tg } = client;
+    const reward = await db.pg.row('AffiliateReward', { accountId, profileId });
     const { info, phone } = await db.pg.row('Account', { accountId });
     const bookings = await db.pg.select('Booking', { clientId });
     const cancelledBookings = bookings.filter(({ state }) => state === 'cancelled');
@@ -30,6 +31,11 @@
     client['cancelledBookingPercent'] = Math.floor((cancelledBookings?.length / bookings?.length) * 100);
     client['info'] = info;
     client['phone'] = phone;
+    client['affiliateReward'] = reward?.balance || 0;
+    if (tg) {
+      const account = await db.pg.row('Account', { tg });
+      if (account) client['refererInfo'] = account.info;
+    }
 
     return client;
   },

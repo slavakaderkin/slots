@@ -58,6 +58,12 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
     trigger();
   };
 
+  const handleAffiliateReward = (value) => {
+    if (value < 0 || value > 90) return;
+    setValue('affiliateReward', value, { shouldDirty: true, shouldValidate: true });
+    trigger();
+  };
+
   const selectCurrency = ({ target }) => {
     setValue('currency', target.value, { shouldDirty: true, shouldValidate: true });
     trigger();
@@ -176,6 +182,10 @@ export default ({ control, register, errors, handleFocus, handleBlur, setValue, 
               {...genInputProps('mapLink')}
               status={errors.mapLink ? 'error' : 'default'} 
             />
+          </InputWraper>
+
+          <InputWraper ent='profile' name='affiliateReward' error={errors.affiliateReward?.message}>
+            <Slider before={<Text style={{ minWidth: '40px' }}>{t('common.percent', { count: watch('affiliateReward') })}</Text>} min={0} max={90} value={watch('affiliateReward')} onChange={handleAffiliateReward}/>
           </InputWraper>
           
           {/*<InputWraper ent='profile' name='termLink' error={errors.termLink?.message}>

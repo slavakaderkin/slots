@@ -10,5 +10,6 @@ export default {
   feedback: 'Yorum',
   feedback_my: 'Yorumunuz',
   service: 'Hizmet',
-  meetLink: 'Toplantı bağlantısı'
+  meetLink: 'Toplantı bağlantısı',
+  bonuses: 'Bonuslarla ödeme {{count, currency}}',
 }

@@ -1,6 +1,7 @@
 export default {
   you: 'Sei tu',
   how: 'Come?',
+  percent: '{{count}}%',
   allowsWrite: 'Per ricevere notifiche sugli appuntamenti, permetici di inviarle',
   currency: '€',
   writeHere: 'Scrivi qui...',

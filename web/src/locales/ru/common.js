@@ -1,5 +1,6 @@
 export default {
   you: 'Это вы',
+  percent: '{{count}}%',
   how: 'Как?',
   allowsWrite: 'Чтобы получать уведомления о записях, разрешите нам их отправлять',
   currency: '₽',

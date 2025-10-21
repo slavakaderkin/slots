@@ -10,7 +10,7 @@ export default Yup.object().shape({
   description: Yup.string()
     .required(i18n.t('form.profile.error.description'))
     .min(10, i18n.t('form.profile.error.description'))
-    .max(550, i18n.t('form.profile.error.description')),
+    .max(1500, i18n.t('form.profile.error.description')),
 
   category: Yup.string()
     .required(i18n.t('form.profile.error.category')),

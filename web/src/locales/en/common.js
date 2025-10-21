@@ -1,6 +1,7 @@
 export default {
   you: 'This is you',
   how: 'How?',
+  percent: '{{count}}%',
   allowsWrite: 'To receive booking notifications, allow us to send them',
   currency: '€',
   writeHere: 'Write here...',

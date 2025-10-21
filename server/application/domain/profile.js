@@ -4,6 +4,10 @@
     console.debug({ params });
 
     const [profile] = await db.pg.insert('Profile', params);
+    const { profileId } = profile;
+    const { adminId: tg } = config.bot;
+    const { accountId } = await db.pg.row('Account', { tg });
+    await api.profile.sendToChat({ profileId, accountId });
     return profile;
   },
 
@@ -51,6 +55,8 @@
    
     profile['isClientBanned'] = !!client?.isBanned;
 
+    const reward = await db.pg.row('AffiliateReward', { accountId, profileId });
+    if (reward?.balance) profile['clientRewardBalance'] = Number(reward?.balance);
     return profile;
   },
 
@@ -131,7 +137,7 @@
     const [name] = (await node.fsp.readdir(dirPath)).reverse();
     if (!name) return { url: null, size: 0 };
     const { size } = await node.fsp.stat(`${dirPath}/${name}`);
-    const staticPath = `${config.bot.web}/files/profile/${accountId}`;
+    const staticPath = `${config.bot.web}/files/profile/${accountId}`; // `${config.bot.files}/files/profile/${accountId}`;
     const url = `${staticPath}/${name}`;
     return { url, size };
   },

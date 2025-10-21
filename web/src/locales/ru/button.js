@@ -1,5 +1,6 @@
 export default {
   save: 'Сохранить',
+  complete_booking: 'Услуга оказана',
   create: 'Создать',
   close: 'Закрыть',
   next: 'Дальше',

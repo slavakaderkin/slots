@@ -1,17 +1,21 @@
 async ({ booking, timezone }) => {
-  const { serviceId, datetime, clientId, bookingId, comment } = booking;
+  const { serviceId, datetime, clientId, bookingId, comment, bonuses, profileId } = booking;
   const { accountId } = await db.pg.row('Client', { clientId })
   const { tg, info } = await db.pg.row('Account', { accountId });
   const service = await db.pg.row('Service', { serviceId });
+  const profile = await db.pg.row('Profile', { profileId });
 
   const lines = [
     '<b>Новая запись</b>\n',
     `<b>Услуга:</b> ${service.name}`,
-   `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'ru')}</u>`
+    `<b>Время:</b> <u>${lib.utils.toHumanDate(datetime, timezone, 'ru')}</u>`
   ];
 
   if (info?.username) lines.push(`<b>TG аккаунт:</b> @${info.username}`);
   if (comment) lines.push(`<b>Комментарий: </b> <i>${comment}</i>`);
+  if (Number(bonuses)) {
+    lines.push(`\n❗️ <b>К оплате:</b> ${service.price - bonuses} ${profile.currency}\nКлиент платит ${bonuses} ${profile.currency} бонусами.`);
+  }
 
   const inline_keyboard = [
     [{ text: 'Страница записи', web_app: { url: `${config.bot.web}/bookings/${bookingId}` } }],
